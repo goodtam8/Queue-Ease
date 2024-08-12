@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart'; // Assuming storage is defined here
-import 'package:fyp_mobile/property/navgationbar.dart'; // Assuming storage is defined here
+import 'package:fyp_mobile/property/navgationbar.dart';
+import 'package:fyp_mobile/teacher/Home.dart';
+import 'package:fyp_mobile/teacher/analysis.dart';
+import 'package:fyp_mobile/teacher/calendar.dart';
+import 'package:fyp_mobile/teacher/leave_man.dart'; // Assuming storage is defined here
 
 class Teacher extends StatefulWidget {
   const Teacher({super.key});
@@ -10,30 +14,15 @@ class Teacher extends StatefulWidget {
 }
 
 class _TeacherState extends State<Teacher> {
+    int currentPageIndex = 0;
+  List<Widget> page = [const Home(), const Calendar(), const LeaveMan(), const Analysis(), const Teacher()];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return  Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: const Navagation(),
-      body: SafeArea(
-        child: FutureBuilder<String?>(
-          future: storage.read(key: 'jwt'), // Your Future<String?> data source
-          builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator()); // Show a loading spinner while waiting for the future to complete
-            } else if (snapshot.hasError) {
-              return Center(child: Text("Error: ${snapshot.error}")); // Error handling
-            } else if (snapshot.hasData) {
-              return
-              
-              
-               Center(child: Text(snapshot.data ?? 'No token')); // Display the token if available
-            } else {
-              return Center(child: Text('No data available')); // Handle the case where there is no token
-            }
-          },
-        ),
-      ),
+      
+      body: Text("it is profile screen"),
+      
     );
   }
 }

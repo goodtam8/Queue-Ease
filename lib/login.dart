@@ -32,8 +32,36 @@ class _LoginState extends State<Login> {
           body: jsonEncode(data));
 
       await storage.write(key: 'jwt', value: response.body);
+      await storage.write(key: 'role', value: "teacher");
+
+
 String? token = await storage.read(key: 'jwt');
       print("$token");
+      return (response.statusCode);
+    } catch (e) {
+      print(e);
+      return e.toString();
+    }
+  }
+  
+
+
+  Future<dynamic> studentlogin() async {
+    Map<String, dynamic> data = {
+      'sid': username.text,
+      'pw': password.text,
+    };
+    try {
+      var response = await http.post(
+          Uri.parse('http://10.0.2.2:3000/api/login/student'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(data));
+
+      await storage.write(key: 'jwt', value: response.body);
+      await storage.write(key: 'role', value: "student");
+
+
+String? token = await storage.read(key: 'jwt');
       return (response.statusCode);
     } catch (e) {
       print(e);

@@ -17,20 +17,21 @@ class Navagation extends StatefulWidget {
 class _NavagationState extends State<Navagation> {
   int currentPageIndex = 0;
   List<Widget> page = [const Home(), const Calendar(), const LeaveMan(), const Analysis(), const Teacher()];
-  List<Widget> studentpage = [const Home(), const Calendar(), const LeaveMan(), const Analysis(), const Teacher()];
 
   @override
   Widget build(BuildContext context) {
 
-    if (true) {
-      return Column(children: [
-        Expanded(
-          child: IndexedStack(
-            index: currentPageIndex,
-            children: page,
-          ),
-        ),
-        NavigationBar(
+  
+      return 
+      
+      
+      
+      
+      
+       Scaffold(
+      backgroundColor: Colors.white,
+      
+      bottomNavigationBar:  NavigationBar(
           destinations: const [
             NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
             NavigationDestination(
@@ -45,10 +46,13 @@ class _NavagationState extends State<Navagation> {
           onDestinationSelected: (int index) {
             setState(() {
               currentPageIndex = index;
+              
             });
           },
-        )
-      ]);
-    } else {}
+        
+        ),
+      body: page[currentPageIndex],
+      
+    );
   }
 }
