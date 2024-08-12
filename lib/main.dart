@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart';
+import 'package:fyp_mobile/tea.dart';
 import 'register.dart';
 void main() {
   runApp( MaterialApp(
@@ -7,6 +8,8 @@ void main() {
     routes:{
       '/login':(context)=> const Login(),
       '/register':(context)=>const Register() ,
+      '/tea':(context)=>const Teacher(),
+      
     
 })
     );
