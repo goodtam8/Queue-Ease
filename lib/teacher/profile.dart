@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart'; // Assuming storage is defined here
+import 'package:fyp_mobile/property/navgationbar.dart'; // Assuming storage is defined here
 
 class Teacher extends StatefulWidget {
   const Teacher({super.key});
@@ -13,6 +14,7 @@ class _TeacherState extends State<Teacher> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      bottomNavigationBar: const Navagation(),
       body: SafeArea(
         child: FutureBuilder<String?>(
           future: storage.read(key: 'jwt'), // Your Future<String?> data source
