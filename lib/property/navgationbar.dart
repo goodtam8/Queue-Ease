@@ -20,6 +20,11 @@ class _NavigationState extends State<Navigation> {
   int currentPageIndex = 0;
 
   late Future<String?> role;
+  void updateIndex(int index) {
+    setState(() {
+      currentPageIndex = index;
+    });
+  }
 
   @override
   void initState() {
@@ -54,8 +59,7 @@ class _NavigationState extends State<Navigation> {
       const Calendar(),
       const LeaveMan(),
       const Analysis(),
-        if (userRole == "teacher") Teacher(onLogout: widget.onLogout),
-    
+      if (userRole == "teacher") Teacher(onLogout: widget.onLogout),
     ];
 
     return Scaffold(
@@ -66,7 +70,9 @@ class _NavigationState extends State<Navigation> {
       bottomNavigationBar: BottomNavigationBar(
         items: [
           BottomNavigationBarItem(
-            icon: Icon(userRole == "teacher" ? Icons.home : Icons.school_outlined, color: Colors.blue),
+            icon: Icon(
+                userRole == "teacher" ? Icons.home : Icons.school_outlined,
+                color: Colors.blue),
             label: 'Home',
           ),
           const BottomNavigationBarItem(
@@ -85,12 +91,11 @@ class _NavigationState extends State<Navigation> {
             icon: Icon(Icons.file_copy_rounded, color: Colors.blue),
             label: 'Profile',
           ),
-         
         ],
         currentIndex: currentPageIndex,
         onTap: (int index) {
           setState(() {
-            currentPageIndex = index;
+            updateIndex(index);
           });
         },
       ),

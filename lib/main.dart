@@ -37,7 +37,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: isLoggedIn ? Navigation(onLogout: logout) : Login(onLogin: login),
+      home: isLoggedIn ? Navigation(onLogout: logout, key: globalNavigationBarKey,) : Login(onLogin: login),
       routes: 
 {
       '/register':(context)=>const Register() ,

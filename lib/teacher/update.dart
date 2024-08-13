@@ -56,7 +56,7 @@ class _UpdateState extends State<Update> {
       ),
       body: TextButton(
         onPressed: () {
-          //globalNavigationBarKey.currentState?.updateIndex(0);
+          globalNavigationBarKey.currentState?.updateIndex(0);
           Navigator.of(context).pop();
           
         },
