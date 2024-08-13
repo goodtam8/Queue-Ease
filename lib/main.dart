@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
 import 'package:fyp_mobile/register.dart';
+import 'package:fyp_mobile/studentregister.dart';
 import 'package:fyp_mobile/teacher/Home.dart';
 import 'package:fyp_mobile/teacher/analysis.dart';
 import 'package:fyp_mobile/teacher/calendar.dart';
@@ -46,7 +47,8 @@ class _MyAppState extends State<MyApp> {
       '/leave':(context)=>const LeaveMan(),
       '/calendar':(context)=>const Calendar(),
       '/analysis':(context)=>const Analysis(),
-      '/update':(context)=>const Update()
+      '/update':(context)=>const Update(),
+      '/stureg':(context)=>const Studentregister()
       
     
 }    );

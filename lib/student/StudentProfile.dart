@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart'; // Assuming storage is defined here
 import 'package:fyp_mobile/property/icon.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
+import 'package:fyp_mobile/property/topbar.dart';
 import 'package:fyp_mobile/teacher/Home.dart';
 import 'package:fyp_mobile/teacher/analysis.dart';
 import 'package:fyp_mobile/teacher/calendar.dart';
@@ -30,26 +31,7 @@ class Studentprofile_state extends State<Studentprofile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center, // Added this line
-          children: [
-            Uniicon(),
-            Text(
-              "UniTrack",
-              style: TextStyle(
-                color: Color(0xFF4a75a5),
-                fontSize: 24,
-                fontFamily: 'Roboto',
-                letterSpacing: -0.6,
-                height: 1.5,
-              ),
-            ),
-          ],
-        ),
-      ),
+      appBar:  Topbar(),
       backgroundColor: Colors.white,
       body: FutureBuilder<String?>(
         future: _tokenValue,

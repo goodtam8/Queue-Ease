@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_mobile/property/icon.dart';
+import 'package:fyp_mobile/property/topbar.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -10,8 +12,13 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-   return const Scaffold(
-      body: Text("It is Home screen"),
+   return  Scaffold(
+      appBar:Topbar(),
+      body: Text("it is home screen for teacher"),
+
+
+
+
     );
   }
 }

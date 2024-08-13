@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/property/button.dart';
 import 'package:fyp_mobile/property/icon.dart';
+import 'package:fyp_mobile/property/topbar.dart';
 import 'package:http/http.dart' as http;
 
 class CustomRadioColor extends WidgetStateColor {
@@ -67,26 +68,7 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center, // Added this line
-          children: [
-            Uniicon(),
-            Text(
-              "UniTrack",
-              style: TextStyle(
-                color: Color(0xFF4a75a5),
-                fontSize: 24,
-                fontFamily: 'Roboto',
-                letterSpacing: -0.6,
-                height: 1.5,
-              ),
-            ),
-          ],
-        ),
-      ),
+      appBar:Topbar(),
       body: Padding(
         padding: const EdgeInsets.all(32),
         child: SingleChildScrollView(

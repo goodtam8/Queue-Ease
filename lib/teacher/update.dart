@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/property/icon.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
+import 'package:fyp_mobile/property/topbar.dart';
 import 'package:fyp_mobile/teacher/Home.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
 
@@ -34,26 +35,8 @@ class _UpdateState extends State<Update> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Uniicon(),
-            Text(
-              "UniTrack",
-              style: TextStyle(
-                color: Color(0xFF4a75a5),
-                fontSize: 24,
-                fontFamily: 'Roboto',
-                letterSpacing: -0.6,
-                height: 1.5,
-              ),
-            ),
-          ],
-        ),
-      ),
+      appBar: Topbar(),
+      
       body: TextButton(
         onPressed: () {
           globalNavigationBarKey.currentState?.updateIndex(0);

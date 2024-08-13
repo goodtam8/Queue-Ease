@@ -20,6 +20,7 @@ GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 class _LoginState extends State<Login> {
   
+  bool issecured=true;
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
   Future<dynamic> login() async {
@@ -43,6 +44,11 @@ class _LoginState extends State<Login> {
       print(e);
       return e.toString();
     }
+  }
+  void updatepasswordstate(){
+    setState(() {
+      issecured=!issecured;
+    });
   }
 
   Future<dynamic> studentlogin() async {
@@ -141,6 +147,8 @@ class _LoginState extends State<Login> {
                         height: 8.0,
                       ),
                       TextFormField(
+                        
+                        obscureText: issecured,
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Please enter your Password'; // Validation error message
@@ -148,9 +156,14 @@ class _LoginState extends State<Login> {
                           return null;
                         },
                         controller: password,
-                        decoration: const InputDecoration(
+                        decoration:  InputDecoration(
                             hintText: "Enter your Password",
-                            border: OutlineInputBorder()),
+                            border: OutlineInputBorder(),
+                            suffixIcon: TogglePassword()
+                            
+                            ),
+                            
+                            
                       ),
                       const SizedBox(
                         height: 15.0,
@@ -169,7 +182,7 @@ class _LoginState extends State<Login> {
                         Expanded(
                           child: TextButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, '/register');
+                                Navigator.pushNamed(context, '/stureg');
                               },
                               child: const Text(
                                 "Register as Student",
@@ -258,4 +271,9 @@ ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               )),
         ])));
   }
+  Widget TogglePassword(){
+    return IconButton(onPressed: updatepasswordstate, icon: issecured?Icon(Icons.visibility):Icon(Icons.visibility_off));
+  }
+
+
 }
