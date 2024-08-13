@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_mobile/student/Leave.dart';
+import 'package:fyp_mobile/student/Notification.dart';
+import 'package:fyp_mobile/student/StudentHome.dart';
+import 'package:fyp_mobile/student/StudentProfile.dart';
 import 'package:fyp_mobile/teacher/Home.dart';
 import 'package:fyp_mobile/teacher/analysis.dart';
 import 'package:fyp_mobile/teacher/calendar.dart';
@@ -42,12 +46,12 @@ class _NavigationState extends State<Navigation> {
             String userRole = snapshot.data!;
             return buildScaffold(userRole);
           } else if (snapshot.hasError) {
-            return Text('Error fetching token from storage');
+            return const Text('Error fetching token from storage');
           } else {
-            return Text('No token found in storage');
+            return const Text('No token found in storage');
           }
         } else {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
       },
     );
@@ -55,11 +59,13 @@ class _NavigationState extends State<Navigation> {
 
   Widget buildScaffold(String userRole) {
     List<Widget> pages = [
-      const Home(),
+      userRole == "teacher" ? Home():Studenthome(),
       const Calendar(),
-      const LeaveMan(),
-      const Analysis(),
-      if (userRole == "teacher") Teacher(onLogout: widget.onLogout),
+      userRole == "teacher" ? const Analysis() : noti(),
+      userRole == "teacher" ? LeaveMan() : Leave(),
+      userRole == "teacher"
+          ? Teacher(onLogout: widget.onLogout)
+          : Studentprofile(onLogout: widget.onLogout),
     ];
 
     return Scaffold(
@@ -69,27 +75,29 @@ class _NavigationState extends State<Navigation> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(
-                userRole == "teacher" ? Icons.home : Icons.school_outlined,
+                 Icons.home ,
                 color: Colors.blue),
-            label: 'Home',
+            label: '',
           ),
           const BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month, color: Colors.blue),
-            label: 'Calendar',
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+                userRole == "teacher" ? Icons.bar_chart : Icons.notifications,
+                color: Colors.blue),
+            label: '',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.man, color: Colors.blue),
-            label: 'Leave',
+            icon: Icon(Icons.check_box, color: Colors.blue),
+            label: '',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.pie_chart, color: Colors.blue),
-            label: 'Analysis',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.file_copy_rounded, color: Colors.blue),
-            label: 'Profile',
+            icon: Icon(Icons.account_box, color: Colors.blue),
+            label: '',
           ),
         ],
         currentIndex: currentPageIndex,
