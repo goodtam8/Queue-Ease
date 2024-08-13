@@ -5,11 +5,13 @@ import 'package:fyp_mobile/property/button.dart';
 import 'package:fyp_mobile/property/icon.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 final storage = new FlutterSecureStorage();
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+ final VoidCallback onLogin;
 
+  const Login ({super.key, required this.onLogin});
   @override
   State<Login> createState() => _LoginState();
 }
@@ -34,8 +36,7 @@ class _LoginState extends State<Login> {
       await storage.write(key: 'jwt', value: response.body);
       await storage.write(key: 'role', value: "teacher");
 
-
-String? token = await storage.read(key: 'jwt');
+      String? token = await storage.read(key: 'jwt');
       print("$token");
       return (response.statusCode);
     } catch (e) {
@@ -43,8 +44,6 @@ String? token = await storage.read(key: 'jwt');
       return e.toString();
     }
   }
-  
-
 
   Future<dynamic> studentlogin() async {
     Map<String, dynamic> data = {
@@ -60,8 +59,7 @@ String? token = await storage.read(key: 'jwt');
       await storage.write(key: 'jwt', value: response.body);
       await storage.write(key: 'role', value: "student");
 
-
-String? token = await storage.read(key: 'jwt');
+      String? token = await storage.read(key: 'jwt');
       return (response.statusCode);
     } catch (e) {
       print(e);
@@ -114,6 +112,7 @@ String? token = await storage.read(key: 'jwt');
                         height: 8.0,
                       ),
                       TextFormField(
+                        
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Please enter your Username'; // Validation error message
@@ -124,8 +123,12 @@ String? token = await storage.read(key: 'jwt');
                         },
                         controller: username,
                         decoration: const InputDecoration(
+                        
                             hintText: "Enter your Username",
-                            border: OutlineInputBorder()),
+                            border: OutlineInputBorder(
+                              borderSide: 
+                              BorderSide(color: Color(0xFF4a75a5))
+                            )),
                       ),
                       const SizedBox(
                         height: 15.0,
@@ -174,26 +177,81 @@ String? token = await storage.read(key: 'jwt');
                               )),
                         )
                       ]),
-                    
-                    
-                         Styled_button(
-                              onPressed: () async {
-                                var response = await login();
-                            
-                                  Navigator.pushReplacementNamed(context, '/tea');
-
-                                
-                              },
-                              child: const Text('Login as Teacher')),
-                      
-                       
-             
                       Styled_button(
-                              onPressed: () async {
-                                var response = await login();
-                              },
-                              child: const Text('Login as Student')),
-                     
+                          onPressed: () async {
+                            var response = await login();
+                            if (response == 401) {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                      behavior: SnackBarBehavior.floating,
+                                      backgroundColor: Colors.transparent,
+                                      elevation: 0,
+                                      content: Container(
+                                        padding: const EdgeInsets.all(16),
+                                        height: 90,
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                          color: Colors.red,
+                                        ),
+                                        child: const Row(children: [
+                                          SizedBox(
+                                            width: 48.0,
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                    "Your userid or password is wrong. Please try again")
+                                              ],
+                                            ),
+                                          ),
+                                        ]),
+                                      )));
+                            } else {
+                              widget.onLogin();
+                            }
+                          },
+                          child: const Text('Login as Teacher')),
+                      Styled_button(
+                          onPressed: () async {
+                            var response = await studentlogin();
+                            if(response==401){
+ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Colors.transparent,
+                            elevation: 0,
+                            content: Container(
+                              padding: const EdgeInsets.all(16),
+                              height: 90,
+                              decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20)),
+                                color: Colors.red,
+                              ),
+                              child: const Row(children: [
+                                SizedBox(
+                                  width: 48.0,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      Text("Your userid or password is wrong. Please try again")
+                                    ],
+                                  ),
+                                ),
+                              ]),
+                            
+                            )
+                            )
+                            );
+                            }
+                            else{
+
+                              widget.onLogin();
+                            }
+                          },
+                          child: const Text('Login as Student')),
                     ],
                   ),
                 ),

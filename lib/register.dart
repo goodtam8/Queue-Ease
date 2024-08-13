@@ -291,7 +291,10 @@ class _RegisterState extends State<Register> {
                                   ),
                                 ),
                               ]),
-                            )));
+                            
+                            )
+                            )
+                            );
                       }
                     },
                     child: const Text("Register"))

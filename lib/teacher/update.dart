@@ -12,6 +12,25 @@ class Update extends StatefulWidget {
 }
 
 class _UpdateState extends State<Update> {
+  int? currentIndex = globalNavigationBarKey.currentState?.currentPageIndex;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void _handleIndexChange(int newIndex) {
+    print(currentIndex);
+    if (globalNavigationBarKey.currentState?.currentPageIndex != currentIndex) {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +38,7 @@ class _UpdateState extends State<Update> {
         backgroundColor: Colors.white,
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center, // Added this line
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Uniicon(),
             Text(
@@ -36,16 +55,16 @@ class _UpdateState extends State<Update> {
         ),
       ),
       body: TextButton(
-          onPressed: () {
-            globalNavigationBarKey.currentState?.updateIndex(0);
-            Navigator.of(context).pop();
-              print("${globalNavigationBarKey.currentState}");
-            print("I am here");
-          },
-          child: Text(
-            "Now in update and would like to go back to home screen",
-            style: TextStyle(color: Colors.red),
-          )),
+        onPressed: () {
+          //globalNavigationBarKey.currentState?.updateIndex(0);
+          Navigator.of(context).pop();
+          
+        },
+        child: const Text(
+          "Now in update and would like to go back to home screen",
+          style: TextStyle(color: Colors.red),
+        ),
+      ),
     );
   }
 }

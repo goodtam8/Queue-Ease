@@ -10,7 +10,9 @@ import 'package:fyp_mobile/property/navgationbar.dart';
 import 'package:fyp_mobile/teacher/update.dart';
 
 class Teacher extends StatefulWidget {
-  const Teacher({super.key});
+  final VoidCallback onLogout;
+
+  const Teacher({Key? key, required this.onLogout}) : super(key: key);
 
   @override
   State<Teacher> createState() => _TeacherState();
@@ -28,7 +30,7 @@ class _TeacherState extends State<Teacher> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
- appBar: AppBar(
+      appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -47,8 +49,8 @@ class _TeacherState extends State<Teacher> {
             ),
           ],
         ),
-      ), 
-           backgroundColor: Colors.white,
+      ),
+      backgroundColor: Colors.white,
       body: FutureBuilder<String?>(
         future: _tokenValue,
         builder: (context, snapshot) {
@@ -56,9 +58,7 @@ class _TeacherState extends State<Teacher> {
             return Center(
               child: TextButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Update(),
-                  ));
+                  Navigator.of(context).pushNamed('/update');
                 },
                 child: Text("Update"),
               ),
@@ -70,21 +70,35 @@ class _TeacherState extends State<Teacher> {
               child: Column(
                 children: [
                   TextButton(
-                       onPressed: () {
-                  Navigator.push(
-
-              context,
-              MaterialPageRoute(
-                builder: (context) => Update(),//passing a parameter
-              ),
-
-            );
-                },
+                      onPressed: () {
+                        
+                       
+                          if (context != null) {
+                            print("hi");
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>  Update(),
+                              ),
+                            );
+                          } else {
+                            print('Context is null');
+                          }
+                        
+                      },
                       child: Text(
                         "Update",
                         style: TextStyle(color: Colors.red),
-                      )
-                      ),
+                      )),
+                  TextButton(
+                      onPressed: () async {
+                        await storage.deleteAll();
+                        widget.onLogout(); // Call the logout callback
+                      },
+                      child: Text(
+                        "Log out",
+                        style: TextStyle(color: Colors.red),
+                      )),
                 ],
               ),
             );
