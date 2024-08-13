@@ -41,6 +41,7 @@ class _MyAppState extends State<MyApp> {
       home: isLoggedIn ? Navigation(onLogout: logout, key: globalNavigationBarKey,) : Login(onLogin: login),
       routes: 
 {
+  '/login':(context)=> Login(onLogin: login),
       '/register':(context)=>const Register() ,
 
       '/home':(context)=>const Home(),

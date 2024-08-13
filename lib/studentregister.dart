@@ -39,6 +39,7 @@ class Studentregister_state extends State<Studentregister> {
   List<String> gender = ["Men", "Women"];
   String currentOption = "Men";
 
+
   Future<dynamic> submitregister() async {
     if (_formKey.currentState!.validate()) {
       Map<String, dynamic> data = {
@@ -86,7 +87,7 @@ class Studentregister_state extends State<Studentregister> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'Staff ID',
+                  'Student ID',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
@@ -139,24 +140,25 @@ class Studentregister_state extends State<Studentregister> {
                   height: 8.0,
                 ),
                 Container(
-  decoration: BoxDecoration(
-    border: Border.all(color: Colors.grey), // Add border styling here
-    borderRadius: BorderRadius.circular(5.0), // Optional: Add border radius for rounded corners
-  ),
-  child: DropdownButton<int>(
-    items: [
-      DropdownMenuItem<int>(value: 2021, child: Text("2021")),
-      DropdownMenuItem<int>(value: 2022, child: Text("2022")),
-      DropdownMenuItem<int>(value: 2023, child: Text("2023")),
-      DropdownMenuItem<int>(value: 2024, child: Text("2024")),
-    ],
-    onChanged: dropdowncallback,
-    value: year,
-    isExpanded: true,
-    underline: Container(), // Remove default underline
-  ),
-)
-,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                        color: Colors.grey), // Add border styling here
+                    borderRadius: BorderRadius.circular(
+                        5.0), // Optional: Add border radius for rounded corners
+                  ),
+                  child: DropdownButton<int>(
+                    items: [
+                      DropdownMenuItem<int>(value: 2021, child: Text("2021")),
+                      DropdownMenuItem<int>(value: 2022, child: Text("2022")),
+                      DropdownMenuItem<int>(value: 2023, child: Text("2023")),
+                      DropdownMenuItem<int>(value: 2024, child: Text("2024")),
+                    ],
+                    onChanged: dropdowncallback,
+                    value: year,
+                    isExpanded: true,
+                    underline: Container(), // Remove default underline
+                  ),
+                ),
                 const SizedBox(
                   height: 15.0,
                 ),
@@ -288,6 +290,25 @@ class Studentregister_state extends State<Studentregister> {
                                 ),
                               ]),
                             )));
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("Login Success"),
+                            content:
+                                Text("Now let's get back to the home page"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+  Navigator.pop(context);
+    Navigator.pop(context);
+
+},
+                                child: Text("ok"),
+                              ),
+                            ],
+                          ),
+                        );
                       }
                     },
                     child: const Text("Register"))
