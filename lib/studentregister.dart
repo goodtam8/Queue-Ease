@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fyp_mobile/property/button.dart';
 import 'package:fyp_mobile/property/icon.dart';
 import 'package:fyp_mobile/property/topbar.dart';
@@ -38,6 +39,52 @@ class Studentregister_state extends State<Studentregister> {
 
   List<String> gender = ["Men", "Women"];
   String currentOption = "Men";
+SnackBar errosnack(){
+  return SnackBar(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        content: Container(
+          padding: const EdgeInsets.all(16),
+          height: 90,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            color: Colors.red,
+          ),
+          child: const Row(children: [
+            SizedBox(
+              width: 48.0,
+            ),
+            Expanded(
+              child: Column(
+                children: [Text("You have already register")],
+              ),
+            ),
+          ]),
+        ));
+}
+
+
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> errorsnackbar() {
+    return ScaffoldMessenger.of(context).showSnackBar(errosnack());
+  }
+
+  Widget textfield(TextEditingController control, String field) {
+    return TextFormField(
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter your $field'; // Validation error message
+        } else if (int.tryParse(value) == null) {
+          return 'Please input a valid $field';
+        }
+        return null; // Return null if the input is valid
+      },
+      controller: control,
+      decoration: InputDecoration(
+          hintText: "Enter your $field", border: const OutlineInputBorder()),
+    );
+  }
+
 
 
   Future<dynamic> submitregister() async {
@@ -93,20 +140,7 @@ class Studentregister_state extends State<Studentregister> {
                 const SizedBox(
                   height: 8.0,
                 ),
-                TextFormField(
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter your Student ID'; // Validation error message
-                    } else if (int.tryParse(value) == null) {
-                      return 'Please input a valid Student ID';
-                    }
-                    return null; // Return null if the input is valid
-                  },
-                  controller: sid,
-                  decoration: const InputDecoration(
-                      hintText: "Enter your Student ID",
-                      border: OutlineInputBorder()),
-                ),
+                textfield(sid, 'Student ID'),
                 const SizedBox(
                   height: 15.0,
                 ),
@@ -117,18 +151,7 @@ class Studentregister_state extends State<Studentregister> {
                 const SizedBox(
                   height: 8.0,
                 ),
-                TextFormField(
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter your Name'; // Validation error message
-                    }
-                    return null;
-                  },
-                  controller: name,
-                  decoration: const InputDecoration(
-                      hintText: "Enter your Name",
-                      border: OutlineInputBorder()),
-                ),
+                textfield(name, 'Name'),
                 const SizedBox(
                   height: 15.0,
                 ),
@@ -169,20 +192,7 @@ class Studentregister_state extends State<Studentregister> {
                 const SizedBox(
                   height: 8.0,
                 ),
-                TextFormField(
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter your Phone Number'; // Validation error message
-                    } else if (int.tryParse(value) == null) {
-                      return 'Please input a valid Phone Number ';
-                    }
-                    return null;
-                  },
-                  controller: phone_num,
-                  decoration: const InputDecoration(
-                      hintText: "Enter your Phone Number",
-                      border: OutlineInputBorder()),
-                ),
+                textfield(phone_num, 'Phone Number'),
                 const SizedBox(
                   height: 15.0,
                 ),
@@ -193,18 +203,7 @@ class Studentregister_state extends State<Studentregister> {
                 const SizedBox(
                   height: 8.0,
                 ),
-                TextFormField(
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter your Password'; // Validation error message
-                    }
-                    return null;
-                  },
-                  controller: password,
-                  decoration: const InputDecoration(
-                      hintText: "Enter your Password",
-                      border: OutlineInputBorder()),
-                ),
+                textfield(password, 'Password'),
                 const SizedBox(
                   height: 15.0,
                 ),
@@ -262,34 +261,10 @@ class Studentregister_state extends State<Studentregister> {
                 ),
                 Styled_button(
                     onPressed: () async {
+                      if( _formKey.currentState!.validate()){
                       var registermessage = await submitregister();
-                      if (registermessage != 201 &&
-                          _formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Colors.transparent,
-                            elevation: 0,
-                            content: Container(
-                              padding: const EdgeInsets.all(16),
-                              height: 90,
-                              decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                                color: Colors.red,
-                              ),
-                              child: const Row(children: [
-                                SizedBox(
-                                  width: 48.0,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text("You have already register")
-                                    ],
-                                  ),
-                                ),
-                              ]),
-                            )));
+                      if (registermessage != 201) {
+                        errorsnackbar();
                       } else {
                         showDialog(
                           context: context,
@@ -300,16 +275,15 @@ class Studentregister_state extends State<Studentregister> {
                             actions: [
                               TextButton(
                                 onPressed: () {
-  Navigator.pop(context);
-    Navigator.pop(context);
-
-},
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                },
                                 child: Text("ok"),
                               ),
                             ],
                           ),
                         );
-                      }
+                      }}
                     },
                     child: const Text("Register"))
               ],

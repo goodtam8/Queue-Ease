@@ -278,6 +278,26 @@ class _RegisterState extends State<Register> {
                             )
                             );
                       }
+                       else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("Login Success"),
+                            content:
+                                Text("Now let's get back to the home page"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+  Navigator.pop(context);
+    Navigator.pop(context);
+
+},
+                                child: Text("ok"),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
                     },
                     child: const Text("Register"))
               ],
