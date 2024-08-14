@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart'; // Assuming storage is defined here
+import 'package:fyp_mobile/property/button.dart';
 import 'package:fyp_mobile/property/icon.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
 import 'package:fyp_mobile/property/topbar.dart';
@@ -9,6 +10,7 @@ import 'package:fyp_mobile/teacher/calendar.dart';
 import 'package:fyp_mobile/teacher/leave_man.dart'; // Assuming storage is defined here
 import 'package:fyp_mobile/property/navgationbar.dart';
 import 'package:fyp_mobile/teacher/update.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class Teacher extends StatefulWidget {
   final VoidCallback onLogout;
@@ -31,7 +33,7 @@ class _TeacherState extends State<Teacher> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:Topbar(),
+      appBar: const Topbar(),
       backgroundColor: Colors.white,
       body: FutureBuilder<String?>(
         future: _tokenValue,
@@ -42,41 +44,79 @@ class _TeacherState extends State<Teacher> {
                 onPressed: () {
                   Navigator.of(context).pushNamed('/update');
                 },
-                child: Text("Update"),
+                child: const Text("Update"),
               ),
             );
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
+            Map<String, dynamic> decodedToken =
+                JwtDecoder.decode(snapshot.data as String);
+            // Now you can use your decoded token
+
             return Center(
               child: Column(
                 children: [
-                  TextButton(
-                      onPressed: () {
-                        
-                       
-                          print("hi");
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>  Update(),
-                            ),
-                          );
-                                                
-                      },
-                      child: Text(
-                        "Update",
-                        style: TextStyle(color: Colors.red),
-                      )),
-                  TextButton(
+                  const CircleAvatar(
+                    radius: 64,
+                    backgroundImage: AssetImage('assets/user.png'),
+                  ),
+                  Text(
+                    "${decodedToken["name"]}",
+                    style:
+                        const TextStyle(fontWeight: FontWeight.bold, fontSize: 50.0),
+                  ),
+                  Text("${decodedToken["email"]}",
+                      style: const TextStyle(
+                          decoration: TextDecoration.underline,
+                          fontSize: 15.0)),
+                  SizedBox(
+                    width: 150.0,
+                    child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed('/update');
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF4a75a5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                                0), // Set borderRadius to 0 for rectangle shape
+                          ),
+                        ),
+                        child: DefaultTextStyle.merge(
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          child: const Text("Edit Profile"),
+                        )),
+                  ),
+                  const SizedBox(
+                    height: 300.0,
+                  ),
+                  SizedBox(
+                    width: 300.0,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.black,
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(0),
+                          side: const BorderSide(
+                              color: Colors.black,
+                              width: 1), // Add black border
+                        ),
+                      ),
                       onPressed: () async {
                         await storage.deleteAll();
-                        widget.onLogout(); // Call the logout callback
+                        widget.onLogout();
                       },
-                      child: Text(
+                      child: const Text(
                         "Log out",
-                        style: TextStyle(color: Colors.red),
-                      )),
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  )
                 ],
               ),
             );

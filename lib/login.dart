@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:fyp_mobile/property/button.dart';
 import 'package:fyp_mobile/property/icon.dart';
 import 'package:http/http.dart' as http;
@@ -9,9 +10,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 final storage = new FlutterSecureStorage();
 
 class Login extends StatefulWidget {
- final VoidCallback onLogin;
+  final VoidCallback onLogin;
 
-  const Login ({super.key, required this.onLogin});
+  const Login({super.key, required this.onLogin});
   @override
   State<Login> createState() => _LoginState();
 }
@@ -19,8 +20,7 @@ class Login extends StatefulWidget {
 GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 class _LoginState extends State<Login> {
-  
-  bool issecured=true;
+  bool issecured = true;
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
   Future<dynamic> login() async {
@@ -45,10 +45,86 @@ class _LoginState extends State<Login> {
       return e.toString();
     }
   }
-  void updatepasswordstate(){
+
+  void updatepasswordstate() {
     setState(() {
-      issecured=!issecured;
+      issecured = !issecured;
     });
+  }
+
+  Widget registerbutton(String type) {
+    return Expanded(
+      child: TextButton(
+          onPressed: () {
+            if (type == "teacher") {
+              Navigator.pushNamed(context, '/register');
+            } else {
+              Navigator.pushNamed(context, '/stureg');
+            }
+          },
+          child: Text(
+            "Register as $type",
+            style: const TextStyle(color: Colors.blue),
+          )),
+    );
+  }
+
+  Widget loginbutton(String type) {
+    return Styled_button(
+        onPressed: () async {
+          late var response;
+          if (type == "Student") {
+            response = await studentlogin();
+          } else {
+            response = await login();
+          }
+          if (response == 401) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                content: Container(
+                  padding: const EdgeInsets.all(16),
+                  height: 90,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Colors.red,
+                  ),
+                  child: const Row(children: [
+                    SizedBox(
+                      width: 48.0,
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text(
+                              "Your userid or password is wrong. Please try again")
+                        ],
+                      ),
+                    ),
+                  ]),
+                )));
+          } else {
+            widget.onLogin();
+          }
+        },
+        child: Text('Login as $type'));
+  }
+
+  Widget inputtext(TextEditingController control, String field) {
+    return TextFormField(
+      validator: (value) {
+        if (value!.isEmpty) {
+          return 'Please enter your $field'; // Validation error message
+        } else if (int.tryParse(value) == null) {
+          return 'Please input a valid $field';
+        }
+        return null; // Return null if the input is valid
+      },
+      controller: control,
+      decoration: InputDecoration(
+          hintText: "Enter your $field", border: const OutlineInputBorder()),
+    );
   }
 
   Future<dynamic> studentlogin() async {
@@ -117,25 +193,7 @@ class _LoginState extends State<Login> {
                       const SizedBox(
                         height: 8.0,
                       ),
-                      TextFormField(
-                        
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter your Username'; // Validation error message
-                          } else if (int.tryParse(value) == null) {
-                            return 'Please input a valid Username';
-                          }
-                          return null; // Return null if the input is valid
-                        },
-                        controller: username,
-                        decoration: const InputDecoration(
-                        
-                            hintText: "Enter your Username",
-                            border: OutlineInputBorder(
-                              borderSide: 
-                              BorderSide(color: Color(0xFF4a75a5))
-                            )),
-                      ),
+                      inputtext(username, "Username"),
                       const SizedBox(
                         height: 15.0,
                       ),
@@ -146,134 +204,26 @@ class _LoginState extends State<Login> {
                       const SizedBox(
                         height: 8.0,
                       ),
-                      TextFormField(
-                        
-                        obscureText: issecured,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter your Password'; // Validation error message
-                          }
-                          return null;
-                        },
-                        controller: password,
-                        decoration:  InputDecoration(
-                            hintText: "Enter your Password",
-                            border: OutlineInputBorder(),
-                            suffixIcon: TogglePassword()
-                            
-                            ),
-                            
-                            
-                      ),
+                      inputtext(password, "Password"),
                       const SizedBox(
                         height: 15.0,
                       ),
                       Row(children: [
-                        Expanded(
-                          child: TextButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/register');
-                              },
-                              child: const Text(
-                                "Register as teacher",
-                                style: TextStyle(color: Colors.blue),
-                              )),
-                        ),
-                        Expanded(
-                          child: TextButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/stureg');
-                              },
-                              child: const Text(
-                                "Register as Student",
-                                style: TextStyle(color: Colors.blue),
-                              )),
-                        )
+                        registerbutton("teacher"),
+                        registerbutton("student")
                       ]),
-                      Styled_button(
-                          onPressed: () async {
-                            var response = await login();
-                            if (response == 401) {
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                      behavior: SnackBarBehavior.floating,
-                                      backgroundColor: Colors.transparent,
-                                      elevation: 0,
-                                      content: Container(
-                                        padding: const EdgeInsets.all(16),
-                                        height: 90,
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20)),
-                                          color: Colors.red,
-                                        ),
-                                        child: const Row(children: [
-                                          SizedBox(
-                                            width: 48.0,
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              children: [
-                                                Text(
-                                                    "Your userid or password is wrong. Please try again")
-                                              ],
-                                            ),
-                                          ),
-                                        ]),
-                                      )));
-                            } else {
-                              widget.onLogin();
-                            }
-                          },
-                          child: const Text('Login as Teacher')),
-                      Styled_button(
-                          onPressed: () async {
-                            var response = await studentlogin();
-                            if(response==401){
-ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Colors.transparent,
-                            elevation: 0,
-                            content: Container(
-                              padding: const EdgeInsets.all(16),
-                              height: 90,
-                              decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                                color: Colors.red,
-                              ),
-                              child: const Row(children: [
-                                SizedBox(
-                                  width: 48.0,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Text("Your userid or password is wrong. Please try again")
-                                    ],
-                                  ),
-                                ),
-                              ]),
-                            
-                            )
-                            )
-                            );
-                            }
-                            else{
-
-                              widget.onLogin();
-                            }
-                          },
-                          child: const Text('Login as Student')),
+                      loginbutton("Teacher"),
+                      loginbutton("Student"),
                     ],
                   ),
                 ),
               )),
         ])));
   }
-  Widget TogglePassword(){
-    return IconButton(onPressed: updatepasswordstate, icon: issecured?Icon(Icons.visibility):Icon(Icons.visibility_off));
+
+  Widget TogglePassword() {
+    return IconButton(
+        onPressed: updatepasswordstate,
+        icon: issecured ? Icon(Icons.visibility) : Icon(Icons.visibility_off));
   }
-
-
 }

@@ -69,11 +69,13 @@ class _NavigationState extends State<Navigation> {
     ];
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: IndexedStack(
         index: currentPageIndex,
         children: pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
         items: [
           const BottomNavigationBarItem(
             icon: Icon(
