@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart'; // Assuming storage is defined here
 import 'package:fyp_mobile/property/topbar.dart';
+import 'package:fyp_mobile/property/utils.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 import 'package:jwt_decoder/jwt_decoder.dart';
 class personal {
@@ -54,12 +57,20 @@ class Teacher extends StatefulWidget {
 
 class _TeacherState extends State<Teacher> {
   late Future<String?> _tokenValue;
-
+Uint8List? _image;
   @override
   void initState() {
     _tokenValue = storage.read(key: 'jwt');
     super.initState();
   }
+void selectimage()async{
+  Uint8List img=await pickimage(ImageSource.gallery);
+  setState(() {
+      _image=img;
+
+  });
+}
+
 
   Future<personal> getuserinfo(String objectid) async {
 
@@ -108,9 +119,18 @@ class _TeacherState extends State<Teacher> {
  return Center(
               child: Column(
                 children: [
-                  const CircleAvatar(
-                    radius: 64,
-                    backgroundImage: AssetImage('assets/user.png'),
+                  Stack(
+                    children: [_image!=null?   CircleAvatar(
+                      radius: 64,
+                      backgroundImage: MemoryImage(_image!),
+                    ): const CircleAvatar(
+                      radius: 64,
+                      backgroundImage: AssetImage('assets/user.png'),
+                    ),
+                    Positioned(bottom: -10,left: 80,child: IconButton(onPressed: selectimage,icon:const Icon(Icons.add_a_photo))
+                    ,)
+                    ],
+                    
                   ),
                   Text(
                     data.name,
