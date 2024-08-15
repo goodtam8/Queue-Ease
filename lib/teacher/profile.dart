@@ -9,13 +9,13 @@ import 'package:fyp_mobile/teacher/analysis.dart';
 import 'package:fyp_mobile/teacher/calendar.dart';
 import 'package:fyp_mobile/teacher/leave_man.dart'; // Assuming storage is defined here
 import 'package:fyp_mobile/property/navgationbar.dart';
-import 'package:fyp_mobile/teacher/update.dart';
+import 'package:fyp_mobile/teacher/backhome.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class Teacher extends StatefulWidget {
   final VoidCallback onLogout;
 
-  const Teacher({Key? key, required this.onLogout}) : super(key: key);
+  const Teacher({super.key, required this.onLogout});
 
   @override
   State<Teacher> createState() => _TeacherState();

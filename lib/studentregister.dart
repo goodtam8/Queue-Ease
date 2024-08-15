@@ -74,7 +74,7 @@ SnackBar errosnack(){
       validator: (value) {
         if (value!.isEmpty) {
           return 'Please enter your $field'; // Validation error message
-        } else if (int.tryParse(value) == null) {
+        } else if (int.tryParse(value) == null&&(field=="Student ID"||field=="Phone Number")) {
           return 'Please input a valid $field';
         }
         return null; // Return null if the input is valid
@@ -170,7 +170,7 @@ SnackBar errosnack(){
                         5.0), // Optional: Add border radius for rounded corners
                   ),
                   child: DropdownButton<int>(
-                    items: [
+                    items: const [
                       DropdownMenuItem<int>(value: 2021, child: Text("2021")),
                       DropdownMenuItem<int>(value: 2022, child: Text("2022")),
                       DropdownMenuItem<int>(value: 2023, child: Text("2023")),

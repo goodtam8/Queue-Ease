@@ -5,14 +5,14 @@ import 'package:fyp_mobile/property/topbar.dart';
 import 'package:fyp_mobile/teacher/Home.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
 
-class Update extends StatefulWidget {
-  const Update({super.key});
+class Backhome extends StatefulWidget {
+  const Backhome({super.key});
 
   @override
-  State<Update> createState() => _UpdateState();
+  State<Backhome> createState() => _backhome();
 }
 
-class _UpdateState extends State<Update> {
+class _backhome extends State<Backhome> {
   int? currentIndex = globalNavigationBarKey.currentState?.currentPageIndex;
 
   @override
@@ -41,6 +41,7 @@ class _UpdateState extends State<Update> {
         onPressed: () {
           globalNavigationBarKey.currentState?.updateIndex(0);
           Navigator.of(context).pop();
+
           
         },
         child: const Text(

@@ -9,7 +9,7 @@ import 'package:fyp_mobile/teacher/calendar.dart';
 import 'package:fyp_mobile/teacher/leave_man.dart';
 import 'package:fyp_mobile/teacher/profile.dart';
 import 'package:fyp_mobile/login.dart';
-import 'package:fyp_mobile/teacher/update.dart';
+import 'package:fyp_mobile/teacher/backhome.dart';
 
 class Navigation extends StatefulWidget {
   final VoidCallback onLogout;

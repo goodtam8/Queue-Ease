@@ -6,8 +6,9 @@ import 'package:fyp_mobile/studentregister.dart';
 import 'package:fyp_mobile/teacher/Home.dart';
 import 'package:fyp_mobile/teacher/analysis.dart';
 import 'package:fyp_mobile/teacher/calendar.dart';
+import 'package:fyp_mobile/teacher/editteacherprofile.dart';
 import 'package:fyp_mobile/teacher/leave_man.dart';
-import 'package:fyp_mobile/teacher/update.dart';
+import 'package:fyp_mobile/teacher/backhome.dart';
 
 void main() {
   runApp(MyApp());
@@ -48,7 +49,7 @@ class _MyAppState extends State<MyApp> {
       '/leave':(context)=>const LeaveMan(),
       '/calendar':(context)=>const Calendar(),
       '/analysis':(context)=>const Analysis(),
-      '/update':(context)=>const Update(),
+      '/update':(context)=>const Editteacherprofile(),
       '/stureg':(context)=>const Studentregister()
       
     

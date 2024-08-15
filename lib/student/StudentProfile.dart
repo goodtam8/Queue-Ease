@@ -8,7 +8,7 @@ import 'package:fyp_mobile/teacher/analysis.dart';
 import 'package:fyp_mobile/teacher/calendar.dart';
 import 'package:fyp_mobile/teacher/leave_man.dart'; // Assuming storage is defined here
 import 'package:fyp_mobile/property/navgationbar.dart';
-import 'package:fyp_mobile/teacher/update.dart';
+import 'package:fyp_mobile/teacher/backhome.dart';
 
 class Studentprofile extends StatefulWidget {
   final VoidCallback onLogout;
@@ -55,17 +55,17 @@ class Studentprofile_state extends State<Studentprofile> {
                       onPressed: () {
                         
                        
-                          if (context != null) {
-                            print("hi");
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>  Update(),
-                              ),
-                            );
-                          } else {
-                            print('Context is null');
-                          }
+                          // if (context != null) {
+                          //   print("hi");
+                          //   Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       builder: (context) =>  Update(),
+                          //     ),
+                          //   );
+                          // } else {
+                          //   print('Context is null');
+                          // }
                         
                       },
                       child: Text(
