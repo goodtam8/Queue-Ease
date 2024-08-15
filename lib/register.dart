@@ -47,6 +47,7 @@ class _RegisterState extends State<Register> {
         'pw': password.text,
         'gender': currentOption,
         'phone': int.parse(phone_num.text),
+        'email':email.text
       };
       try {
         var response = await http.post(
