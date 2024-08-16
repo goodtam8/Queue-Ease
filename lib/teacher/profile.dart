@@ -3,10 +3,14 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart'; // Assuming storage is defined here
+import 'package:fyp_mobile/property/button.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:fyp_mobile/property/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
+import 'dart:typed_data';
 
 import 'package:jwt_decoder/jwt_decoder.dart';
 class personal {
@@ -78,9 +82,55 @@ void selectimage()async{
         Uri.parse('http://10.0.2.2:3000/api/teacher/$objectid'),
         headers: {'Content-Type': 'application/json'});
 
-    print(response.body);
     return await parsepersonal(response.body);
+    
   }
+String getImageType(Uint8List imageData) {
+  if (imageData.lengthInBytes < 3) {
+    return 'Unknown';
+  }
+  
+  if (imageData[0] == 0xFF && imageData[1] == 0xD8) {
+    return 'jpg';
+  } else if (imageData[0] == 0x89 && imageData[1] == 0x50 && imageData[2] == 0x4E && imageData[3] == 0x47) {
+    return 'png';
+  } else if (imageData[0] == 0x47 && imageData[1] == 0x49 && imageData[2] == 0x46) {
+    return 'gif';
+  } else {
+    return 'Unknown';
+  }
+}
+
+void uploadImage(Uint8List imageData) async {
+  var request = http.MultipartRequest('POST', Uri.parse('http://10.0.2.2:3000/api/upload'));
+  
+  var fileStream = http.ByteStream.fromBytes(imageData);
+  var length = imageData.lengthInBytes;
+  var mimeType = 'image/jpeg';
+  
+  var multipartFile = http.MultipartFile(
+    'file',  // Make sure this matches the field name expected by your server
+    fileStream,
+    length,
+    filename: 'image.${getImageType(imageData)}',
+    contentType: MediaType.parse(mimeType)
+  );
+  
+  request.files.add(multipartFile);
+  
+  var response = await request.send();
+  
+  if (response.statusCode == 200) {
+    print('Image uploaded successfully');
+    // You might want to read the response body here
+    String responseBody = await response.stream.bytesToString();
+    print(responseBody);
+  } else {
+    print('Failed to upload image. Status code: ${response.statusCode}');
+    String responseBody = await response.stream.bytesToString();
+    print('Response body: $responseBody');
+  }
+}
 
 
   @override
@@ -128,10 +178,15 @@ void selectimage()async{
                       backgroundImage: AssetImage('assets/user.png'),
                     ),
                     Positioned(bottom: -10,left: 80,child: IconButton(onPressed: selectimage,icon:const Icon(Icons.add_a_photo))
-                    ,)
+                    ,),
+                  
                     ],
+                  
                     
                   ),
+                    TextButton(onPressed:(){ 
+                      
+                      uploadImage(_image!);}, child: const Text("Save Image")),
                   Text(
                     data.name,
                     style:
@@ -163,7 +218,7 @@ void selectimage()async{
                         )),
                   ),
                   const SizedBox(
-                    height: 300.0,
+                    height: 270.0,
                   ),
                   SizedBox(
                     width: 300.0,
