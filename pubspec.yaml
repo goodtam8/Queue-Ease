@@ -66,6 +66,28 @@ flutter:
   assets:
      - assets/img/university.png
      - assets/user.png
+     - assets/cold.gif
+     - assets/firer.gif
+     - assets/firey.gif
+     - assets/frost.gif
+     - assets/landslip.gif
+     - assets/ntfl.gif
+     - assets/raina.gif
+     - assets/rainb.gif
+     - assets/rainr.gif
+     - assets/sms.gif
+     - assets/tc1.gif
+     - assets/tc3.gif
+     - assets/tc8b.gif
+     - assets/tc8c.gif
+     - assets/tc8d.gif
+     - assets/tc8ne.gif
+     - assets/tc9.gif
+     - assets/tc10.gif
+     - assets/ts.gif
+     - assets/tsunami-warn.gif
+     
+
     
 
   # An image asset can refer to one or more resolution-specific "variants", see

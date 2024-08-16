@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:fyp_mobile/login.dart';
+import 'package:fyp_mobile/property/warningsignal.dart';
+import 'package:fyp_mobile/property/warningsignalicon.dart';
 import 'package:fyp_mobile/property/weather.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -55,28 +57,22 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   late Future<String?> _tokenValue;
 
-  String timeformatting(DateTime now){
+  String timeformatting(DateTime now) {
     late String day;
     late String month;
-    if (now.day<10){
-      day="0+${now.day.toString()}";
+    if (now.day < 10) {
+      day = "0+${now.day.toString()}";
+    } else {
+      day = now.day.toString();
+    }
+    if (now.month < 10) {
+      month = "0${now.month.toString()}";
+    } else {
+      month = now.month.toString();
+    }
+    String formatted = now.year.toString() + month + day;
 
-    }
-    else{
-      day=now.day.toString();
-    }
-     if (now.month<10){
-      month="0${now.month.toString()}";
-
-    }
-    else{
-      month=now.month.toString();
-    }
-    String formatted=now.year.toString()+month+day;
-  
-  return formatted;
-    
-
+    return formatted;
   }
 
   @override
@@ -101,17 +97,17 @@ class _HomeState extends State<Home> {
 
     return parseWeatherForecast(response.body);
   }
-  Future<WeatherForecast> getwarningsignalinfo() async {
+
+  Future<WeatherWarningSummary> getwarningsignalinfo() async {
     var response = await http.get(
         Uri.parse(
-            'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc'),
+            'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum'),
         headers: {'Content-Type': 'application/json'});
 
-    return parseWeatherForecast(response.body);
+    return parseWeatherWarningSummary(response.body);
   }
 
-
-
+  late int weather;
 
   @override
   Widget build(BuildContext context) {
@@ -147,20 +143,52 @@ class _HomeState extends State<Home> {
                       } else if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       } else if (snapshot.hasData) {
-
-                       
                         WeatherForecast data =
                             snapshot.data!; // You now have your 'personal' data
-                      String formattedtime=timeformatting(DateTime.now());
-                      int indextobedisplayed=0;
-                      print(DateTime.now().hour);
+                        String formattedtime = timeformatting(DateTime.now());
+                        int indextobedisplayed = 0;
+                        weather =
+                            data.weatherForecast[0].forecastMaxtemp["value"];
 
-                         
-                        return Center(
-                          child: Text("${data.weatherForecast[0].forecastMaxtemp["value"]}\u00b0c ,${DateTime.now()},"),
-                        );
+                        return FutureBuilder<WeatherWarningSummary>(
+                            future:
+                                getwarningsignalinfo(), // Assuming getuserinfo returns a Future<personal>
+                            builder: (BuildContext context,
+                                AsyncSnapshot<WeatherWarningSummary> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const CircularProgressIndicator(); // Show a loading indicator while waiting
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else if (snapshot.hasData) {
+                                WeatherWarningSummary data = snapshot.data!;
+
+                                return Center(
+                                  child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            "$weather\u00b0c ,${DateTime.now()}"),
+                                        data.warnings != null
+                                            ? Column(
+                                                children: data.warnings!.keys
+                                                    .map((String key) =>
+                                                        Warningsignalicon(
+                                                            name: key,warn:data.warnings![key]))
+                                                    .toList(),
+                                              )
+                                            : const Text(
+                                                "No warning signal now"),
+                                      ]),
+                                );
+                              } else {
+                                return const Text(
+                                    'Unexpected error occurred'); // Handle the case where there's no data
+                              }
+                            });
                       } else {
-                        return Text(
+                        return const Text(
                             'Unexpected error occurred'); // Handle the case where there's no data
                       }
                     });
