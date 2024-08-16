@@ -55,6 +55,30 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   late Future<String?> _tokenValue;
 
+  String timeformatting(DateTime now){
+    late String day;
+    late String month;
+    if (now.day<10){
+      day="0+${now.day.toString()}";
+
+    }
+    else{
+      day=now.day.toString();
+    }
+     if (now.month<10){
+      month="0${now.month.toString()}";
+
+    }
+    else{
+      month=now.month.toString();
+    }
+    String formatted=now.year.toString()+month+day;
+  
+  return formatted;
+    
+
+  }
+
   @override
   void initState() {
     _tokenValue = storage.read(key: 'jwt');
@@ -77,6 +101,17 @@ class _HomeState extends State<Home> {
 
     return parseWeatherForecast(response.body);
   }
+  Future<WeatherForecast> getwarningsignalinfo() async {
+    var response = await http.get(
+        Uri.parse(
+            'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc'),
+        headers: {'Content-Type': 'application/json'});
+
+    return parseWeatherForecast(response.body);
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -113,17 +148,16 @@ class _HomeState extends State<Home> {
                         return Text('Error: ${snapshot.error}');
                       } else if (snapshot.hasData) {
 
-                        final now = DateTime.now();
-                        print(now.day);
-
+                       
                         WeatherForecast data =
                             snapshot.data!; // You now have your 'personal' data
-                        for (var i = 0; i < data.weatherForecast.length-5; i++) {
-                          print(data.weatherForecast[i].forecastDate);
-                        }
+                      String formattedtime=timeformatting(DateTime.now());
+                      int indextobedisplayed=0;
+                      print(DateTime.now().hour);
 
+                         
                         return Center(
-                          child: Text(data.generalSituation),
+                          child: Text("${data.weatherForecast[0].forecastMaxtemp["value"]}\u00b0c ,${DateTime.now()},"),
                         );
                       } else {
                         return Text(
