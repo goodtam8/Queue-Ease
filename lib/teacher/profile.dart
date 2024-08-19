@@ -131,8 +131,6 @@ void uploadImage(Uint8List imageData) async {
     print('Response body: $responseBody');
   }
 }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -180,9 +178,7 @@ void uploadImage(Uint8List imageData) async {
                     Positioned(bottom: -10,left: 80,child: IconButton(onPressed: selectimage,icon:const Icon(Icons.add_a_photo))
                     ,),
                   
-                    ],
-                  
-                    
+                    ],                    
                   ),
                     TextButton(onPressed:(){ 
                       

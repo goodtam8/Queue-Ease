@@ -8,11 +8,11 @@ class Warningsignalicon extends StatelessWidget {
   const Warningsignalicon({super.key, required this.name, required this.warn});
   Widget raindecision(WeatherWarning? warning) {
     if (warning?.code == "WRAINA") {
-      return const Image(image: AssetImage('assets/user.png'));
+      return const Image(image: AssetImage('assets/raina.gif'));
     } else if (warning?.code == "WRAINR") {
-      return const Image(image: AssetImage('assets/user.png'));
+      return const Image(image: AssetImage('assets/rainr.gif'));
     } else {
-      return const Image(image: AssetImage('assets/user.png'));
+      return const Image(image: AssetImage('assets/rainb.gif'));
     }
   }
 

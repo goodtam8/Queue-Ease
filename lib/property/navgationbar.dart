@@ -65,7 +65,7 @@ class _NavigationState extends State<Navigation> {
       userRole == "teacher" ? LeaveMan() : Leave(),
       userRole == "teacher"
           ? Teacher(onLogout: widget.onLogout)
-          : Studentprofile(onLogout: widget.onLogout),
+          : Student(onLogout: widget.onLogout),
     ];
 
     return Scaffold(
