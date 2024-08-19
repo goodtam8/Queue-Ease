@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
 import 'package:fyp_mobile/register.dart';
+import 'package:fyp_mobile/student/StudentEdit.dart';
 import 'package:fyp_mobile/studentregister.dart';
 import 'package:fyp_mobile/teacher/Home.dart';
 import 'package:fyp_mobile/teacher/analysis.dart';
@@ -50,7 +51,8 @@ class _MyAppState extends State<MyApp> {
       '/calendar':(context)=>const Calendar(),
       '/analysis':(context)=>const Analysis(),
       '/update':(context)=>const Editteacherprofile(),
-      '/stureg':(context)=>const Studentregister()
+      '/stureg':(context)=>const Studentregister(),
+      '/student/edit':(context)=>const Studentedit()
       
     
 }    );

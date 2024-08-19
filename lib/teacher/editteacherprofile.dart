@@ -85,6 +85,7 @@ class _EditteacherprofileState extends State<Editteacherprofile> {
         'pw': password.text,
         'gender': option,
         'phone': int.parse(phone_num.text),
+        'email':email.text
       };
       try {
         var response = await http.put(

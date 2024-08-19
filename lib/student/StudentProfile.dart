@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart'; // Assuming storage is defined here
 import 'package:fyp_mobile/property/button.dart';
@@ -108,7 +107,7 @@ void uploadImage(Uint8List imageData) async {
             return Center(
               child: TextButton(
                 onPressed: () {
-                  Navigator.of(context).pushNamed('/update');
+                  Navigator.of(context).pushNamed('/student/edit');
                 },
                 child: const Text("Update"),
               ),
@@ -161,7 +160,7 @@ void uploadImage(Uint8List imageData) async {
                     width: 150.0,
                     child: ElevatedButton(
                         onPressed: () {
-                          Navigator.of(context).pushNamed('/update');
+                          Navigator.of(context).pushNamed('/student/edit');
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF4a75a5),

@@ -7,6 +7,7 @@ class Studentper {
   final String pw;
   final String gender;
   final int phone;
+  final int year;
 
   const Studentper({
     required this.id,
@@ -15,6 +16,7 @@ class Studentper {
     required this.pw,
     required this.gender,
     required this.phone,
+    required this.year
   });
 
   factory Studentper.fromJson(Map<String, dynamic> json) {
@@ -25,6 +27,7 @@ class Studentper {
       pw: json['pw'] as String,
       gender: json['gender'] as String,
       phone: json['phone_num'] as int,
+      year:json['year'] as int 
     );
   }
 }
