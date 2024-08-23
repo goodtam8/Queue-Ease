@@ -39,6 +39,7 @@ dependencies:
   flutter_secure_storage: ^9.2.2
   jwt_decoder: ^2.0.1
   image_picker: ^1.1.2
+  time_scheduler_table: ^1.0.0
 
 dev_dependencies:
   flutter_test:

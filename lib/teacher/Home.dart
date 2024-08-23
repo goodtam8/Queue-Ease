@@ -96,6 +96,8 @@ class _HomeState extends State<Home> {
 
   Widget event(Timetable table) {
     int weekday = DateTime.now().weekday;
+    print("today is:$weekday");
+
     switch (weekday) {
       case 1:
         return listoftable(table.Monday);
@@ -135,7 +137,7 @@ class _HomeState extends State<Home> {
 
   Widget listoftable(List table) {
     List<String> uniquelist = [];
-    
+
     String previous = "";
     for (int i = 0; i < table.length; i++) {
       if (previous != table[i] && table[i] != "") {
@@ -145,13 +147,17 @@ class _HomeState extends State<Home> {
       }
     }
 
-    return Container(
+    return SizedBox(
       height: 100, // Set a fixed height or adjust as needed
       child: ListView.builder(
+        itemExtent: 30, // Set the space between each content here
         itemCount: uniquelist.length,
         itemBuilder: (BuildContext context, int index) {
+          print(uniquelist[index]);
           return ListTile(
-            title: Text(uniquelist[index], style: TextStyle(fontSize: 15.0)),
+            // Adjust padding here
+            title:
+                Text(uniquelist[index], style: const TextStyle(fontSize: 15.0)),
           );
         },
       ),
@@ -313,7 +319,8 @@ class _HomeState extends State<Home> {
                                               Row(
                                                 children: [
                                                   Transform.scale(
-                                                      scale: 2.5, // Adjust the scale factor as needed to make the icon bigger
+                                                    scale:
+                                                        2.5, // Adjust the scale factor as needed to make the icon bigger
 
                                                     child: IconButton(
                                                         onPressed: () {
@@ -322,14 +329,17 @@ class _HomeState extends State<Home> {
                                                               ?.updateIndex(3);
                                                         },
                                                         icon: const Icon(
-                                                            Icons.check_box,color: Color(0xFF4a75a5),)
-                                                            ),
+                                                          Icons.check_box,
+                                                          color:
+                                                              Color(0xFF4a75a5),
+                                                        )),
                                                   ),
                                                   const SizedBox(
                                                     width: 100.0,
                                                   ),
                                                   Transform.scale(
-                                                      scale: 2.5, // Adjust the scale factor as needed to make the icon bigger
+                                                    scale:
+                                                        2.5, // Adjust the scale factor as needed to make the icon bigger
 
                                                     child: IconButton(
                                                         onPressed: () {
@@ -338,17 +348,23 @@ class _HomeState extends State<Home> {
                                                               ?.updateIndex(2);
                                                         },
                                                         icon: const Icon(
-                                                            Icons.bar_chart,color: Color(0xFF4a75a5),)),
+                                                          Icons.bar_chart,
+                                                          color:
+                                                              Color(0xFF4a75a5),
+                                                        )),
                                                   ),
                                                   const SizedBox(
                                                     width: 100.0,
                                                   ),
-                                                  
                                                   Transform.scale(
-                                                      scale: 2.5, // Adjust the scale factor as needed to make the icon bigger
+                                                      scale:
+                                                          2.5, // Adjust the scale factor as needed to make the icon bigger
 
-                                                    
-                                                    child: const Icon(Icons.chat_sharp,color: Color(0xFF4a75a5),))
+                                                      child: const Icon(
+                                                        Icons.chat_sharp,
+                                                        color:
+                                                            Color(0xFF4a75a5),
+                                                      ))
                                                 ],
                                               ),
                                               const Text(
@@ -379,7 +395,20 @@ class _HomeState extends State<Home> {
 
                                                       return Column(
                                                         children: [
-                                                          event(table)
+                                                          event(table),
+                                                          SizedBox(
+                                                            height: 35.0,
+                                                          ),
+                                                          Transform.scale(
+                                                              scale: 6.0,
+                                                              child: Center(
+                                                                child: IconButton(
+                                                                    onPressed:
+                                                                        () {},
+                                                                    icon: const Icon(
+                                                                        Icons
+                                                                            .qr_code)),
+                                                              ))
                                                         ],
                                                       );
                                                     } else {
@@ -387,7 +416,6 @@ class _HomeState extends State<Home> {
                                                           'Unexpected error occurred');
                                                     }
                                                   }),
-                                                  Transform.scale(scale:6.0,child:Center(child:IconButton(onPressed: (){}, icon: Icon(Icons.qr_code)) ,) )
                                             ]);
                                       } else {
                                         return const Text(
