@@ -23,7 +23,6 @@ class _CalendarState extends State<Calendar> {
     'Fri',
   ];
   final List<String> timeSlots = [
-    '08:00',
     '09:00',
     '10:00',
     '11:00',
@@ -52,9 +51,7 @@ class _CalendarState extends State<Calendar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Weekly Timetable'),
-        ),
+        appBar: const Topbar(),
         body: FutureBuilder<String?>(
             future: _tokenValue,
             builder: (context, snapshot) {
@@ -83,6 +80,8 @@ class _CalendarState extends State<Calendar> {
                       } else if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       } else if (snapshot.hasData) {
+                        Timetable table = snapshot.data!;
+
                         return SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
@@ -93,16 +92,13 @@ class _CalendarState extends State<Calendar> {
                                     height: 58,
                                     width: 50,
                                     alignment: Alignment.center,
-                                    color: Colors.grey[300],
+                                    color: Color(0xFF4a75a5),
                                   ),
                                   ...timeSlots.map((time) => Container(
                                         height: 58,
                                         width: 50,
                                         alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          border:
-                                              Border.all(color: Colors.grey),
-                                        ),
+                                        decoration: BoxDecoration(),
                                         child: Text(time),
                                       )),
                                 ],
@@ -113,19 +109,16 @@ class _CalendarState extends State<Calendar> {
                                         height: 58,
                                         width: 80,
                                         alignment: Alignment.center,
-                                        color: Colors.blue[100],
-                                        child: Text(day),
+                                        color: Color(0xFF4a75a5),
+                                        child: Text(day,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
                                       ),
                                       ...timeSlots.map((time) => Container(
                                             height: 58,
                                             width: 80,
                                             alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.grey),
-                                            ),
-                                            child:
-                                                _getEventForTimeSlot(day, time),
+                                            decoration: BoxDecoration(),
+                                            child: _getEventForTimeSlot(
+                                                day, time, table),
                                           ))
                                     ],
                                   ))
@@ -141,18 +134,72 @@ class _CalendarState extends State<Calendar> {
   }
 }
 
-Widget _getEventForTimeSlot(String day, String time) {
+Widget _getEventForTimeSlot(String day, String time, Timetable table) {
   // This is where you would implement your logic to display events
   // For this example, we'll just display a sample event on Monday at 10:00
-  if (day == 'Mon' && time == '10:00') {
-    return Container(
-      color: Colors.green[100],
-      child: Text('Meeting'),
-    );
+  switch (day) {
+    case 'Mon':
+      return _gettime(time, table.Monday);
+    case 'Tue':
+      return _gettime(time, table.Tuesday);
+
+    case 'Wed':
+      return _gettime(time, table.Wednesday);
+    case 'Thu':
+      return _gettime(time, table.Thursday);
+    case 'Fri':
+      return _gettime(time, table.Friday);
   }
   return Container();
 }
 
-Widget _gettime(String time){
+Widget _gettime(String time, List<String> day) {
+  int fin = 0;
+  switch (time) {
+    case '09:00':
+      fin = 1;
+      break;
 
+    case '10:00':
+      fin = 2;
+      break;
+
+    case '11:00':
+      fin = 3;
+      break;
+
+    case '12:00':
+      fin = 4;
+      break;
+    case '13:00':
+      fin = 5;
+      break;
+
+    case '14:00':
+      fin = 6;
+      break;
+
+    case '15:00':
+      fin = 7;
+      break;
+    case '16:00':
+      fin = 8;
+      break;
+    case '17:00':
+      fin = 9;
+      break;
+
+    case '18:00':
+      fin = 10;
+      break;
+  }
+
+  for (int i = 0; i < day.length; i++) {
+    if (day[i] != "" && fin == i) {
+      return Container(
+        child: Text(day[i]),
+      );
+    }
+  }
+  return Container();
 }

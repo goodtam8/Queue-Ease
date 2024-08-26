@@ -17,10 +17,12 @@ class WeatherForecast {
 
   factory WeatherForecast.fromJson(Map<String, dynamic> json) {
     var forecastList = json['weatherForecast'] as List;
-    List<Forecast> forecasts = forecastList.map((e) => Forecast.fromJson(e)).toList();
+    List<Forecast> forecasts =
+        forecastList.map((e) => Forecast.fromJson(e)).toList();
 
     var soilTempList = json['soilTemp'] as List;
-    List<SoilTemperature> soilTemps = soilTempList.map((e) => SoilTemperature.fromJson(e)).toList();
+    List<SoilTemperature> soilTemps =
+        soilTempList.map((e) => SoilTemperature.fromJson(e)).toList();
 
     return WeatherForecast(
       generalSituation: json['generalSituation'],
@@ -114,7 +116,7 @@ class SoilTemperature {
   factory SoilTemperature.fromJson(Map<String, dynamic> json) {
     return SoilTemperature(
       place: json['place'],
-      value: json['value'],
+      value: (json['value'] as num).toDouble(), // Cast the value to double
       unit: json['unit'],
       recordTime: json['recordTime'],
       depth: json['depth'],

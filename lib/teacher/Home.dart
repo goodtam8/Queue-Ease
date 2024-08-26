@@ -179,12 +179,23 @@ class _HomeState extends State<Home> {
   }
 
   Future<WeatherForecast> getweatherinfo() async {
-    var response = await http.get(
-        Uri.parse(
-            'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc'),
-        headers: {'Content-Type': 'application/json'});
+    try {
+      var response = await http.get(
+          Uri.parse(
+              'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc'),
+          headers: {'Content-Type': 'application/json'});
 
-    return parseWeatherForecast(response.body);
+      return parseWeatherForecast(response.body);
+    } catch (e) {
+      var response = await http.get(
+          Uri.parse(
+              'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc'),
+          headers: {'Content-Type': 'application/json'});
+      print("error ocured");
+      print(e);
+      return parseWeatherForecast(response.body);
+      ;
+    }
   }
 
   Future<WeatherWarningSummary> getwarningsignalinfo() async {
@@ -223,6 +234,8 @@ class _HomeState extends State<Home> {
                   ),
                 );
               } else if (snapshot.hasError) {
+                print("hi there is the error occur");
+                print(snapshot.error);
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else {
                 Map<String, dynamic> decodedToken =
@@ -236,6 +249,7 @@ class _HomeState extends State<Home> {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const CircularProgressIndicator(); // Show a loading indicator while waiting
                       } else if (snapshot.hasError) {
+                        print('hi again there is where the error occure');
                         return Text('Error: ${snapshot.error}');
                       } else if (snapshot.hasData) {
                         WeatherForecast data =
@@ -253,6 +267,8 @@ class _HomeState extends State<Home> {
                                   ConnectionState.waiting) {
                                 return const CircularProgressIndicator(); // Show a loading indicator while waiting
                               } else if (snapshot.hasError) {
+                                print(
+                                    "yo again there is where the error occured");
                                 return Text('Error: ${snapshot.error}');
                               } else if (snapshot.hasData) {
                                 WeatherWarningSummary data = snapshot.data!;
@@ -266,6 +282,8 @@ class _HomeState extends State<Home> {
                                           ConnectionState.waiting) {
                                         return const CircularProgressIndicator(); // Show a loading indicator while waiting
                                       } else if (snapshot.hasError) {
+                                        print(
+                                            'hello there, there is where the error occur');
                                         return Text('Error: ${snapshot.error}');
                                       } else if (snapshot.hasData) {
                                         personal person = snapshot
