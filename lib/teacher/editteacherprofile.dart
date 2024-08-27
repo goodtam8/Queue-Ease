@@ -321,7 +321,7 @@ class _EditteacherprofileState extends State<Editteacherprofile> {
                                   ))));
                       // Return your form widget here
                     } else {
-                      return Text(
+                      return const Text(
                           'Unexpected error occurred'); // Handle the case where there's no data
                     }
                   },
