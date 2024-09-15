@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fyp_mobile/property/icon.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
 import 'package:fyp_mobile/property/topbar.dart';
-import 'package:fyp_mobile/teacher/Home.dart';
+import 'package:fyp_mobile/staff/Home.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
 
 class Backhome extends StatefulWidget {

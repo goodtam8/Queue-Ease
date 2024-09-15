@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fyp_mobile/property/button.dart';
 import 'package:fyp_mobile/property/icon.dart';
+import 'package:fyp_mobile/property/topbar.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-final storage = new FlutterSecureStorage();
+const storage = FlutterSecureStorage();
 
 class Login extends StatefulWidget {
   final VoidCallback onLogin;
@@ -30,12 +31,12 @@ class _LoginState extends State<Login> {
     };
     try {
       var response = await http.post(
-          Uri.parse('http://10.0.2.2:3000/api/login/teacher'),
+          Uri.parse('http://10.0.2.2:3000/api/login/staff'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(data));
 
       await storage.write(key: 'jwt', value: response.body);
-      await storage.write(key: 'role', value: "teacher");
+      await storage.write(key: 'role', value: "staff");
 
       String? token = await storage.read(key: 'jwt');
       print("$token");
@@ -54,27 +55,55 @@ class _LoginState extends State<Login> {
 
   Widget registerbutton(String type) {
     return Expanded(
-      child: TextButton(
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            fixedSize: Size(295, 56),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
+            backgroundColor: const Color(0xFF1578E6),
+          ),
           onPressed: () {
-            if (type == "teacher") {
+            if (type == "staff") {
               Navigator.pushNamed(context, '/register');
             } else {
-              Navigator.pushNamed(context, '/stureg');
+              Navigator.pushNamed(context, '/reg');
             }
           },
           child: Text(
             "Register as $type",
-            style: const TextStyle(color: Colors.blue),
+            style: const TextStyle(
+              fontSize: 16,
+              fontFamily: 'Source Sans Pro',
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+              height: 1.81, // line height equivalent
+            ),
           )),
     );
   }
 
   Widget loginbutton(String type) {
-    return Styled_button(
+    return ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          fixedSize: Size(295, 44),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          backgroundColor: const Color(0xFF030303),
+          textStyle: const TextStyle(
+            fontSize: 14,
+            fontFamily: 'Source Sans Pro',
+            color: Colors.white,
+            height: 1.43, // line height equivalent
+          ),
+        ),
         onPressed: () async {
           late var response;
-          if (type == "Student") {
-            response = await studentlogin();
+          if (type == "Customer") {
+            response = await userlogin();
           } else {
             response = await login();
           }
@@ -108,7 +137,15 @@ class _LoginState extends State<Login> {
             widget.onLogin();
           }
         },
-        child: Text('Login as $type'));
+        child: Text(
+          'Login as $type',
+          style: const TextStyle(
+            fontSize: 14,
+            fontFamily: 'Source Sans Pro',
+            color: Colors.white,
+            height: 1.43, // line height equivalent
+          ),
+        ));
   }
 
   Widget inputtext(TextEditingController control, String field) {
@@ -123,23 +160,40 @@ class _LoginState extends State<Login> {
       },
       controller: control,
       decoration: InputDecoration(
-          hintText: "Enter your $field", border: const OutlineInputBorder()),
+        hintText: "Enter your $field", border: const OutlineInputBorder(),
+    
+        filled: true,
+        fillColor: const Color(0xFFF1F1F1), // Background color
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8), // Padding
+        hintStyle: const TextStyle(
+          color: Color(0xFF94A3B8), // Hint text color
+          fontSize: 14, // Font size
+          fontFamily: 'Source Sans Pro', // Font family
+        ),
+      ),
+      style: const TextStyle(
+        fontSize: 14,
+        fontFamily: 'Source Sans Pro',
+        color: Colors.black, // Text color
+        height: 1.0, // Line height
+      ),
+      cursorColor: Colors.black, // Cursor color
     );
   }
 
-  Future<dynamic> studentlogin() async {
+  Future<dynamic> userlogin() async {
     Map<String, dynamic> data = {
       'sid': username.text,
       'pw': password.text,
     };
     try {
       var response = await http.post(
-          Uri.parse('http://10.0.2.2:3000/api/login/student'),
+          Uri.parse('http://10.0.2.2:3000/api/login/user'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(data));
 
       await storage.write(key: 'jwt', value: response.body);
-      await storage.write(key: 'role', value: "student");
+      await storage.write(key: 'role', value: "customer");
 
       String? token = await storage.read(key: 'jwt');
       return (response.statusCode);
@@ -152,28 +206,10 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: const Topbar(),
         backgroundColor: Colors.white,
         body: SafeArea(
             child: Column(children: [
-          const SizedBox(
-            height: 30.0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Uniicon(),
-                Text(
-                  "UniTrack",
-                  style: TextStyle(
-                    color: Color(0xFF4a75a5),
-                    fontSize: 24,
-                    fontFamily: 'Roboto',
-                    letterSpacing: -0.6,
-                    height: 1.5,
-                  ),
-                ),
-              ],
-            ),
-          ),
           const SizedBox(
             height: 30,
           ),
@@ -209,11 +245,11 @@ class _LoginState extends State<Login> {
                         height: 15.0,
                       ),
                       Row(children: [
-                        registerbutton("teacher"),
-                        registerbutton("student")
+                        registerbutton("staff"),
+                        registerbutton("customer")
                       ]),
-                      loginbutton("Teacher"),
-                      loginbutton("Student"),
+                      loginbutton("Staff"),
+                      loginbutton("Customer"),
                     ],
                   ),
                 ),

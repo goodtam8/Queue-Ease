@@ -7,7 +7,7 @@ import 'package:fyp_mobile/property/button.dart';
 import 'package:fyp_mobile/property/student.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:fyp_mobile/register.dart';
-import 'package:fyp_mobile/student/StudentProfile.dart';
+import 'package:fyp_mobile/customer/StudentProfile.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:http/http.dart' as http;
 

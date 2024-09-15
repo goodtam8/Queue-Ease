@@ -38,20 +38,61 @@ class _RegisterState extends State<Register> {
 
   List<String> gender = ["Men", "Women"];
   String currentOption = "Men";
+  Widget card() {
+    return Container(
+      width: 375, // Width in pixels
+      height: 313, // Height in pixels
+      decoration: BoxDecoration(
+        color: Color(0xFFCEDFF2), // Background color
+        borderRadius: BorderRadius.circular(24), // Border radius
+      ),
+      child: const Column(
+        children: [
+          Image(
+            image: NetworkImage(
+                "https://assets.api.uizard.io/api/cdn/stream/6e10666b-e8e2-42a0-8564-22dbd5f21523.png"),
+            width: 150.0, // Set your desired width
+            height: 150.0,
+          ),
+          Text(
+            "Join QueueEase",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Color(0xFF030303), // Text color
+              fontSize: 24, // Font size
+              fontFamily: 'Source Sans Pro', // Font family
+              fontWeight: FontWeight.w600, // Font weight
+              height: 29 / 24, // Line height (29px / 24px),
+            ),
+          ),
+          Text(
+            "Find and join the restaurant queues easily",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Color(0xFF030303), // Text color
+              fontSize: 12, // Font size
+              fontFamily: 'Source Sans Pro', // Font family
+              height: 29 / 24, // Line height (29px / 24px),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Future<dynamic> submitregister() async {
     if (_formKey.currentState!.validate()) {
       Map<String, dynamic> data = {
-        'staff_id': int.parse(staff_id.text),
+        'sid': int.parse(staff_id.text),
         'name': name.text,
         'pw': password.text,
         'gender': currentOption,
         'phone': int.parse(phone_num.text),
-        'email':email.text
+        'email': email.text
       };
       try {
         var response = await http.post(
-            Uri.parse('http://10.0.2.2:3000/api/teacher/'),
+            Uri.parse('http://10.0.2.2:3000/api/staff/'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(data));
 
@@ -61,15 +102,16 @@ class _RegisterState extends State<Register> {
         print(e);
         return e.toString();
       }
+    } else {
+      return 400.toString();
     }
-    ;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const Topbar(),
       backgroundColor: Colors.white,
-      appBar:Topbar(),
       body: Padding(
         padding: const EdgeInsets.all(32),
         child: SingleChildScrollView(
@@ -79,14 +121,24 @@ class _RegisterState extends State<Register> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Staff ID',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
+                card(),
                 const SizedBox(
-                  height: 8.0,
+                  height: 15.0,
                 ),
                 TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: "Staff ID",
+                    filled: true,
+                    fillColor: Color(0xFFF1F1F1),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                    hintStyle: TextStyle(
+                      color: Color(0xFF919191),
+                      fontSize: 16,
+                      fontFamily: 'Source Sans Pro',
+                      height: 29 / 16, // lineHeight
+                    ),
+                  ),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter your Staff_ID'; // Validation error message
@@ -96,21 +148,24 @@ class _RegisterState extends State<Register> {
                     return null; // Return null if the input is valid
                   },
                   controller: staff_id,
-                  decoration: const InputDecoration(
-                      hintText: "Enter your staff_ID",
-                      border: OutlineInputBorder()),
                 ),
                 const SizedBox(
                   height: 15.0,
                 ),
-                const Text(
-                  'Name',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 8.0,
-                ),
                 TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: "Name",
+                    filled: true,
+                    fillColor: Color(0xFFF1F1F1),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                    hintStyle: TextStyle(
+                      color: Color(0xFF919191),
+                      fontSize: 16,
+                      fontFamily: 'Source Sans Pro',
+                      height: 29 / 16, // lineHeight
+                    ),
+                  ),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter your Name'; // Validation error message
@@ -118,21 +173,24 @@ class _RegisterState extends State<Register> {
                     return null;
                   },
                   controller: name,
-                  decoration: const InputDecoration(
-                      hintText: "Enter your Name",
-                      border: OutlineInputBorder()),
                 ),
                 const SizedBox(
                   height: 15.0,
                 ),
-                const Text(
-                  'Email',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 8.0,
-                ),
                 TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: "Email",
+                    filled: true,
+                    fillColor: Color(0xFFF1F1F1),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                    hintStyle: TextStyle(
+                      color: Color(0xFF919191),
+                      fontSize: 16,
+                      fontFamily: 'Source Sans Pro',
+                      height: 29 / 16, // lineHeight
+                    ),
+                  ),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter your Email'; // Validation error message
@@ -140,45 +198,51 @@ class _RegisterState extends State<Register> {
                     return null;
                   },
                   controller: email,
-                  decoration: const InputDecoration(
-                      hintText: "Enter your Email",
-                      border: OutlineInputBorder()),
                 ),
                 const SizedBox(
                   height: 15.0,
                 ),
-                const Text(
-                  'Phone Number',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 8.0,
-                ),
                 TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: "Phone Number",
+                    filled: true,
+                    fillColor: Color(0xFFF1F1F1),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                    hintStyle: TextStyle(
+                      color: Color(0xFF919191),
+                      fontSize: 16,
+                      fontFamily: 'Source Sans Pro',
+                      height: 29 / 16, // lineHeight
+                    ),
+                  ),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter your Phone Number'; // Validation error message
                     } else if (int.tryParse(value) == null) {
-                      return 'Please input a valid staff_id';
+                      return 'Please input a valid Phone Number';
                     }
                     return null;
                   },
                   controller: phone_num,
-                  decoration: const InputDecoration(
-                      hintText: "Enter your Phone Number",
-                      border: OutlineInputBorder()),
                 ),
                 const SizedBox(
                   height: 15.0,
                 ),
-                const Text(
-                  'Password',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 8.0,
-                ),
                 TextFormField(
+                  decoration: const InputDecoration(
+                    hintText: "PassWord",
+                    filled: true,
+                    fillColor: Color(0xFFF1F1F1),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 8),
+                    hintStyle: TextStyle(
+                      color: Color(0xFF919191),
+                      fontSize: 16,
+                      fontFamily: 'Source Sans Pro',
+                      height: 29 / 16, // lineHeight
+                    ),
+                  ),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter your Password'; // Validation error message
@@ -186,9 +250,6 @@ class _RegisterState extends State<Register> {
                     return null;
                   },
                   controller: password,
-                  decoration: const InputDecoration(
-                      hintText: "Enter your Password",
-                      border: OutlineInputBorder()),
                 ),
                 const SizedBox(
                   height: 15.0,
@@ -248,8 +309,12 @@ class _RegisterState extends State<Register> {
                 Styled_button(
                     onPressed: () async {
                       var registermessage = await submitregister();
-                      if (registermessage != 201 &&
-                          _formKey.currentState!.validate()) {
+                      print(registermessage);
+                      if (!_formKey.currentState!.validate()) {
+                        return;
+                      }
+                      print(_formKey.currentState!.validate());
+                      if (registermessage != 201) {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             behavior: SnackBarBehavior.floating,
                             backgroundColor: Colors.transparent,
@@ -274,25 +339,20 @@ class _RegisterState extends State<Register> {
                                   ),
                                 ),
                               ]),
-                            
-                            )
-                            )
-                            );
-                      }
-                       else {
+                            )));
+                      } else {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: Text("Login Success"),
+                            title: Text("register Success"),
                             content:
                                 Text("Now let's get back to the home page"),
                             actions: [
                               TextButton(
                                 onPressed: () {
-  Navigator.pop(context);
-    Navigator.pop(context);
-
-},
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                },
                                 child: Text("ok"),
                               ),
                             ],

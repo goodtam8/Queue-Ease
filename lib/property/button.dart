@@ -16,16 +16,21 @@ class Styled_button extends StatelessWidget {
           child: ElevatedButton(
             onPressed: onPressed,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF4a75a5),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              fixedSize: const Size(295, 56),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(
-                    0), // Set borderRadius to 0 for rectangle shape
+                borderRadius: BorderRadius.circular(24),
               ),
+              backgroundColor: const Color(0xFF1578E6), // Background color
+              elevation: 0, // Remove shadow
             ),
             child: DefaultTextStyle.merge(
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                fontFamily: 'Source Sans Pro',
+                fontWeight: FontWeight.w600,
+                height: 29 / 16, // Line height
               ),
               child: child,
             ),

@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
 import 'package:fyp_mobile/register.dart';
-import 'package:fyp_mobile/student/StudentEdit.dart';
-import 'package:fyp_mobile/studentregister.dart';
-import 'package:fyp_mobile/teacher/Home.dart';
-import 'package:fyp_mobile/teacher/analysis.dart';
-import 'package:fyp_mobile/teacher/calendar.dart';
-import 'package:fyp_mobile/teacher/editteacherprofile.dart';
-import 'package:fyp_mobile/teacher/leave_man.dart';
-import 'package:fyp_mobile/teacher/backhome.dart';
+import 'package:fyp_mobile/customer/StudentEdit.dart';
+import 'package:fyp_mobile/customerregister.dart';
+import 'package:fyp_mobile/staff/Home.dart';
+import 'package:fyp_mobile/staff/analysis.dart';
+import 'package:fyp_mobile/staff/calendar.dart';
+import 'package:fyp_mobile/staff/editteacherprofile.dart';
+import 'package:fyp_mobile/staff/leave_man.dart';
+import 'package:fyp_mobile/staff/backhome.dart';
 
 void main() {
   runApp(MyApp());
@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> {
       '/calendar':(context)=>const Calendar(),
       '/analysis':(context)=>const Analysis(),
       '/update':(context)=>const Editteacherprofile(),
-      '/stureg':(context)=>const Studentregister(),
+      '/reg':(context)=>const Customerregister(),
       '/student/edit':(context)=>const Studentedit()
       
     

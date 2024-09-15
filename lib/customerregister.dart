@@ -23,24 +23,24 @@ class CustomRadioColor extends WidgetStateColor {
 const WidgetStateColor customRadioColor = CustomRadioColor();
 GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-class Studentregister extends StatefulWidget {
-  const Studentregister({super.key});
+class Customerregister extends StatefulWidget {
+  const Customerregister({super.key});
 
   @override
-  State<Studentregister> createState() => Studentregister_state();
+  State<Customerregister> createState() => customerregister_state();
 }
 
-class Studentregister_state extends State<Studentregister> {
+class customerregister_state extends State<Customerregister> {
   TextEditingController sid = TextEditingController();
   TextEditingController name = TextEditingController();
   TextEditingController phone_num = TextEditingController();
   TextEditingController password = TextEditingController();
-  int year = 2021;
+  int year = 2003;
 
   List<String> gender = ["Men", "Women"];
   String currentOption = "Men";
-SnackBar errosnack(){
-  return SnackBar(
+  SnackBar errosnack() {
+    return SnackBar(
         behavior: SnackBarBehavior.floating,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -62,8 +62,7 @@ SnackBar errosnack(){
             ),
           ]),
         ));
-}
-
+  }
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> errorsnackbar() {
     return ScaffoldMessenger.of(context).showSnackBar(errosnack());
@@ -74,23 +73,32 @@ SnackBar errosnack(){
       validator: (value) {
         if (value!.isEmpty) {
           return 'Please enter your $field'; // Validation error message
-        } else if (int.tryParse(value) == null&&(field=="Student ID"||field=="Phone Number")) {
+        } else if (int.tryParse(value) == null &&
+            (field == "Student ID" || field == "Phone Number")) {
           return 'Please input a valid $field';
         }
         return null; // Return null if the input is valid
       },
-      controller: control,
       decoration: InputDecoration(
-          hintText: "Enter your $field", border: const OutlineInputBorder()),
+          hintText: "Enter your $field",
+          border: InputBorder.none,
+          filled: true,
+          fillColor: Color(0xFFF1F1F1),
+          contentPadding: EdgeInsets.symmetric(horizontal: 8),
+          hintStyle: TextStyle(
+            color: Color(0xFF919191),
+            fontSize: 16,
+            fontFamily: 'Source Sans Pro',
+            height: 29 / 16, // lineHeight
+          )),
+      controller: control,
     );
   }
-
-
 
   Future<dynamic> submitregister() async {
     if (_formKey.currentState!.validate()) {
       Map<String, dynamic> data = {
-        'sid': int.parse(sid.text),
+        'uid': int.parse(sid.text),
         'name': name.text,
         'pw': password.text,
         'gender': currentOption,
@@ -99,7 +107,7 @@ SnackBar errosnack(){
       };
       try {
         var response = await http.post(
-            Uri.parse('http://10.0.2.2:3000/api/student/'),
+            Uri.parse('http://10.0.2.2:3000/api/customer/'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(data));
 
@@ -133,30 +141,16 @@ SnackBar errosnack(){
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Student ID',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 8.0,
-                ),
-                textfield(sid, 'Student ID'),
+                textfield(sid, 'UID'),
                 const SizedBox(
                   height: 15.0,
-                ),
-                const Text(
-                  'Name',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 8.0,
                 ),
                 textfield(name, 'Name'),
                 const SizedBox(
                   height: 15.0,
                 ),
                 const Text(
-                  'Year',
+                  'Year of Birth',
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
@@ -171,10 +165,10 @@ SnackBar errosnack(){
                   ),
                   child: DropdownButton<int>(
                     items: const [
-                      DropdownMenuItem<int>(value: 2021, child: Text("2021")),
-                      DropdownMenuItem<int>(value: 2022, child: Text("2022")),
-                      DropdownMenuItem<int>(value: 2023, child: Text("2023")),
-                      DropdownMenuItem<int>(value: 2024, child: Text("2024")),
+                      DropdownMenuItem<int>(value: 2003, child: Text("2003")),
+                      DropdownMenuItem<int>(value: 2004, child: Text("2004")),
+                      DropdownMenuItem<int>(value: 2005, child: Text("2005")),
+                      DropdownMenuItem<int>(value: 2006, child: Text("2006")),
                     ],
                     onChanged: dropdowncallback,
                     value: year,
@@ -185,23 +179,9 @@ SnackBar errosnack(){
                 const SizedBox(
                   height: 15.0,
                 ),
-                const Text(
-                  'Phone Number',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 8.0,
-                ),
                 textfield(phone_num, 'Phone Number'),
                 const SizedBox(
                   height: 15.0,
-                ),
-                const Text(
-                  'Password',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 8.0,
                 ),
                 textfield(password, 'Password'),
                 const SizedBox(
@@ -261,29 +241,30 @@ SnackBar errosnack(){
                 ),
                 Styled_button(
                     onPressed: () async {
-                      if( _formKey.currentState!.validate()){
-                      var registermessage = await submitregister();
-                      if (registermessage != 201) {
-                        errorsnackbar();
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text("Login Success"),
-                            content:
-                                Text("Now let's get back to the home page"),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  Navigator.pop(context);
-                                },
-                                child: Text("ok"),
-                              ),
-                            ],
-                          ),
-                        );
-                      }}
+                      if (_formKey.currentState!.validate()) {
+                        var registermessage = await submitregister();
+                        if (registermessage != 201) {
+                          errorsnackbar();
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text("Login Success"),
+                              content:
+                                  Text("Now let's get back to the home page"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("ok"),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      }
                     },
                     child: const Text("Register"))
               ],

@@ -14,16 +14,16 @@ class _TopbarState extends State<Topbar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFF1578E6),
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center, // Added this line
           children: [
-            Uniicon(),
+    
             Text(
-              "UniTrack",
+              "QueueEase",
               style: TextStyle(
-                color: Color(0xFF4a75a5),
+                color: Colors.white,
                 fontSize: 24,
                 fontFamily: 'Roboto',
                 letterSpacing: -0.6,

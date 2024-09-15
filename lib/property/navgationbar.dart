@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:fyp_mobile/student/Leave.dart';
-import 'package:fyp_mobile/student/Notification.dart';
-import 'package:fyp_mobile/student/StudentHome.dart';
-import 'package:fyp_mobile/student/StudentProfile.dart';
-import 'package:fyp_mobile/teacher/Home.dart';
-import 'package:fyp_mobile/teacher/analysis.dart';
-import 'package:fyp_mobile/teacher/calendar.dart';
-import 'package:fyp_mobile/teacher/leave_man.dart';
-import 'package:fyp_mobile/teacher/profile.dart';
+import 'package:fyp_mobile/customer/Leave.dart';
+import 'package:fyp_mobile/customer/Notification.dart';
+import 'package:fyp_mobile/customer/StudentHome.dart';
+import 'package:fyp_mobile/customer/StudentProfile.dart';
+import 'package:fyp_mobile/staff/Home.dart';
+import 'package:fyp_mobile/staff/analysis.dart';
+import 'package:fyp_mobile/staff/calendar.dart';
+import 'package:fyp_mobile/staff/leave_man.dart';
+import 'package:fyp_mobile/staff/profile.dart';
 import 'package:fyp_mobile/login.dart';
-import 'package:fyp_mobile/teacher/backhome.dart';
+import 'package:fyp_mobile/staff/backhome.dart';
 
 class Navigation extends StatefulWidget {
   final VoidCallback onLogout;
