@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
+import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/timetable.dart';
 import 'package:fyp_mobile/property/warningsignal.dart';
 import 'package:fyp_mobile/property/warningsignalicon.dart';

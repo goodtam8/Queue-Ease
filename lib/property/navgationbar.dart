@@ -59,12 +59,11 @@ class _NavigationState extends State<Navigation> {
 
   Widget buildScaffold(String userRole) {
     List<Widget> pages = [
-      userRole == "teacher" ? Home():Studenthome(),
-      const Calendar(),
-      userRole == "teacher" ? const Analysis() : noti(),
-      userRole == "teacher" ? LeaveMan() : Leave(),
-      userRole == "teacher"
-          ? Teacher(onLogout: widget.onLogout)
+      userRole == "staff" ? Home() : Studenthome(),
+      userRole == "staff" ? const Analysis() : noti(),
+      userRole == "staff" ? LeaveMan() : Leave(),
+      userRole == "staff"
+          ? Staff(onLogout: widget.onLogout)
           : Student(onLogout: widget.onLogout),
     ];
 
@@ -78,23 +77,18 @@ class _NavigationState extends State<Navigation> {
         backgroundColor: Colors.white,
         items: [
           const BottomNavigationBarItem(
-            icon: Icon(
-                 Icons.home ,
-                color: Colors.blue),
-            label: '',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month, color: Colors.blue),
+            icon: Icon(Icons.home, color: Colors.blue),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: Icon(
-                userRole == "teacher" ? Icons.bar_chart : Icons.notifications,
+                userRole == "staff" ? Icons.bar_chart : Icons.calendar_month,
                 color: Colors.blue),
             label: '',
           ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.check_box, color: Colors.blue),
+          BottomNavigationBarItem(
+            icon: Icon(userRole == "staff" ? Icons.list : Icons.restaurant,
+                color: Colors.blue),
             label: '',
           ),
           const BottomNavigationBarItem(

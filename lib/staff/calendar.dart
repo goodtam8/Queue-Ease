@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart';
+import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/timetable.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:http/http.dart' as http;
