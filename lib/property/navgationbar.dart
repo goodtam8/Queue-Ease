@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fyp_mobile/customer/Leave.dart';
 import 'package:fyp_mobile/customer/Notification.dart';
 import 'package:fyp_mobile/customer/StudentHome.dart';
-import 'package:fyp_mobile/customer/StudentProfile.dart';
+import 'package:fyp_mobile/customer/CustomerProfile.dart';
 import 'package:fyp_mobile/staff/Home.dart';
 import 'package:fyp_mobile/staff/analysis.dart';
 import 'package:fyp_mobile/staff/calendar.dart';
@@ -64,7 +64,7 @@ class _NavigationState extends State<Navigation> {
       userRole == "staff" ? LeaveMan() : Leave(),
       userRole == "staff"
           ? Staff(onLogout: widget.onLogout)
-          : Student(onLogout: widget.onLogout),
+          : Customer(onLogout: widget.onLogout),
     ];
 
     return Scaffold(

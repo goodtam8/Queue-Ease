@@ -15,7 +15,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 class personal {
   final String id;
-  final int staff_id;
+  final int sid;
   final String name;
   final String pw;
   final String gender;
@@ -24,7 +24,7 @@ class personal {
 
   const personal({
     required this.id,
-    required this.staff_id,
+    required this.sid,
     required this.name,
     required this.pw,
     required this.gender,
@@ -34,7 +34,7 @@ class personal {
 
   factory personal.fromJson(Map<String, dynamic> json) {
     return personal(
-      staff_id: json['staff_id'] as int,
+      sid: json['sid'] as int,
       id: json['_id'] as String,
       name: json['name'] as String,
       pw: json['pw'] as String,
@@ -173,7 +173,7 @@ class _HomeState extends State<Home> {
 
   Future<personal> getuserinfo(String objectid) async {
     var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/teacher/$objectid'),
+        Uri.parse('http://10.0.2.2:3000/api/staff/$objectid'),
         headers: {'Content-Type': 'application/json'});
 
     return parsepersonal(response.body);
@@ -210,7 +210,7 @@ class _HomeState extends State<Home> {
 
   Future<Timetable> gettodayevent(String objectid) async {
     var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/teacher/$objectid/timetable'),
+        Uri.parse('http://10.0.2.2:3000/api/staff/$objectid/get'),
         headers: {'Content-Type': 'application/json'});
     return parseTimetable(response.body);
   }
@@ -299,39 +299,56 @@ class _HomeState extends State<Home> {
                                                   Text(person.name),
                                                 ],
                                               ),
-                                              const Text(
-                                                "Today Weather",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20.0),
+                                              Container(
+                                                width: 343.0,
+                                                height: 130.0,
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFFF1F1F1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          24.0),
+                                                ),
+                                                child: Column(
+                                                  children: [
+                                                    Text(
+                                                      "Today Weather",
+                                                      style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 20.0),
+                                                    ),
+                                                    Text(
+                                                        "$weather\u00b0C ,${DateTime.now().hour}:${DateTime.now().minute}"),
+                                                    const SizedBox(
+                                                      height: 20.0,
+                                                    ),
+                                                    const Text(
+                                                        "Weather warning",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 20.0)),
+                                                    const SizedBox(
+                                                      height: 10.0,
+                                                    ),
+                                                    data.warnings != null
+                                                        ? Row(
+                                                            children: data
+                                                                .warnings!.keys
+                                                                .map((String
+                                                                        key) =>
+                                                                    Warningsignalicon(
+                                                                        name:
+                                                                            key,
+                                                                        warn: data
+                                                                            .warnings![key]))
+                                                                .toList(),
+                                                          )
+                                                        : const Text(
+                                                            "No warning signal now"),
+                                                  ],
+                                                ),
                                               ),
-                                              Text(
-                                                  "$weather\u00b0C ,${DateTime.now().hour}:${DateTime.now().minute}"),
-                                              const SizedBox(
-                                                height: 20.0,
-                                              ),
-                                              const Text("Weather warning",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 20.0)),
-                                              const SizedBox(
-                                                height: 10.0,
-                                              ),
-                                              data.warnings != null
-                                                  ? Row(
-                                                      children: data
-                                                          .warnings!.keys
-                                                          .map((String key) =>
-                                                              Warningsignalicon(
-                                                                  name: key,
-                                                                  warn:
-                                                                      data.warnings![
-                                                                          key]))
-                                                          .toList(),
-                                                    )
-                                                  : const Text(
-                                                      "No warning signal now"),
                                               const SizedBox(
                                                 height: 10.0,
                                               ),

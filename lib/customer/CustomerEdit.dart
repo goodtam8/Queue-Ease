@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/GenderSelection.dart';
 import 'package:fyp_mobile/property/button.dart';
-import 'package:fyp_mobile/property/student.dart';
+import 'package:fyp_mobile/property/customer.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:fyp_mobile/register.dart';
-import 'package:fyp_mobile/customer/StudentProfile.dart';
+import 'package:fyp_mobile/customer/CustomerProfile.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:http/http.dart' as http;
 
@@ -30,20 +30,20 @@ class _studenteditstate extends State<Studentedit> {
     super.initState();
   }
 
-  Future<Studentper> getuserinfo(String objectid) async {
+  Future<Customerper> getuserinfo(String objectid) async {
     var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/student/$objectid'),
+        Uri.parse('http://10.0.2.2:3000/api/customer/$objectid'),
         headers: {'Content-Type': 'application/json'});
     Map<String, dynamic> data = jsonDecode(response.body);
 
     print(response.body);
-    return await parsestudent(response.body);
+    return await parseCustomer(response.body);
   }
 
   Future<dynamic> updateinfo(String option, String objectid) async {
     if (_formKey.currentState!.validate()) {
       Map<String, dynamic> data = {
-        'sid': int.parse(sid.text),
+        'uid': int.parse(sid.text),
         'name': name.text,
         'pw': password.text,
         'gender': option,
@@ -52,7 +52,7 @@ class _studenteditstate extends State<Studentedit> {
       };
       try {
         var response = await http.put(
-            Uri.parse('http://10.0.2.2:3000/api/student/$objectid'),
+            Uri.parse('http://10.0.2.2:3000/api/customer/$objectid'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(data));
 
@@ -95,7 +95,7 @@ class _studenteditstate extends State<Studentedit> {
         if (value!.isEmpty) {
           return 'Please enter your $field'; // Validation error message
         } else if (int.tryParse(value) == null &&
-            (field == "SID" || field == "Phone Number")) {
+            (field == "UID" || field == "Phone Number")) {
           return 'Please input a valid $field';
         }
         return null; // Return null if the input is valid
@@ -129,19 +129,19 @@ class _studenteditstate extends State<Studentedit> {
                 Map<String, dynamic> decodedToken =
                     JwtDecoder.decode(snapshot.data as String);
                 String oid = decodedToken["_id"].toString();
-                return FutureBuilder<Studentper>(
+                return FutureBuilder<Customerper>(
                   future: getuserinfo(
                       oid), // Assuming getuserinfo returns a Future<personal>
                   builder: (BuildContext context,
-                      AsyncSnapshot<Studentper> snapshot) {
+                      AsyncSnapshot<Customerper> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CircularProgressIndicator(); // Show a loading indicator while waiting
                     } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     } else if (snapshot.hasData) {
-                      Studentper data =
+                      Customerper data =
                           snapshot.data!; // You now have your 'personal' data
-                      sid.text = data.sid.toString();
+                      sid.text = data.uid.toString();
                       // ... rest of your code to setup the form ...
                       password.text = data.pw.toString();
                       name.text = data.name.toString();
@@ -160,11 +160,11 @@ class _studenteditstate extends State<Studentedit> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       const Text(
-                                        'SID',
+                                        'UID',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      inputtextfield(sid, 'SID', true),
+                                      inputtextfield(sid, 'UID', true),
                                       const SizedBox(
                                         height: 15.0,
                                       ),
@@ -198,17 +198,17 @@ class _studenteditstate extends State<Studentedit> {
                                         child: DropdownButton<int>(
                                           items: const [
                                             DropdownMenuItem<int>(
-                                                value: 2021,
-                                                child: Text("2021")),
+                                                value: 2003,
+                                                child: Text("2003")),
                                             DropdownMenuItem<int>(
-                                                value: 2022,
-                                                child: Text("2022")),
+                                                value: 2004,
+                                                child: Text("2004")),
                                             DropdownMenuItem<int>(
-                                                value: 2023,
-                                                child: Text("2023")),
+                                                value: 2005,
+                                                child: Text("2005")),
                                             DropdownMenuItem<int>(
-                                                value: 2024,
-                                                child: Text("2024")),
+                                                value: 2006,
+                                                child: Text("2006")),
                                           ],
                                           onChanged: dropdowncallback,
                                           value: year,

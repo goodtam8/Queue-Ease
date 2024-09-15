@@ -19,7 +19,7 @@ class _TopbarState extends State<Topbar> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center, // Added this line
           children: [
-    
+    Uniicon(),
             Text(
               "QueueEase",
               style: TextStyle(

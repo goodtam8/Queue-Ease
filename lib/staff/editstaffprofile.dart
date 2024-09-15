@@ -12,7 +12,7 @@ GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
 class personal {
   final String id;
-  final int staff_id;
+  final int sid;
   final String name;
   final String pw;
   final String gender;
@@ -21,7 +21,7 @@ class personal {
 
   const personal({
     required this.id,
-    required this.staff_id,
+    required this.sid,
     required this.name,
     required this.pw,
     required this.gender,
@@ -31,7 +31,7 @@ class personal {
 
   factory personal.fromJson(Map<String, dynamic> json) {
     return personal(
-      staff_id: json['staff_id'] as int,
+      sid: json['sid'] as int,
       id: json['_id'] as String,
       name: json['name'] as String,
       pw: json['pw'] as String,
@@ -42,21 +42,20 @@ class personal {
   }
 }
 
-// A function that converts a response body into a List<Photo>.
 personal parsepersonal(String responseBody) {
-  final parsed = (jsonDecode(responseBody))as Map<String, dynamic>;
+  final parsed = (jsonDecode(responseBody)) as Map<String, dynamic>;
 
   return personal.fromJson(parsed);
 }
 
-class Editteacherprofile extends StatefulWidget {
-  const Editteacherprofile({super.key});
+class Editstaffprofile extends StatefulWidget {
+  const Editstaffprofile({super.key});
 
   @override
-  State<Editteacherprofile> createState() => _EditteacherprofileState();
+  State<Editstaffprofile> createState() => _EditstaffprofileState();
 }
 
-class _EditteacherprofileState extends State<Editteacherprofile> {
+class _EditstaffprofileState extends State<Editstaffprofile> {
   List<String> gender = ["Men", "Women"];
   late Future<String?> _tokenValue;
 
@@ -69,7 +68,7 @@ class _EditteacherprofileState extends State<Editteacherprofile> {
   Future<personal> getuserinfo(String objectid) async {
     print("hi");
     var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/teacher/$objectid'),
+        Uri.parse('http://10.0.2.2:3000/api/staff/$objectid'),
         headers: {'Content-Type': 'application/json'});
     Map<String, dynamic> data = jsonDecode(response.body);
 
@@ -80,16 +79,16 @@ class _EditteacherprofileState extends State<Editteacherprofile> {
   Future<dynamic> updateinfo(String option, String objectid) async {
     if (_formKey.currentState!.validate()) {
       Map<String, dynamic> data = {
-        'staff_id': int.parse(staff_id.text),
+        'sid': int.parse(staff_id.text),
         'name': name.text,
         'pw': password.text,
         'gender': option,
         'phone': int.parse(phone_num.text),
-        'email':email.text
+        'email': email.text
       };
       try {
         var response = await http.put(
-            Uri.parse('http://10.0.2.2:3000/api/teacher/$objectid'),
+            Uri.parse('http://10.0.2.2:3000/api/staff/$objectid'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode(data));
 
@@ -151,7 +150,8 @@ class _EditteacherprofileState extends State<Editteacherprofile> {
                     JwtDecoder.decode(snapshot.data as String);
                 String oid = decodedToken["_id"].toString();
                 return FutureBuilder<personal>(
-                  future: getuserinfo(oid), // Assuming getuserinfo returns a Future<personal>
+                  future: getuserinfo(
+                      oid), // Assuming getuserinfo returns a Future<personal>
                   builder:
                       (BuildContext context, AsyncSnapshot<personal> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -161,9 +161,8 @@ class _EditteacherprofileState extends State<Editteacherprofile> {
                     } else if (snapshot.hasData) {
                       personal data =
                           snapshot.data!; // You now have your 'personal' data
-                      staff_id.text = data.staff_id.toString();
                       // ... rest of your code to setup the form ...
-                      staff_id.text = data.staff_id.toString();
+                      staff_id.text = data.sid.toString();
                       password.text = data.pw.toString();
                       email.text = data.email.toString();
                       name.text = data.name.toString();
@@ -185,8 +184,7 @@ class _EditteacherprofileState extends State<Editteacherprofile> {
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
-                                      inputtextfield(
-                                          staff_id, 'Staff ID', true),
+                                      inputtextfield(staff_id, 'SID', true),
                                       const SizedBox(
                                         height: 15.0,
                                       ),
