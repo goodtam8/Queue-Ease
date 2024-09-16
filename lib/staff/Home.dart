@@ -80,6 +80,32 @@ class _HomeState extends State<Home> {
     return formatted;
   }
 
+  Widget custombutton() {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.pushNamed(context, "announcement");
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 8), // Padding
+        fixedSize: const Size(160, 36), // Width and height
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24), // Border radius
+        ),
+        backgroundColor: const Color(0xFF1578E6), // Background color
+        textStyle: const TextStyle(
+          color: Colors.white, // Text color
+          fontSize: 14, // Font size
+          fontFamily: 'Open Sans', // Font family
+          height: 1.43, // Line height (approximately)
+        ),
+      ),
+      child: const Text(
+        "Make Announcement",
+        style: TextStyle(color: Colors.white),
+      ), // Button label
+    );
+  }
+
   Widget mornoraft() {
     DateTime now = DateTime.now();
     if (now.hour >= 12) {
@@ -92,76 +118,6 @@ class _HomeState extends State<Home> {
     return const Text(
       "Good Morning",
       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-    );
-  }
-
-  Widget event(Timetable table) {
-    int weekday = DateTime.now().weekday;
-    print("today is:$weekday");
-
-    switch (weekday) {
-      case 1:
-        return listoftable(table.Monday);
-
-      case 2:
-        return listoftable(table.Tuesday);
-      case 3:
-        return listoftable(table.Wednesday);
-      case 4:
-        return listoftable(table.Thursday);
-      case 5:
-        return listoftable(table.Friday);
-    }
-    return Text("No event/classes for today");
-  }
-
-  String formattedevent(String course, int index) {
-    String formatted = "";
-    if (index == 1) {
-      formatted = "$course 9:30- 12:20";
-    } else if (index == 2) {
-      formatted = "$course 10:30- 13:20";
-    } else if (index == 3) {
-      formatted = "$course 11:30- 14:20";
-    } else if (index == 4) {
-      formatted = "$course 12:30- 15:20";
-    } else if (index == 5) {
-      formatted = "$course 13:30- 16:20";
-    } else if (index == 6) {
-      formatted = "$course 14:30- 17:20";
-    } else if (index == 7) {
-      formatted = "$course 15:30- 18:20";
-    }
-
-    return formatted;
-  }
-
-  Widget listoftable(List table) {
-    List<String> uniquelist = [];
-
-    String previous = "";
-    for (int i = 0; i < table.length; i++) {
-      if (previous != table[i] && table[i] != "") {
-        previous = table[i];
-
-        uniquelist.add(formattedevent(table[i], i));
-      }
-    }
-
-    return SizedBox(
-      height: 100, // Set a fixed height or adjust as needed
-      child: ListView.builder(
-        itemExtent: 30, // Set the space between each content here
-        itemCount: uniquelist.length,
-        itemBuilder: (BuildContext context, int index) {
-          print(uniquelist[index]);
-          return ListTile(
-            // Adjust padding here
-            title:
-                Text(uniquelist[index], style: const TextStyle(fontSize: 15.0)),
-          );
-        },
-      ),
     );
   }
 
@@ -208,11 +164,11 @@ class _HomeState extends State<Home> {
     return parseWeatherWarningSummary(response.body);
   }
 
-  Future<Timetable> gettodayevent(String objectid) async {
+  Future<Restaurant> getrestaurant(String objectid) async {
     var response = await http.get(
         Uri.parse('http://10.0.2.2:3000/api/staff/$objectid/get'),
         headers: {'Content-Type': 'application/json'});
-    return parseTimetable(response.body);
+    return parseRestaurant(response.body);
   }
 
   late int weather;
@@ -299,159 +255,168 @@ class _HomeState extends State<Home> {
                                                   Text(person.name),
                                                 ],
                                               ),
-                                              Container(
-                                                width: 343.0,
-                                                height: 130.0,
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xFFF1F1F1),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          24.0),
+                                              Row(
+                                                children: [
+                                                  FutureBuilder<Restaurant>(
+                                                      future:
+                                                          getrestaurant(oid),
+                                                      builder: (BuildContext
+                                                              context,
+                                                          AsyncSnapshot<
+                                                                  Restaurant>
+                                                              snapshot) {
+                                                        if (snapshot
+                                                                .connectionState ==
+                                                            ConnectionState
+                                                                .waiting) {
+                                                          return const CircularProgressIndicator(); // Show a loading indicator while waiting
+                                                        } else if (snapshot
+                                                            .hasError) {
+                                                          return Text(
+                                                              'Error: ${snapshot.error}');
+                                                        } else if (snapshot
+                                                            .hasData) {
+                                                          Restaurant table =
+                                                              snapshot.data!;
+
+                                                          return Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Text(
+                                                                "Restaurant:${table.name}",
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .left,
+                                                              )
+                                                            ],
+                                                          );
+                                                        } else {
+                                                          return const Text(
+                                                              'Unexpected error occurred');
+                                                        }
+                                                      }),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  const Text(
+                                                    "Currenent Queue",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 20.0),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 45.0,
+                                                  ),
+                                                  custombutton()
+                                                ],
+                                              ),
+                                              Center(
+                                                child: Container(
+                                                  width: 343.0,
+                                                  height: 200.0,
+                                                  decoration: BoxDecoration(
+                                                    color: Color(0xFFF1F1F1),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            24.0),
+                                                  ),
+                                                  child: const Padding(
+                                                    padding: EdgeInsets.all(
+                                                        16.0), // Optional padding for better layout
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start, // Aligns children to the left
+                                                      children: [
+                                                        Text(
+                                                          "Queue Number",
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 20.0,
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                            height:
+                                                                8.0), // Adds space between the texts
+                                                        Text(
+                                                          "It is hardcode. Queue Number: 100",
+                                                          textAlign: TextAlign
+                                                              .start, // Ensures text is aligned to the start
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
                                                 ),
-                                                child: Column(
-                                                  children: [
-                                                    Text(
-                                                      "Today Weather",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 20.0),
-                                                    ),
-                                                    Text(
-                                                        "$weather\u00b0C ,${DateTime.now().hour}:${DateTime.now().minute}"),
-                                                    const SizedBox(
-                                                      height: 20.0,
-                                                    ),
-                                                    const Text(
-                                                        "Weather warning",
+                                              ),
+                                              const SizedBox(
+                                                height: 30.0,
+                                              ),
+                                              Center(
+                                                child: Container(
+                                                  width: 343.0,
+                                                  height: 200.0,
+                                                  decoration: BoxDecoration(
+                                                    color:
+                                                        const Color(0xFFF1F1F1),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            24.0),
+                                                  ),
+                                                  child: Column(
+                                                    children: [
+                                                      const Text(
+                                                        "Today Weather",
                                                         style: TextStyle(
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            fontSize: 20.0)),
-                                                    const SizedBox(
-                                                      height: 10.0,
-                                                    ),
-                                                    data.warnings != null
-                                                        ? Row(
-                                                            children: data
-                                                                .warnings!.keys
-                                                                .map((String
-                                                                        key) =>
-                                                                    Warningsignalicon(
-                                                                        name:
-                                                                            key,
-                                                                        warn: data
-                                                                            .warnings![key]))
-                                                                .toList(),
-                                                          )
-                                                        : const Text(
-                                                            "No warning signal now"),
-                                                  ],
+                                                            fontSize: 20.0),
+                                                      ),
+                                                      Text(
+                                                          "$weather\u00b0C ,${DateTime.now().hour}:${DateTime.now().minute}"),
+                                                      const SizedBox(
+                                                        height: 20.0,
+                                                      ),
+                                                      const Text(
+                                                          "Weather warning",
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 20.0)),
+                                                      const SizedBox(
+                                                        height: 10.0,
+                                                      ),
+                                                      data.warnings != null
+                                                          ? Row(
+                                                              children: data
+                                                                  .warnings!
+                                                                  .keys
+                                                                  .map((String
+                                                                          key) =>
+                                                                      Warningsignalicon(
+                                                                          name:
+                                                                              key,
+                                                                          warn:
+                                                                              data.warnings![key]))
+                                                                  .toList(),
+                                                            )
+                                                          : const Text(
+                                                              "No warning signal now"),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                               const SizedBox(
                                                 height: 10.0,
                                               ),
-                                              Row(
-                                                children: [
-                                                  Transform.scale(
-                                                    scale:
-                                                        2.5, // Adjust the scale factor as needed to make the icon bigger
-
-                                                    child: IconButton(
-                                                        onPressed: () {
-                                                          globalNavigationBarKey
-                                                              .currentState
-                                                              ?.updateIndex(3);
-                                                        },
-                                                        icon: const Icon(
-                                                          Icons.check_box,
-                                                          color:
-                                                              Color(0xFF4a75a5),
-                                                        )),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 100.0,
-                                                  ),
-                                                  Transform.scale(
-                                                    scale:
-                                                        2.5, // Adjust the scale factor as needed to make the icon bigger
-
-                                                    child: IconButton(
-                                                        onPressed: () {
-                                                          globalNavigationBarKey
-                                                              .currentState
-                                                              ?.updateIndex(2);
-                                                        },
-                                                        icon: const Icon(
-                                                          Icons.bar_chart,
-                                                          color:
-                                                              Color(0xFF4a75a5),
-                                                        )),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 100.0,
-                                                  ),
-                                                  Transform.scale(
-                                                      scale:
-                                                          2.5, // Adjust the scale factor as needed to make the icon bigger
-
-                                                      child: const Icon(
-                                                        Icons.chat_sharp,
-                                                        color:
-                                                            Color(0xFF4a75a5),
-                                                      ))
-                                                ],
-                                              ),
-                                              const Text(
-                                                "Today Events",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 20.0),
-                                              ),
-                                              FutureBuilder<Timetable>(
-                                                  future: gettodayevent(oid),
-                                                  builder: (BuildContext
-                                                          context,
-                                                      AsyncSnapshot<Timetable>
-                                                          snapshot) {
-                                                    if (snapshot
-                                                            .connectionState ==
-                                                        ConnectionState
-                                                            .waiting) {
-                                                      return const CircularProgressIndicator(); // Show a loading indicator while waiting
-                                                    } else if (snapshot
-                                                        .hasError) {
-                                                      return Text(
-                                                          'Error: ${snapshot.error}');
-                                                    } else if (snapshot
-                                                        .hasData) {
-                                                      Timetable table =
-                                                          snapshot.data!;
-
-                                                      return Column(
-                                                        children: [
-                                                          event(table),
-                                                          SizedBox(
-                                                            height: 35.0,
-                                                          ),
-                                                          Transform.scale(
-                                                              scale: 6.0,
-                                                              child: Center(
-                                                                child: IconButton(
-                                                                    onPressed:
-                                                                        () {},
-                                                                    icon: const Icon(
-                                                                        Icons
-                                                                            .qr_code)),
-                                                              ))
-                                                        ],
-                                                      );
-                                                    } else {
-                                                      return const Text(
-                                                          'Unexpected error occurred');
-                                                    }
-                                                  }),
                                             ]);
                                       } else {
                                         return const Text(

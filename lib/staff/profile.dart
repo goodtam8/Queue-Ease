@@ -157,7 +157,7 @@ class _StaffState extends State<Staff> {
                           AsyncSnapshot<Restaurant> snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return CircularProgressIndicator(); // Show a loading indicator while waiting
+                          return const CircularProgressIndicator(); // Show a loading indicator while waiting
                         } else if (snapshot.hasError) {
                           return Text(
                               'Error: restaurant trigger ${snapshot.error}');

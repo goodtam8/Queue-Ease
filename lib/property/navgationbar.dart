@@ -5,7 +5,7 @@ import 'package:fyp_mobile/customer/StudentHome.dart';
 import 'package:fyp_mobile/customer/CustomerProfile.dart';
 import 'package:fyp_mobile/staff/Home.dart';
 import 'package:fyp_mobile/staff/analysis.dart';
-import 'package:fyp_mobile/staff/calendar.dart';
+import 'package:fyp_mobile/staff/announcement.dart';
 import 'package:fyp_mobile/staff/leave_man.dart';
 import 'package:fyp_mobile/staff/profile.dart';
 import 'package:fyp_mobile/login.dart';
@@ -74,25 +74,25 @@ class _NavigationState extends State<Navigation> {
         children: pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFF1578E6),
         items: [
           const BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.blue),
+            icon: Icon(Icons.home, color: Color(0xFF1578E6)),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: Icon(
                 userRole == "staff" ? Icons.bar_chart : Icons.calendar_month,
-                color: Colors.blue),
+                color: Color(0xFF1578E6)),
             label: '',
           ),
           BottomNavigationBarItem(
             icon: Icon(userRole == "staff" ? Icons.list : Icons.restaurant,
-                color: Colors.blue),
+                color: Color(0xFF1578E6)),
             label: '',
           ),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.account_box, color: Colors.blue),
+            icon: Icon(Icons.account_box, color: Color(0xFF1578E6)),
             label: '',
           ),
         ],
