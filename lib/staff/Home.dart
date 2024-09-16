@@ -83,8 +83,9 @@ class _HomeState extends State<Home> {
   Widget custombutton() {
     return ElevatedButton(
       onPressed: () {
-        Navigator.pushNamed(context, "announcement");
-      },
+ Navigator.of(context)
+                                            .pushNamed('/announce');
+                                                  },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8), // Padding
         fixedSize: const Size(160, 36), // Width and height

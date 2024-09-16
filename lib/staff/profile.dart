@@ -336,7 +336,7 @@ class _StaffState extends State<Staff> {
                                         child: const Text("Edit Profile"),
                                       )),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 15.0,
                                 ),
                                 SizedBox(

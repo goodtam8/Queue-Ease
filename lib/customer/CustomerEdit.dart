@@ -2,12 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart';
-import 'package:fyp_mobile/property/GenderSelection.dart';
 import 'package:fyp_mobile/property/button.dart';
 import 'package:fyp_mobile/property/customer.dart';
 import 'package:fyp_mobile/property/topbar.dart';
-import 'package:fyp_mobile/register.dart';
-import 'package:fyp_mobile/customer/CustomerProfile.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:http/http.dart' as http;
 
@@ -34,7 +31,6 @@ class _studenteditstate extends State<Studentedit> {
     var response = await http.get(
         Uri.parse('http://10.0.2.2:3000/api/customer/$objectid'),
         headers: {'Content-Type': 'application/json'});
-    Map<String, dynamic> data = jsonDecode(response.body);
 
     print(response.body);
     return await parseCustomer(response.body);
@@ -235,10 +231,7 @@ class _studenteditstate extends State<Studentedit> {
                                       const SizedBox(
                                         height: 15.0,
                                       ),
-                                      GenderSelectionWidget(
-                                        initialOption: selectedGender,
-                                        onGenderSelected: handleGenderSelected,
-                                      ),
+                                     
                                       Styled_button(
                                           onPressed: () async {
                                             if (_formKey.currentState!

@@ -40,21 +40,22 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: isLoggedIn ? Navigation(onLogout: logout, key: globalNavigationBarKey,) : Login(onLogin: login),
-      routes: 
-{
-  '/login':(context)=> Login(onLogin: login),
-      '/register':(context)=>const Register() ,
-
-      '/home':(context)=>const Home(),
-      '/leave':(context)=>const LeaveMan(),
-      '/announce':(context)=>const Announcement(),
-      '/analysis':(context)=>const Analysis(),
-      '/update':(context)=>const Editstaffprofile(),
-      '/reg':(context)=>const Customerregister(),
-      '/customer/edit':(context)=>const Studentedit()
-      
-    
-}    );
+        home: isLoggedIn
+            ? Navigation(
+                onLogout: logout,
+                key: globalNavigationBarKey,
+              )
+            : Login(onLogin: login),
+        routes: {
+          '/login': (context) => Login(onLogin: login),
+          '/register': (context) => const Register(),
+          '/home': (context) => const Home(),
+          '/leave': (context) => const LeaveMan(),
+          '/announce': (context) => const Announcement(),
+          '/analysis': (context) => const Analysis(),
+          '/update': (context) => const Editstaffprofile(),
+          '/reg': (context) => const Customerregister(),
+          '/customer/edit': (context) => const Studentedit()
+        });
   }
 }
