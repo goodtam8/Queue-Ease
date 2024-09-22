@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fyp_mobile/login.dart';
+import 'package:fyp_mobile/property/const.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
 import 'package:fyp_mobile/register.dart';
 import 'package:fyp_mobile/customer/CustomerEdit.dart';
@@ -11,8 +13,14 @@ import 'package:fyp_mobile/staff/editstaffprofile.dart';
 import 'package:fyp_mobile/staff/leave_man.dart';
 import 'package:fyp_mobile/staff/backhome.dart';
 
-void main() {
+void main() async{
+  await _setup();
   runApp(MyApp());
+}
+Future<void>_setup() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey=stripePublishableKey;
+
 }
 
 class MyApp extends StatefulWidget {

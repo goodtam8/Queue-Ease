@@ -40,6 +40,8 @@ dependencies:
   jwt_decoder: ^2.0.1
   image_picker: ^1.1.2
   time_scheduler_table: ^1.0.0
+  flutter_stripe: ^11.1.0
+  dio: ^5.7.0
 
 dev_dependencies:
   flutter_test:
