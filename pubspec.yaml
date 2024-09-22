@@ -42,6 +42,9 @@ dependencies:
   time_scheduler_table: ^1.0.0
   flutter_stripe: ^11.1.0
   dio: ^5.7.0
+  google_maps_flutter: ^2.9.0
+  location: ^6.0.2
+  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:
