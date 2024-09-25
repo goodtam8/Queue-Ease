@@ -1,5 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:fyp_mobile/firebase_options.dart';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/const.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
@@ -13,14 +15,19 @@ import 'package:fyp_mobile/staff/editstaffprofile.dart';
 import 'package:fyp_mobile/staff/leave_man.dart';
 import 'package:fyp_mobile/staff/backhome.dart';
 
-void main() async{
+void main() async {
   await _setup();
+
   runApp(MyApp());
 }
-Future<void>_setup() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  Stripe.publishableKey=stripePublishableKey;
 
+Future<void> _setup() async {
+
+
+  WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey = stripePublishableKey;
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform); // Initialize Firebase
 }
 
 class MyApp extends StatefulWidget {

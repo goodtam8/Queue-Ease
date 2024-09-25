@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart'; // Assuming storage is defined here
+import 'package:fyp_mobile/property/add_data.dart';
 import 'package:fyp_mobile/property/button.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/topbar.dart';
@@ -69,6 +70,13 @@ class _StaffState extends State<Staff> {
   void initState() {
     _tokenValue = storage.read(key: 'jwt');
     super.initState();
+  }
+
+  void saveImage(String id) async {
+    if (_image != null) {
+      String resp = await StoreData().saveData(id: id, file: _image!);
+      print(resp);
+    }
   }
 
   void selectimage() async {
@@ -145,7 +153,7 @@ class _StaffState extends State<Staff> {
               builder:
                   (BuildContext context, AsyncSnapshot<personal> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator(); // Show a loading indicator while waiting
+                  return const CircularProgressIndicator(); // Show a loading indicator while waiting
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else if (snapshot.hasData) {
@@ -169,41 +177,50 @@ class _StaffState extends State<Staff> {
                                 const SizedBox(
                                   height: 15.0,
                                 ),
-                                Row(
+                                Column(
                                   children: [
-                                    Stack(children: [
-                                      _image != null
-                                          ? CircleAvatar(
-                                              radius: 64,
-                                              backgroundImage:
-                                                  MemoryImage(_image!),
-                                            )
-                                          : const CircleAvatar(
-                                              radius: 64,
-                                              backgroundImage:
-                                                  AssetImage('assets/user.png'),
-                                            ),
-                                      Positioned(
-                                        bottom: -10,
-                                        left: 80,
-                                        child: IconButton(
-                                            onPressed: selectimage,
-                                            icon:
-                                                const Icon(Icons.add_a_photo)),
-                                      ),
-                                    ]),
-                                    Text(
-                                      data.name,
-                                      style: const TextStyle(
-                                        color: Color(0xFF030303),
-                                        fontSize: 16,
-                                        fontFamily: 'Open Sans',
-                                        fontWeight: FontWeight
-                                            .w700, // 700 corresponds to FontWeight.bold
-                                        height:
-                                            1.5, // lineHeight can be set using height
-                                      ),
+                                    Row(
+                                      children: [
+                                        Stack(children: [
+                                          _image != null
+                                              ? CircleAvatar(
+                                                  radius: 64,
+                                                  backgroundImage:
+                                                      MemoryImage(_image!),
+                                                )
+                                              : const CircleAvatar(
+                                                  radius: 64,
+                                                  backgroundImage: AssetImage(
+                                                      'assets/user.png'),
+                                                ),
+                                          Positioned(
+                                            bottom: -10,
+                                            left: 80,
+                                            child: IconButton(
+                                                onPressed: selectimage,
+                                                icon: const Icon(
+                                                    Icons.add_a_photo)),
+                                          ),
+                                        ]),
+                                        Text(
+                                          data.name,
+                                          style: const TextStyle(
+                                            color: Color(0xFF030303),
+                                            fontSize: 16,
+                                            fontFamily: 'Open Sans',
+                                            fontWeight: FontWeight
+                                                .w700, // 700 corresponds to FontWeight.bold
+                                            height:
+                                                1.5, // lineHeight can be set using height
+                                          ),
+                                        ),
+                                      ],
                                     ),
+                                    ElevatedButton(
+                                      onPressed: () => saveImage(
+                                          oid), // Use a lambda to call the function
+                                      child: const Text("Save Image"),
+                                    )
                                   ],
                                 ),
                                 const SizedBox(
