@@ -79,6 +79,32 @@ class _StaffState extends State<Staff> {
     }
   }
 
+  Future<void> getImage(String id) async {
+    String url = await StoreData().getImageUrl(id);
+    if (url != "error") {
+      setState(() async {
+        _image = await fetchImageAsUint8List(url);
+      });
+    }
+  }
+
+  Future<Uint8List?> fetchImageAsUint8List(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Convert the response body to Uint8List
+        return response.bodyBytes;
+      } else {
+        print('Failed to load image: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching image: $e');
+      return null;
+    }
+  }
+
   void selectimage() async {
     Uint8List img = await pickimage(ImageSource.gallery);
     setState(() {
@@ -146,6 +172,7 @@ class _StaffState extends State<Staff> {
             Map<String, dynamic> decodedToken =
                 JwtDecoder.decode(snapshot.data as String);
             String oid = decodedToken["_id"].toString();
+            getImage(oid);
 
             return FutureBuilder<personal>(
               future: getuserinfo(
@@ -343,7 +370,8 @@ class _StaffState extends State<Staff> {
                                           borderRadius:
                                               BorderRadius.circular(24),
                                         ),
-                                        backgroundColor: Color(0xFF4a75a5),
+                                        backgroundColor:
+                                            const Color(0xFF4a75a5),
                                       ),
                                       child: DefaultTextStyle.merge(
                                         style: const TextStyle(
