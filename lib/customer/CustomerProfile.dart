@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart'; // Assuming storage is defined here
+import 'package:fyp_mobile/property/add_data.dart';
 import 'package:fyp_mobile/property/button.dart';
 import 'package:fyp_mobile/property/customer.dart';
 import 'package:fyp_mobile/property/topbar.dart';
@@ -32,11 +33,43 @@ class _Customerstate extends State<Customer> {
     super.initState();
   }
 
+  void saveImage(String id) async {
+    if (_image != null) {
+      String resp = await StoreData().saveData(id: id, file: _image!);
+      print(resp);
+    }
+  }
+
   void selectimage() async {
     Uint8List img = await pickimage(ImageSource.gallery);
     setState(() {
       _image = img;
     });
+  }
+
+  Future<void> getImage(String id) async {
+    String url = await StoreData().getImageUrl(id);
+    if (url != "error") {
+      setState(() async {
+        _image = await fetchImageAsUint8List(url);
+      });
+    }
+  }
+    Future<Uint8List?> fetchImageAsUint8List(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Convert the response body to Uint8List
+        return response.bodyBytes;
+      } else {
+        print('Failed to load image: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching image: $e');
+      return null;
+    }
   }
 
   Future<Customerper> getuserinfo(String objectid) async {
@@ -68,36 +101,7 @@ class _Customerstate extends State<Customer> {
     }
   }
 
-  void uploadImage(Uint8List imageData) async {
-    var request = http.MultipartRequest(
-        'POST', Uri.parse('http://10.0.2.2:3000/api/upload'));
 
-    var fileStream = http.ByteStream.fromBytes(imageData);
-    var length = imageData.lengthInBytes;
-    var mimeType = 'image/jpeg';
-
-    var multipartFile = http.MultipartFile(
-        'file', // Make sure this matches the field name expected by your server
-        fileStream,
-        length,
-        filename: 'image.${getImageType(imageData)}',
-        contentType: MediaType.parse(mimeType));
-
-    request.files.add(multipartFile);
-
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
-      print('Image uploaded successfully');
-      // You might want to read the response body here
-      String responseBody = await response.stream.bytesToString();
-      print(responseBody);
-    } else {
-      print('Failed to upload image. Status code: ${response.statusCode}');
-      String responseBody = await response.stream.bytesToString();
-      print('Response body: $responseBody');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,6 +126,7 @@ class _Customerstate extends State<Customer> {
             Map<String, dynamic> decodedToken =
                 JwtDecoder.decode(snapshot.data as String);
             String oid = decodedToken["_id"].toString();
+            getImage(oid);
 
             return FutureBuilder<Customerper>(
               future: getuserinfo(
@@ -181,7 +186,7 @@ class _Customerstate extends State<Customer> {
                                         ),
                                         TextButton(
                                             onPressed: () {
-                                              uploadImage(_image!);
+                                              saveImage(oid);
                                             },
                                             child: const Text("Save Image")),
                                         const Text(

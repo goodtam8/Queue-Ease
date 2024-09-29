@@ -8,7 +8,7 @@ class StripeService {
 
   Future<void> makePayment() async {
     try {
-      String? result = await _createPaymentIntent(10, "usd");
+      String? result = await _createPaymentIntent(10, "usd");// need to modify bbase on the shopping chart of the food
       if (result == null) {
         return;
       }

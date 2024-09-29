@@ -14,10 +14,48 @@ class StoreData {
     String downlaodurl = await snapshot.ref.getDownloadURL();
     return downlaodurl;
   }
+  Future<String> uploaduserimage(String filename, Uint8List file) async {
+    
+    Reference ref = _storage.ref().child("user_profile").child(filename);
+    UploadTask uploadTask = ref.putData(file);
+    TaskSnapshot snapshot = await uploadTask;
+    String downlaodurl = await snapshot.ref.getDownloadURL();
+    return downlaodurl;
+  }
+  Future<String> uploadrestimage(String filename, Uint8List file) async {
+    
+    Reference ref = _storage.ref().child("restaurant").child(filename);
+    UploadTask uploadTask = ref.putData(file);
+    TaskSnapshot snapshot = await uploadTask;
+    String downlaodurl = await snapshot.ref.getDownloadURL();
+    return downlaodurl;
+  }
 
   Future<String> getImageUrl(String id) async {
     try {
        Reference ref = _storage.ref().child("staff_profile").child(id);
+    final url=await ref.getDownloadURL();
+    return url;
+    } catch (e) {
+      print(e);
+      return "error";
+    }
+   
+  }
+  Future<String> getuserurl(String id) async {
+    try {
+       Reference ref = _storage.ref().child("user_profile").child(id);
+    final url=await ref.getDownloadURL();
+    return url;
+    } catch (e) {
+      print(e);
+      return "error";
+    }
+   
+  }
+   Future<String> getresturl(String id) async {
+    try {
+       Reference ref = _storage.ref().child("restaurant").child(id);
     final url=await ref.getDownloadURL();
     return url;
     } catch (e) {
@@ -37,4 +75,25 @@ class StoreData {
     }
     return resp;
   }
+    Future<String> saveuserdata({required String id, required Uint8List file}) async {
+    String resp = "ok";
+
+    try {
+      String imageUrl = await uploaduserimage(id, file);
+    } catch (e) {
+      resp = e.toString();
+    }
+    return resp;
+  }
+    Future<String> saverestdata({required String id, required Uint8List file}) async {
+    String resp = "ok";
+
+    try {
+      String imageUrl = await uploadrestimage(id, file);
+    } catch (e) {
+      resp = e.toString();
+    }
+    return resp;
+  }
+
 }
