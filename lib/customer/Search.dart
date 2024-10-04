@@ -30,10 +30,48 @@ class _SearchState extends State<Search> {
           List<Restaurant> data = snapshot.data!;
           return restcard(data);
         } else {
-          return Text("Unexpected error occurred");
+          return Text("There is no result yet ");
         }
       },
     );
+  }
+
+  Widget button(String text, fun) {
+    return ElevatedButton(
+      onPressed: fun,
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        fixedSize: const Size(116, 40),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        backgroundColor: const Color(0xFF1578E6), // Background color
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+            fontSize: 16,
+            fontFamily: 'Open Sans',
+            fontWeight: FontWeight.w600,
+            height: 1.5,
+            color: Colors.white // Equivalent to lineHeight
+            ),
+      ),
+    );
+  }
+
+  void incrementpage() {
+    setState(() {
+      page += 1;
+      searchResults = search();
+    });
+  }
+
+  void decrementpage() {
+    setState(() {
+      page -= 1;
+      searchResults = search();
+    });
   }
 
   Future<List<Restaurant>> search() async {
@@ -43,7 +81,9 @@ class _SearchState extends State<Search> {
         headers: {'Content-Type': 'application/json'});
     final data = jsonDecode(response.body);
     print(data['rests']);
-    totalpage = (data['total'] / 4).ceil();
+    setState(() {
+      totalpage = (data['total'] / 4).ceil();
+    });
     print(totalpage);
 
     return await Restaurant.listFromJson(data['rests']);
@@ -88,6 +128,9 @@ class _SearchState extends State<Search> {
   }
 
   void _onSearchChanged(String query) {
+    setState(() {
+      page = 1;
+    });
     if (query.isEmpty) {
       setState(() {
         searchResults = null;
@@ -108,11 +151,25 @@ class _SearchState extends State<Search> {
           TextField(
             controller: input,
             onChanged: _onSearchChanged, // Call the method on text change
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               hintText: 'Search for a restaurant',
             ),
           ),
-          Expanded(child: searchresult()), // Render the search results
+          Expanded(child: searchresult()),
+          Row(
+            children: [
+              const SizedBox(
+                width: 10.0,
+              ),
+              page > 1
+                  ? button("Prev", decrementpage)
+                  : const SizedBox(
+                      width: 116.0,
+                    ),
+              const SizedBox(width: 160.0),
+              page < totalpage ? button("Next", incrementpage) : SizedBox()
+            ],
+          ) // Render the search results
         ],
       ),
     );

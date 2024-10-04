@@ -5,14 +5,14 @@ import 'package:fyp_mobile/property/topbar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 
-class Studentcalendar extends StatefulWidget {
-  const Studentcalendar({super.key});
+class Map extends StatefulWidget {
+  const Map({super.key});
 
   @override
-  State<Studentcalendar> createState() => _StudentcalendarState();
+  State<Map> createState() => _Mapstate();
 }
 
-class _StudentcalendarState extends State<Studentcalendar> {
+class _Mapstate extends State<Map> {
   static const LatLng _GooglePlex = LatLng(37.4223, -122.0848);
   Location _location = new Location();
   LatLng? _currentP = null;

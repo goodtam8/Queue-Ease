@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/property/add_data.dart';
+import 'package:fyp_mobile/property/appbarwithsearch.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:http/http.dart' as http;
@@ -193,21 +194,21 @@ class _Restinfostate extends State<Restinfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Topbar(),
+      appBar: const searchbar(),
       body: Column(
         children: [
           futuregetrest(),
           Row(
             children: [
-              SizedBox(
+              const SizedBox(
                 width: 10.0,
               ),
               page > 1
                   ? button("Prev", decrementpage)
-                  : SizedBox(
+                  : const SizedBox(
                       width: 116.0,
                     ),
-              SizedBox(width: 160.0),
+              const SizedBox(width: 160.0),
               page < totalpage ? button("Next", incrementpage) : SizedBox()
             ],
           )
