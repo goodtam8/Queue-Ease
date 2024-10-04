@@ -102,7 +102,7 @@ class customerregister_state extends State<Customerregister> {
         'name': name.text,
         'pw': password.text,
         'gender': currentOption,
-        'phone_num': int.parse(phone_num.text),
+        'phone': int.parse(phone_num.text),
         'year': year
       };
       try {

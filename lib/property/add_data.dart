@@ -7,24 +7,23 @@ final FirebaseStorage _storage = FirebaseStorage.instance;
 
 class StoreData {
   Future<String> uploadimagetoStorage(String filename, Uint8List file) async {
-    
     Reference ref = _storage.ref().child("staff_profile").child(filename);
     UploadTask uploadTask = ref.putData(file);
     TaskSnapshot snapshot = await uploadTask;
     String downlaodurl = await snapshot.ref.getDownloadURL();
     return downlaodurl;
   }
+
   Future<String> uploaduserimage(String filename, Uint8List file) async {
-    
     Reference ref = _storage.ref().child("user_profile").child(filename);
     UploadTask uploadTask = ref.putData(file);
     TaskSnapshot snapshot = await uploadTask;
     String downlaodurl = await snapshot.ref.getDownloadURL();
     return downlaodurl;
   }
+
   Future<String> uploadrestimage(String filename, Uint8List file) async {
-    
-    Reference ref = _storage.ref().child("restaurant").child(filename);
+    Reference ref = _storage.ref().child("Restaurant").child(filename);
     UploadTask uploadTask = ref.putData(file);
     TaskSnapshot snapshot = await uploadTask;
     String downlaodurl = await snapshot.ref.getDownloadURL();
@@ -33,36 +32,35 @@ class StoreData {
 
   Future<String> getImageUrl(String id) async {
     try {
-       Reference ref = _storage.ref().child("staff_profile").child(id);
-    final url=await ref.getDownloadURL();
-    return url;
+      Reference ref = _storage.ref().child("staff_profile").child(id);
+      final url = await ref.getDownloadURL();
+      return url;
     } catch (e) {
       print(e);
       return "error";
     }
-   
   }
+
   Future<String> getuserurl(String id) async {
     try {
-       Reference ref = _storage.ref().child("user_profile").child(id);
-    final url=await ref.getDownloadURL();
-    return url;
+      Reference ref = _storage.ref().child("user_profile").child(id);
+      final url = await ref.getDownloadURL();
+      return url;
     } catch (e) {
       print(e);
       return "error";
     }
-   
   }
-   Future<String> getresturl(String id) async {
+
+  Future<String> getresturl(String id) async {
     try {
-       Reference ref = _storage.ref().child("restaurant").child(id);
-    final url=await ref.getDownloadURL();
-    return url;
+      Reference ref = _storage.ref().child("Restaurant").child(id);
+      final url = await ref.getDownloadURL();
+      return url;
     } catch (e) {
       print(e);
       return "error";
     }
-   
   }
 
   Future<String> saveData({required String id, required Uint8List file}) async {
@@ -75,7 +73,9 @@ class StoreData {
     }
     return resp;
   }
-    Future<String> saveuserdata({required String id, required Uint8List file}) async {
+
+  Future<String> saveuserdata(
+      {required String id, required Uint8List file}) async {
     String resp = "ok";
 
     try {
@@ -85,7 +85,9 @@ class StoreData {
     }
     return resp;
   }
-    Future<String> saverestdata({required String id, required Uint8List file}) async {
+
+  Future<String> saverestdata(
+      {required String id, required Uint8List file}) async {
     String resp = "ok";
 
     try {
@@ -95,5 +97,4 @@ class StoreData {
     }
     return resp;
   }
-
 }

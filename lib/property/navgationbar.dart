@@ -5,7 +5,7 @@ import 'package:fyp_mobile/customer/StudentCalendar.dart';
 import 'package:fyp_mobile/customer/StudentHome.dart';
 import 'package:fyp_mobile/customer/CustomerProfile.dart';
 import 'package:fyp_mobile/staff/Home.dart';
-import 'package:fyp_mobile/staff/analysis.dart';
+import 'package:fyp_mobile/staff/tablestatus.dart';
 import 'package:fyp_mobile/staff/announcement.dart';
 import 'package:fyp_mobile/staff/leave_man.dart';
 import 'package:fyp_mobile/staff/profile.dart';
@@ -61,7 +61,7 @@ class _NavigationState extends State<Navigation> {
   Widget buildScaffold(String userRole) {
     List<Widget> pages = [
       userRole == "staff" ? Home() : Studenthome(),
-      userRole == "staff" ? const Analysis() : Studentcalendar(),
+      userRole == "staff" ?  Tablestatus() : Studentcalendar(),
       userRole == "staff" ? LeaveMan() : Restinfo(),
       userRole == "staff"
           ? Staff(onLogout: widget.onLogout)

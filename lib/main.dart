@@ -9,7 +9,7 @@ import 'package:fyp_mobile/register.dart';
 import 'package:fyp_mobile/customer/CustomerEdit.dart';
 import 'package:fyp_mobile/customerregister.dart';
 import 'package:fyp_mobile/staff/Home.dart';
-import 'package:fyp_mobile/staff/analysis.dart';
+import 'package:fyp_mobile/staff/tablestatus.dart';
 import 'package:fyp_mobile/staff/announcement.dart';
 import 'package:fyp_mobile/staff/editstaffprofile.dart';
 import 'package:fyp_mobile/staff/leave_man.dart';
@@ -67,7 +67,7 @@ class _MyAppState extends State<MyApp> {
           '/home': (context) => const Home(),
           '/leave': (context) => const LeaveMan(),
           '/announce': (context) => const Announcement(),
-          '/analysis': (context) => const Analysis(),
+          '/table': (context) =>  Tablestatus(),
           '/update': (context) => const Editstaffprofile(),
           '/reg': (context) => const Customerregister(),
           '/customer/edit': (context) => const Studentedit()

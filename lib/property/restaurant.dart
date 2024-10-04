@@ -28,6 +28,9 @@ class Restaurant {
     required this.quota,
     required this.menu,
   });
+static  List<Restaurant> listFromJson(List<dynamic> json) {
+    return json.map((item) => Restaurant.fromJson(item)).toList();
+  }  
 
   factory Restaurant.fromJson(Map<String, dynamic> json) {
     return Restaurant(
@@ -45,7 +48,11 @@ class Restaurant {
       menu: json['menu'] as List<dynamic>? ?? [], // Provide a default value
     );
   }
+
 }
+
+
+   
 
 Restaurant parseRestaurant(String responseBody) {
   final parsed = jsonDecode(responseBody) as Map<String, dynamic>;

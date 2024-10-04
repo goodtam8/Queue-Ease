@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 
-class Analysis extends StatefulWidget {
-  const Analysis({super.key});
+class Tablestatus extends StatefulWidget {
+  const Tablestatus({super.key});
 
   @override
-  State<Analysis> createState() => _AnalysisState();
+  State<Tablestatus> createState() => _Tablestate();
 }
 
-class _AnalysisState extends State<Analysis> {
+class _Tablestate extends State<Tablestatus> {
+bool isswitched=false;
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
