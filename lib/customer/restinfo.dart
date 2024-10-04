@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:fyp_mobile/customer/RestaurantDetail.dart';
 import 'package:fyp_mobile/property/add_data.dart';
 import 'package:fyp_mobile/property/appbarwithsearch.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
@@ -18,6 +19,8 @@ class Restinfo extends StatefulWidget {
 class _Restinfostate extends State<Restinfo> {
   int page = 1;
   late int totalpage;
+    Uint8List? _image;
+
   Widget restimage(String _id) {
     return FutureBuilder<Uint8List?>(
         future: getImage(_id),
@@ -51,14 +54,23 @@ class _Restinfostate extends State<Restinfo> {
         });
   }
 
-  Widget restcard(List<Restaurant> data) {
-    List<Widget> restaurantCards = [];
+Widget restcard(List<Restaurant> data) {
+  List<Widget> restaurantCards = [];
 
-    for (var restaurant in data) {
-      restaurantCards.add(
-        Container(
-          margin: const EdgeInsets.only(
-              top: 16, left: 16), // Adjust margin if needed
+  for (var restaurant in data) {
+    restaurantCards.add(
+      GestureDetector(
+        onTap: () {
+          // Navigate to the new screen and pass the restaurant data
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Restaurantdetail(restaurant: restaurant.id),
+            ),
+          );
+        },
+        child: Container(
+          margin: const EdgeInsets.only(top: 16, left: 16),
           width: 343,
           height: 132,
           decoration: BoxDecoration(
@@ -74,28 +86,30 @@ class _Restinfostate extends State<Restinfo> {
                 children: [
                   Text(
                     restaurant.name,
-
                     style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight:
-                            FontWeight.bold), // Adjust text style if needed
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  Text(restaurant.type,
-                      style: const TextStyle(
-                        fontSize: 18,
-                      ))
+                  Text(
+                    restaurant.type,
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                  )
                 ],
               ),
             ],
           ),
         ),
-      );
-    }
-
-    return Column(
-      children: restaurantCards,
+      ),
     );
   }
+
+  return Column(
+    children: restaurantCards,
+  );
+}
 
   void incrementpage() {
     setState(() {
