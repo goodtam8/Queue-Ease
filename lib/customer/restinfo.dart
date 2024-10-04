@@ -17,7 +17,6 @@ class Restinfo extends StatefulWidget {
 class _Restinfostate extends State<Restinfo> {
   int page = 1;
   late int totalpage;
-  Uint8List? _image;
   Widget restimage(String _id) {
     return FutureBuilder<Uint8List?>(
         future: getImage(_id),
@@ -44,7 +43,7 @@ class _Restinfostate extends State<Restinfo> {
               child: Container(
                 height: 70.0,
                 width: 70.0,
-                child: Image(image: AssetImage('assets/user.png')),
+                child: const Image(image: AssetImage('assets/user.png')),
               ),
             );
           }
@@ -112,7 +111,7 @@ class _Restinfostate extends State<Restinfo> {
   Future<Uint8List?> getImage(String id) async {
     String url = await StoreData().getresturl(id);
     if (url != "error") {
-      _image = await fetchImageAsUint8List(url);
+      Uint8List? _image = await fetchImageAsUint8List(url);
       return _image;
     }
     return null;
@@ -160,9 +159,7 @@ class _Restinfostate extends State<Restinfo> {
   }
 
   Future<List<Restaurant>> getrestinfo() async {
-    Map<String, String> queryParams = {};
 
-    queryParams['perPage'] = 4.toString();
 
     var response = await http.get(
         Uri.parse('http://10.0.2.2:3000/api/rest?page=$page&&perPage=4'),

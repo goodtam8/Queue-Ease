@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_mobile/customer/Search.dart';
 import 'package:fyp_mobile/customer/restinfo.dart';
 import 'package:fyp_mobile/customer/Notification.dart';
 import 'package:fyp_mobile/customer/StudentCalendar.dart';
@@ -61,7 +62,7 @@ class _NavigationState extends State<Navigation> {
   Widget buildScaffold(String userRole) {
     List<Widget> pages = [
       userRole == "staff" ? Home() : Studenthome(),
-      userRole == "staff" ?  Tablestatus() : Studentcalendar(),
+      userRole == "staff" ?  Tablestatus() : Search(),
       userRole == "staff" ? LeaveMan() : Restinfo(),
       userRole == "staff"
           ? Staff(onLogout: widget.onLogout)
