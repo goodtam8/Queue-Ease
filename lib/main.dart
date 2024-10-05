@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:fyp_mobile/customer/Notification.dart';
 import 'package:fyp_mobile/customer/Search.dart';
 import 'package:fyp_mobile/firebase_options.dart';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/const.dart';
+import 'package:fyp_mobile/property/firebase_api.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
 import 'package:fyp_mobile/register.dart';
 import 'package:fyp_mobile/customer/CustomerEdit.dart';
@@ -15,6 +17,7 @@ import 'package:fyp_mobile/staff/announcement.dart';
 import 'package:fyp_mobile/staff/editstaffprofile.dart';
 import 'package:fyp_mobile/staff/leave_man.dart';
 import 'package:fyp_mobile/staff/backhome.dart';
+   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   await _setup();
@@ -23,12 +26,11 @@ void main() async {
 }
 
 Future<void> _setup() async {
-
-
   WidgetsFlutterBinding.ensureInitialized();
   Stripe.publishableKey = stripePublishableKey;
-    await Firebase.initializeApp(
+  await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform); // Initialize Firebase
+  await FirebaseApi().initNotifications();
 }
 
 class MyApp extends StatefulWidget {
@@ -62,17 +64,19 @@ class _MyAppState extends State<MyApp> {
                 key: globalNavigationBarKey,
               )
             : Login(onLogin: login),
+            navigatorKey: navigatorKey,
         routes: {
           '/login': (context) => Login(onLogin: login),
           '/register': (context) => const Register(),
           '/home': (context) => const Home(),
           '/leave': (context) => const LeaveMan(),
           '/announce': (context) => const Announcement(),
-          '/table': (context) =>  Tablestatus(),
+          '/table': (context) => Tablestatus(),
           '/update': (context) => const Editstaffprofile(),
           '/reg': (context) => const Customerregister(),
           '/customer/edit': (context) => const Studentedit(),
-          '/search':(context)=>const Search(),
+          '/search': (context) => const Search(),
+          '/noti':(context)=>const noti(),
         });
   }
 }
