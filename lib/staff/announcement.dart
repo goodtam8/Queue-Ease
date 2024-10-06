@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 
@@ -18,8 +21,6 @@ class _AnnouncementState extends State<Announcement> {
       validator: (value) {
         if (value!.isEmpty) {
           return 'Please enter your $field'; // Validation error message
-        } else if (int.tryParse(value) == null) {
-          return 'Please input a valid $field';
         }
         return null; // Return null if the input is valid
       },
@@ -45,6 +46,32 @@ class _AnnouncementState extends State<Announcement> {
       cursorColor: Colors.black,
       maxLines: 8, // Cursor color
     );
+  }
+
+  Future<dynamic> postnoti() async {
+    if (_formKey.currentState!.validate()) {
+      //need to modify later
+      Map<String, dynamic> data = {
+        'registrationtoken':
+            "d0JIAhSfRoS4j6tqZ50az4:APA91bGsWw99vhBU0bIfkdzuI4NtpiWIZAM9uhhmrPHuY1SgxGE7tyOwPmLeFDnr_Soqe_E51uZ0x5gHxlYZ6_2S1aWbjZHo-d2duyJknyJI-4R4tYqjwKvifyX_wibCV3_rjCMlHEiW",
+        'title': title.text,
+        'body': content.text,
+      };
+      try {
+        var response = await http.post(
+            Uri.parse('http://10.0.2.2:3000/api/rest/send'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(data));
+
+        print(response.body);
+        return (response.statusCode);
+      } catch (e) {
+        print(e);
+        return e.toString();
+      }
+    } else {
+      return 400.toString();
+    }
   }
 
   @override
@@ -95,9 +122,7 @@ class _AnnouncementState extends State<Announcement> {
             color: Colors.white, // Text color
           ),
         ),
-        onPressed: () {
-          // Define button action here
-        },
+        onPressed: postnoti,
         child: const Text(
           "Submit",
           style: TextStyle(color: Colors.white),

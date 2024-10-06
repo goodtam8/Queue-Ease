@@ -42,7 +42,7 @@ class Warningsignalicon extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (name) {
       case "WFIRE":
-        return const Image(image: AssetImage('assets/user.png'));
+        return const Image(image: AssetImage('assets/firey.gif'));
       case "WFROST":
         return const Image(image: AssetImage('assets/frost.gif'));
       case "WHOT":
