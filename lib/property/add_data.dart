@@ -13,7 +13,7 @@ class StoreData {
     String downlaodurl = await snapshot.ref.getDownloadURL();
     return downlaodurl;
   }
-
+//image upload have some bug 
   Future<String> uploaduserimage(String filename, Uint8List file) async {
     Reference ref = _storage.ref().child("user_profile").child(filename);
     UploadTask uploadTask = ref.putData(file);

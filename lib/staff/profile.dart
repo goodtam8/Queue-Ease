@@ -16,6 +16,7 @@ import 'dart:typed_data';
 
 import 'package:jwt_decoder/jwt_decoder.dart';
 
+//state management
 class personal {
   final String id;
   final int sid;
@@ -72,19 +73,26 @@ class _StaffState extends State<Staff> {
     super.initState();
   }
 
-  void saveImage(String id) async {
-    if (_image != null) {
-      String resp = await StoreData().saveData(id: id, file: _image!);
+  void saveImage(String id, Uint8List? img) async {
+    if (img != null) {
+      String resp = await StoreData().saveData(id: id, file: img!);
       print(resp);
+      if (resp == "ok") {
+        // Fetch the updated image URL from Firebase Storage and update the state
+        await getImage(id);
+      }
     }
   }
 
   Future<void> getImage(String id) async {
     String url = await StoreData().getImageUrl(id);
     if (url != "error") {
+      print("I am getting image now");
       setState(() async {
         _image = await fetchImageAsUint8List(url);
       });
+    } else {
+      print("error");
     }
   }
 
@@ -105,13 +113,16 @@ class _StaffState extends State<Staff> {
     }
   }
 
-  void selectimage() async {
+  void selectimage(String id) async {
+    //error img does not update after new image is selected
     Uint8List img = await pickimage(ImageSource.gallery);
+    saveImage(id, img);
     setState(() {
       _image = img;
     });
   }
 
+//state management
   Future<personal> getuserinfo(String objectid) async {
     var response = await http.get(
         Uri.parse('http://10.0.2.2:3000/api/staff/$objectid'),
@@ -126,27 +137,6 @@ class _StaffState extends State<Staff> {
         headers: {'Content-Type': 'application/json'});
 
     return await parseRestaurant(response.body);
-  }
-
-  String getImageType(Uint8List imageData) {
-    if (imageData.lengthInBytes < 3) {
-      return 'Unknown';
-    }
-
-    if (imageData[0] == 0xFF && imageData[1] == 0xD8) {
-      return 'jpg';
-    } else if (imageData[0] == 0x89 &&
-        imageData[1] == 0x50 &&
-        imageData[2] == 0x4E &&
-        imageData[3] == 0x47) {
-      return 'png';
-    } else if (imageData[0] == 0x47 &&
-        imageData[1] == 0x49 &&
-        imageData[2] == 0x46) {
-      return 'gif';
-    } else {
-      return 'Unknown';
-    }
   }
 
   @override
@@ -224,7 +214,9 @@ class _StaffState extends State<Staff> {
                                             bottom: -10,
                                             left: 80,
                                             child: IconButton(
-                                                onPressed: selectimage,
+                                                onPressed: () {
+                                                  selectimage(oid);
+                                                },
                                                 icon: const Icon(
                                                     Icons.add_a_photo)),
                                           ),
@@ -243,11 +235,6 @@ class _StaffState extends State<Staff> {
                                         ),
                                       ],
                                     ),
-                                    ElevatedButton(
-                                      onPressed: () => saveImage(
-                                          oid), // Use a lambda to call the function
-                                      child: const Text("Save Image"),
-                                    )
                                   ],
                                 ),
                                 const SizedBox(
