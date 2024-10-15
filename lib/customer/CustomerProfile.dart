@@ -35,7 +35,7 @@ class _Customerstate extends State<Customer> {
 
   void saveImage(String id, Uint8List? img) async {
     if (img != null) {
-      String resp = await StoreData().saveData(id: id, file: img!);
+      String resp = await StoreData().saveuserdata(id: id, file: img!);
       print(resp);
       if (resp == "ok") {
         // Fetch the updated image URL from Firebase Storage and update the state
@@ -184,7 +184,7 @@ void selectimage(String id) async {
                                               bottom: -10,
                                               right: 80,
                                               child: IconButton(
-                                                  onPressed: selectimage(oid),
+                                                  onPressed:(){ selectimage(oid);},
                                                   icon: const Icon(
                                                       Icons.add_a_photo)),
                                             ),

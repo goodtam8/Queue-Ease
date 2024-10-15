@@ -83,9 +83,8 @@ class _HomeState extends State<Home> {
   Widget custombutton() {
     return ElevatedButton(
       onPressed: () {
- Navigator.of(context)
-                                            .pushNamed('/announce');
-                                                  },
+        Navigator.of(context).pushNamed('/announce');
+      },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8), // Padding
         fixedSize: const Size(160, 36), // Width and height
@@ -155,12 +154,13 @@ class _HomeState extends State<Home> {
       ;
     }
   }
-Future <void>_refresh(){
-  setState(() {
-    _tokenValue=storage.read(key: 'jwt');
-  });
-  return Future.delayed(Duration(seconds: 2));
-}
+
+  Future<void> _refresh() {
+    setState(() {
+      _tokenValue = storage.read(key: 'jwt');
+    });
+    return Future.delayed(Duration(seconds: 2));
+  }
 
   Future<WeatherWarningSummary> getwarningsignalinfo() async {
     var response = await http.get(
@@ -178,269 +178,248 @@ Future <void>_refresh(){
     return parseRestaurant(response.body);
   }
 
+  FutureBuilder token() {
+    return FutureBuilder<String?>(
+        future: _tokenValue,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/update');
+                },
+                child: const Text("Update"),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            print("hi there is the error occur");
+            print(snapshot.error);
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            Map<String, dynamic> decodedToken =
+                JwtDecoder.decode(snapshot.data as String);
+            String oid = decodedToken["_id"].toString();
+            return staffinfo(oid);
+          }
+        });
+  }
+
+  Widget resttoken() {
+    return FutureBuilder<String?>(
+        future: _tokenValue,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/update');
+                },
+                child: const Text("Update"),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            print("hi there is the error occur");
+            print(snapshot.error);
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            Map<String, dynamic> decodedToken =
+                JwtDecoder.decode(snapshot.data as String);
+            String oid = decodedToken["_id"].toString();
+            return restaurantget(oid);
+          }
+        });
+  }
+
+  Widget staffinfo(String oid) {
+    return FutureBuilder(
+        future:
+            getuserinfo(oid), // Assuming getuserinfo returns a Future<personal>
+        builder: (BuildContext context, AsyncSnapshot<personal> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // Show a loading indicator while waiting
+          } else if (snapshot.hasError) {
+            print('hello there, there is where the error occur');
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            personal person = snapshot.data!;
+            return Text(
+              person.name,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            );
+          } else {
+            return Text("an unexpected error occured");
+          }
+        });
+  }
+
+  Widget weatherwarning() {
+    return FutureBuilder(
+        future: getwarningsignalinfo(),
+        builder: (BuildContext context,
+            AsyncSnapshot<WeatherWarningSummary> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // Show a loading indicator while waiting
+          } else if (snapshot.hasError) {
+            print("yo again there is where the error occured");
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            WeatherWarningSummary data = snapshot.data!;
+            return data.warnings != null
+                ? Row(
+                    children: data.warnings!.keys
+                        .map((String key) => Warningsignalicon(
+                            name: key, warn: data.warnings![key]))
+                        .toList(),
+                  )
+                : const Text("No warning signal now");
+          } else {
+            return Text("An unexpected error occured");
+          }
+        });
+  }
+
+  Widget weatherforecast() {
+    return FutureBuilder(
+        future: getweatherinfo(),
+        builder:
+            (BuildContext context, AsyncSnapshot<WeatherForecast> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // Show a loading indicator while waiting
+          } else if (snapshot.hasError) {
+            print('hi again there is where the error occure');
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            WeatherForecast data =
+                snapshot.data!; // You now have your 'personal' data
+            String formattedtime = timeformatting(DateTime.now());
+            int indextobedisplayed = 0;
+            weather = data.weatherForecast[0].forecastMaxtemp["value"];
+            return Text(
+                "$weather\u00b0C ,${DateTime.now().hour}:${DateTime.now().minute}");
+          } else {
+            return Text("An unexpected error occured");
+          }
+        });
+  }
+
   late int weather;
+  Widget restaurantget(String oid) {
+    return FutureBuilder<Restaurant>(
+        future: getrestaurant(oid),
+        builder: (BuildContext context, AsyncSnapshot<Restaurant> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // Show a loading indicator while waiting
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            Restaurant table = snapshot.data!;
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "Restaurant:${table.name}",
+                  textAlign: TextAlign.left,
+                )
+              ],
+            );
+          } else {
+            return const Text('Unexpected error occurred');
+          }
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: const Topbar(),
         backgroundColor: Colors.white,
-        body:
-         FutureBuilder<String?>(
-            future: _tokenValue,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed('/update');
-                    },
-                    child: const Text("Update"),
+        body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          mornoraft(),
+          Row(
+            children: [
+              token(),
+            ],
+          ),
+          Row(
+            children: [resttoken()],
+          ),
+          Row(
+            children: [
+              const Text(
+                "Currenent Queue",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+              ),
+              const SizedBox(
+                width: 45.0,
+              ),
+              custombutton()
+            ],
+          ),
+          Center(
+            child: Container(
+              width: 343.0,
+              height: 200.0,
+              decoration: BoxDecoration(
+                color: Color(0xFFF1F1F1),
+                borderRadius: BorderRadius.circular(24.0),
+              ),
+              child: const Padding(
+                padding:
+                    EdgeInsets.all(16.0), // Optional padding for better layout
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start, // Aligns children to the left
+                  children: [
+                    Text(
+                      "Queue Number",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                      ),
+                    ),
+                    SizedBox(height: 8.0), // Adds space between the texts
+                    Text(
+                      "It is hardcode. Queue Number: 100",
+                      textAlign: TextAlign
+                          .start, // Ensures text is aligned to the start
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 30.0,
+          ),
+          Center(
+            child: Container(
+              width: 343.0,
+              height: 200.0,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F1F1),
+                borderRadius: BorderRadius.circular(24.0),
+              ),
+              child: Column(
+                children: [
+                  const Text(
+                    "Today's Weather",
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                );
-              } else if (snapshot.hasError) {
-                print("hi there is the error occur");
-                print(snapshot.error);
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else {
-                Map<String, dynamic> decodedToken =
-                    JwtDecoder.decode(snapshot.data as String);
-                String oid = decodedToken["_id"].toString();
-
-                return FutureBuilder<WeatherForecast>(
-                    future: getweatherinfo(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<WeatherForecast> snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator(); // Show a loading indicator while waiting
-                      } else if (snapshot.hasError) {
-                        print('hi again there is where the error occure');
-                        return Text('Error: ${snapshot.error}');
-                      } else if (snapshot.hasData) {
-                        WeatherForecast data =
-                            snapshot.data!; // You now have your 'personal' data
-                        String formattedtime = timeformatting(DateTime.now());
-                        int indextobedisplayed = 0;
-                        weather =
-                            data.weatherForecast[0].forecastMaxtemp["value"];
-                
-                        return FutureBuilder<WeatherWarningSummary>(
-                            future: getwarningsignalinfo(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<WeatherWarningSummary> snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return const CircularProgressIndicator(); // Show a loading indicator while waiting
-                              } else if (snapshot.hasError) {
-                                print(
-                                    "yo again there is where the error occured");
-                                return Text('Error: ${snapshot.error}');
-                              } else if (snapshot.hasData) {
-                                WeatherWarningSummary data = snapshot.data!;
-                
-                                return FutureBuilder<personal>(
-                                    future: getuserinfo(
-                                        oid), // Assuming getuserinfo returns a Future<personal>
-                                    builder: (BuildContext context,
-                                        AsyncSnapshot<personal> snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const CircularProgressIndicator(); // Show a loading indicator while waiting
-                                      } else if (snapshot.hasError) {
-                                        print(
-                                            'hello there, there is where the error occur');
-                                        return Text('Error: ${snapshot.error}');
-                                      } else if (snapshot.hasData) {
-                                        personal person = snapshot
-                                            .data!; // You now have your 'personal' data
-                                        return Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              mornoraft(),
-                                              Row(
-                                                children: [
-                                                  Text(person.name),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  FutureBuilder<Restaurant>(
-                                                      future:
-                                                          getrestaurant(oid),
-                                                      builder: (BuildContext
-                                                              context,
-                                                          AsyncSnapshot<
-                                                                  Restaurant>
-                                                              snapshot) {
-                                                        if (snapshot
-                                                                .connectionState ==
-                                                            ConnectionState
-                                                                .waiting) {
-                                                          return const CircularProgressIndicator(); // Show a loading indicator while waiting
-                                                        } else if (snapshot
-                                                            .hasError) {
-                                                          return Text(
-                                                              'Error: ${snapshot.error}');
-                                                        } else if (snapshot
-                                                            .hasData) {
-                                                          Restaurant table =
-                                                              snapshot.data!;
-                
-                                                          return Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Text(
-                                                                "Restaurant:${table.name}",
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .left,
-                                                              )
-                                                            ],
-                                                          );
-                                                        } else {
-                                                          return const Text(
-                                                              'Unexpected error occurred');
-                                                        }
-                                                      }),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  const Text(
-                                                    "Currenent Queue",
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 20.0),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 45.0,
-                                                  ),
-                                                  custombutton()
-                                                ],
-                                              ),
-                                              Center(
-                                                child: Container(
-                                                  width: 343.0,
-                                                  height: 200.0,
-                                                  decoration: BoxDecoration(
-                                                    color: Color(0xFFF1F1F1),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            24.0),
-                                                  ),
-                                                  child: const Padding(
-                                                    padding: EdgeInsets.all(
-                                                        16.0), // Optional padding for better layout
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start, // Aligns children to the left
-                                                      children: [
-                                                        Text(
-                                                          "Queue Number",
-                                                          style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 20.0,
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                            height:
-                                                                8.0), // Adds space between the texts
-                                                        Text(
-                                                          "It is hardcode. Queue Number: 100",
-                                                          textAlign: TextAlign
-                                                              .start, // Ensures text is aligned to the start
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 30.0,
-                                              ),
-                                              Center(
-                                                child: Container(
-                                                  width: 343.0,
-                                                  height: 200.0,
-                                                  decoration: BoxDecoration(
-                                                    color:
-                                                        const Color(0xFFF1F1F1),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            24.0),
-                                                  ),
-                                                  child: Column(
-                                                    children: [
-                                                      const Text(
-                                                        "Today Weather",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 20.0),
-                                                      ),
-                                                      Text(
-                                                          "$weather\u00b0C ,${DateTime.now().hour}:${DateTime.now().minute}"),
-                                                      const SizedBox(
-                                                        height: 20.0,
-                                                      ),
-                                                      const Text(
-                                                          "Weather warning",
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              fontSize: 20.0)),
-                                                      const SizedBox(
-                                                        height: 10.0,
-                                                      ),
-                                                      data.warnings != null
-                                                          ? Row(
-                                                              children: data
-                                                                  .warnings!
-                                                                  .keys
-                                                                  .map((String
-                                                                          key) =>
-                                                                      Warningsignalicon(
-                                                                          name:
-                                                                              key,
-                                                                          warn:
-                                                                              data.warnings![key]))
-                                                                  .toList(),
-                                                            )
-                                                          : const Text(
-                                                              "No warning signal now"),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 10.0,
-                                              ),
-                                            ]);
-                                      } else {
-                                        return const Text(
-                                            'Unexpected error occurred'); // Handle the case where there's no data
-                                      }
-                                    });
-                              } else {
-                                return const Text(
-                                    'Unexpected error occurred'); // Handle the case where there's no data
-                              }
-                            });
-                      }
-                      return const Text(
-                          'Unexpected error occurred'); // Handle the case where there's no data
-                    });
-              }
-            }));
+                  weatherforecast(),
+                  const SizedBox(height: 10.0),
+                  weatherwarning(),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 10.0,
+          ),
+        ]));
   }
 }
