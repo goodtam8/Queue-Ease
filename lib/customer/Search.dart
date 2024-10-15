@@ -13,7 +13,7 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   int page = 1;
-  late int totalpage;
+  int totalpage = 1;
   TextEditingController input = TextEditingController();
   Future<List<Restaurant>>? searchResults; // Store the future here
 

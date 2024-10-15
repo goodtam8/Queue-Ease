@@ -19,7 +19,7 @@ class Userhome extends StatefulWidget {
 
 class _Homestate extends State<Userhome> {
   late Future<String?> _tokenValue;
-    List<RemoteMessage> messages = [];
+  List<RemoteMessage> messages = [];
   Future<void> loadMessages() async {
     FirebaseApi api = FirebaseApi();
     List<RemoteMessage> loadedMessages = await api.loadMessages();
@@ -27,7 +27,6 @@ class _Homestate extends State<Userhome> {
       messages = loadedMessages;
     });
   }
-
 
   String timeformatting(DateTime now) {
     late String day;
@@ -76,18 +75,18 @@ class _Homestate extends State<Userhome> {
     _tokenValue = storage.read(key: 'jwt');
     super.initState();
   }
-Widget notilist(){
-  return ListView.builder(
-        itemCount: messages.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(messages[index].notification?.title ?? 'No Title'),
-            subtitle: Text(messages[index].notification?.body ?? 'No Body'),
-          );
-        },
-      );
-      
-}
+
+  Widget notilist() {
+    return ListView.builder(
+      itemCount: messages.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text(messages[index].notification?.title ?? 'No Title'),
+          subtitle: Text(messages[index].notification?.body ?? 'No Body'),
+        );
+      },
+    );
+  }
 
   Future<WeatherForecast> getweatherinfo() async {
     try {
@@ -265,45 +264,45 @@ Widget notilist(){
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: Topbar(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          mornoraft(),
-          const SizedBox(
-            height: 10.0,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await Future.delayed(Duration(seconds: 1));
+          setState(() {
+            _tokenValue =
+                storage.read(key: 'jwt'); // Ensure this triggers a rebuild
+          });
+        },
+        child: SingleChildScrollView(
+          // Make the body scrollable
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              mornoraft(),
+              const SizedBox(height: 10.0),
+              debugtoken(),
+              const SizedBox(height: 10.0),
+              const Text(
+                "Notification",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10.0),
+              const Row(children: []),
+              const Text(
+                "Today's Weather",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              weatherforecast(),
+              const SizedBox(height: 10.0),
+              weatherwarning(),
+              const SizedBox(height: 10.0),
+              const Text(
+                "Your Queue",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              fastlunch(),
+            ],
           ),
-          debugtoken(),
-          const SizedBox(
-            height: 10.0,
-          ),
-          const Text(
-            "Notification",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          const Row(
-            children: [],
-          ),
-          const Text(
-            "Today's Weather",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          weatherforecast(),
-          const SizedBox(
-            height: 10.0,
-          ),
-          weatherwarning(),
-          const SizedBox(
-            height: 10.0,
-          ),
-          const Text(
-            "Your Queue",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          fastlunch(),
-        ],
+        ),
       ),
     );
   }

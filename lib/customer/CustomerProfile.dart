@@ -33,15 +33,21 @@ class _Customerstate extends State<Customer> {
     super.initState();
   }
 
-  void saveImage(String id) async {
-    if (_image != null) {
-      String resp = await StoreData().saveData(id: id, file: _image!);
+  void saveImage(String id, Uint8List? img) async {
+    if (img != null) {
+      String resp = await StoreData().saveData(id: id, file: img!);
       print(resp);
+      if (resp == "ok") {
+        // Fetch the updated image URL from Firebase Storage and update the state
+        await getImage(id);
+      }
     }
   }
 
-  void selectimage() async {
+void selectimage(String id) async {
+    //error img does not update after new image is selected
     Uint8List img = await pickimage(ImageSource.gallery);
+    saveImage(id, img);
     setState(() {
       _image = img;
     });
@@ -178,17 +184,13 @@ class _Customerstate extends State<Customer> {
                                               bottom: -10,
                                               right: 80,
                                               child: IconButton(
-                                                  onPressed: selectimage,
+                                                  onPressed: selectimage(oid),
                                                   icon: const Icon(
                                                       Icons.add_a_photo)),
                                             ),
                                           ],
                                         ),
-                                        TextButton(
-                                            onPressed: () {
-                                              saveImage(oid);
-                                            },
-                                            child: const Text("Save Image")),
+                                  
                                         const Text(
                                           "Profile",
                                           style: TextStyle(

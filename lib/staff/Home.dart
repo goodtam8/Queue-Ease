@@ -155,6 +155,12 @@ class _HomeState extends State<Home> {
       ;
     }
   }
+Future <void>_refresh(){
+  setState(() {
+    _tokenValue=storage.read(key: 'jwt');
+  });
+  return Future.delayed(Duration(seconds: 2));
+}
 
   Future<WeatherWarningSummary> getwarningsignalinfo() async {
     var response = await http.get(
@@ -179,7 +185,8 @@ class _HomeState extends State<Home> {
     return Scaffold(
         appBar: const Topbar(),
         backgroundColor: Colors.white,
-        body: FutureBuilder<String?>(
+        body:
+         FutureBuilder<String?>(
             future: _tokenValue,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -216,7 +223,7 @@ class _HomeState extends State<Home> {
                         int indextobedisplayed = 0;
                         weather =
                             data.weatherForecast[0].forecastMaxtemp["value"];
-
+                
                         return FutureBuilder<WeatherWarningSummary>(
                             future: getwarningsignalinfo(),
                             builder: (BuildContext context,
@@ -230,7 +237,7 @@ class _HomeState extends State<Home> {
                                 return Text('Error: ${snapshot.error}');
                               } else if (snapshot.hasData) {
                                 WeatherWarningSummary data = snapshot.data!;
-
+                
                                 return FutureBuilder<personal>(
                                     future: getuserinfo(
                                         oid), // Assuming getuserinfo returns a Future<personal>
@@ -279,7 +286,7 @@ class _HomeState extends State<Home> {
                                                             .hasData) {
                                                           Restaurant table =
                                                               snapshot.data!;
-
+                
                                                           return Column(
                                                             crossAxisAlignment:
                                                                 CrossAxisAlignment
