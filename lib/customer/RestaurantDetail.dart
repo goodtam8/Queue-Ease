@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:fyp_mobile/customer/Menu.dart';
 import 'package:fyp_mobile/property/add_data.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/topbar.dart';
@@ -83,6 +84,7 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
                   ),
                 ),
                 Center(child: Text(data.location)),
+                order(data.id)
               ],
             );
           } else {
@@ -114,6 +116,40 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
           }
         });
   }
+  Widget order(String id){
+    return Container(
+      margin: const EdgeInsets.only(top: 220, left: 128),
+      child: ElevatedButton(
+        onPressed: () {
+           Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Order(restaurant: id),
+            ),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          fixedSize: const Size(107, 40),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          backgroundColor: const Color(0xFF1578E6), // Equivalent to #1578e6
+          elevation: 0,
+        ),
+        child: const Text(
+          "Order",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontFamily: 'Source Sans Pro', // Ensure this font is available in your project
+            fontWeight: FontWeight.w600, // Equivalent to fontWeight: 600
+            height: 24 / 16, // lineHeight: 24px / fontSize: 16px
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -123,6 +159,7 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
         body: Column(
           children: [
             futuredetail(),
+
           ],
         ),
         bottomNavigationBar: BottomAppBar(
