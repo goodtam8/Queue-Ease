@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/property/food.dart';
+import 'package:fyp_mobile/property/stripe_service.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Order extends StatefulWidget {
   final String restaurant;
@@ -19,7 +21,6 @@ class _OrderState extends State<Order> {
         Uri.parse('http://10.0.2.2:3000/api/rest/id/${widget.restaurant}/food'),
         headers: {'Content-Type': 'application/json'});
     final data = jsonDecode(response.body);
-    print("food:${data['food']}");
 
     return Menu.listFromJson(data['food']);
   }
@@ -48,16 +49,36 @@ class _OrderState extends State<Order> {
         children: [
           Text(title),
           Text(price),
-          OrderButton(),
+          OrderButton(title, price),
         ],
       ),
     );
   }
 
-  Widget OrderButton() {
+  Widget OrderButton(String title, String price) {
     return ElevatedButton(
-      onPressed: () {
-        // Define the action when the button is pressed
+      onPressed: () async {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        List<String> cart = prefs.getStringList('cart') ?? [];
+        final messageMap = {
+          'title': title,
+          'price': price,
+        };
+        cart.add(jsonEncode(messageMap));
+        await prefs.setStringList('cart', cart);
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text('ok'))
+                  ],
+                  title: const Text('Order Status'),
+                  content: const Text('Successful add to chart'),
+                ));
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -106,7 +127,14 @@ class _OrderState extends State<Order> {
       appBar: const Topbar(),
       body: SingleChildScrollView(
         child: Column(
-          children: [foodbuilder()],
+          children: [
+            foodbuilder(),
+            ElevatedButton(
+                onPressed: () {
+                  StripeService.instance.makePayment();
+                },
+                child: const Text("Pay"))
+          ],
         ),
       ),
     );

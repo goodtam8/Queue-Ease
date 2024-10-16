@@ -19,7 +19,7 @@ import 'package:fyp_mobile/staff/editstaffprofile.dart';
 import 'package:fyp_mobile/staff/leave_man.dart';
 import 'package:fyp_mobile/staff/backhome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   await _setup();

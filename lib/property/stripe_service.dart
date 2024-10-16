@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fyp_mobile/property/const.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class StripeService {
   StripeService._();
@@ -8,7 +11,20 @@ class StripeService {
 
   Future<void> makePayment() async {
     try {
-      String? result = await _createPaymentIntent(10, "usd");// need to modify bbase on the shopping chart of the food
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String> cart = prefs.getStringList('cart') ?? [];
+      if (cart.isEmpty) {
+        return;
+      }
+      int amount = 0;
+      for (int i = 0; i < cart.length; i++) {
+        final mess = jsonDecode(cart[i]);
+        String amo = mess['price'];
+        amount += int.parse(amo);
+      }
+
+      String? result = await _createPaymentIntent(amount,
+          "usd"); // need to modify bbase on the shopping chart of the food
       if (result == null) {
         return;
       }
@@ -54,6 +70,7 @@ class StripeService {
       );
       print('Response: ${response.data}');
       if (response.data != null) {
+        
         return response.data["client_secret"];
       }
       return null;
