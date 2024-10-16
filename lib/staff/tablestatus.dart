@@ -11,12 +11,19 @@ class Tablestatus extends StatefulWidget {
 class _Tablestate extends State<Tablestatus> {
 bool isswitched=false;
 
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
       appBar: Topbar(),
       
-      body: Text("It is analysis screen"),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+
+          ],
+        ),
+      )
     );
   }
 }

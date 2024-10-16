@@ -44,7 +44,7 @@ class _Customerstate extends State<Customer> {
     }
   }
 
-void selectimage(String id) async {
+  void selectimage(String id) async {
     //error img does not update after new image is selected
     Uint8List img = await pickimage(ImageSource.gallery);
     saveImage(id, img);
@@ -54,14 +54,15 @@ void selectimage(String id) async {
   }
 
   Future<void> getImage(String id) async {
-    String url = await StoreData().getImageUrl(id);
+    String url = await StoreData().getuserurl(id);
     if (url != "error") {
       setState(() async {
         _image = await fetchImageAsUint8List(url);
       });
     }
   }
-    Future<Uint8List?> fetchImageAsUint8List(String url) async {
+
+  Future<Uint8List?> fetchImageAsUint8List(String url) async {
     try {
       final response = await http.get(Uri.parse(url));
 
@@ -106,8 +107,6 @@ void selectimage(String id) async {
       return 'Unknown';
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -184,13 +183,14 @@ void selectimage(String id) async {
                                               bottom: -10,
                                               right: 80,
                                               child: IconButton(
-                                                  onPressed:(){ selectimage(oid);},
+                                                  onPressed: () {
+                                                    selectimage(oid);
+                                                  },
                                                   icon: const Icon(
                                                       Icons.add_a_photo)),
                                             ),
                                           ],
                                         ),
-                                  
                                         const Text(
                                           "Profile",
                                           style: TextStyle(

@@ -33,7 +33,8 @@ class FirebaseApi {
 
     await _localnoti.initialize(
       settings,
-      onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) async {
+      onDidReceiveNotificationResponse:
+          (NotificationResponse notificationResponse) async {
         final payload = notificationResponse.payload;
         final mess = RemoteMessage.fromMap(jsonDecode(payload!));
         handleMessage(mess);
@@ -44,18 +45,27 @@ class FirebaseApi {
   Future<void> saveMessage(RemoteMessage message) async {
     final prefs = await SharedPreferences.getInstance();
     List<String> messages = prefs.getStringList('messages') ?? [];
-    messages.add(jsonEncode(message.toMap()));
+    final messageMap = {
+      'title': message.notification?.title,
+      'body': message.notification?.body,
+      'data': message.data,
+    };
+    messages.add(jsonEncode(messageMap));
     await prefs.setStringList('messages', messages);
   }
 
   Future<List<RemoteMessage>> loadMessages() async {
     final prefs = await SharedPreferences.getInstance();
     List<String> messages = prefs.getStringList('messages') ?? [];
-    return messages.map((msg) => RemoteMessage.fromMap(jsonDecode(msg))).toList();
+    return messages
+        .map((msg) => RemoteMessage.fromMap(jsonDecode(msg)))
+        .toList();
   }
 
   Future<void> initPushNotifications() async {
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(alert: true, badge: true, sound: true);
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
+            alert: true, badge: true, sound: true);
     FirebaseMessaging.instance.getInitialMessage().then(handleMessage);
     FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
@@ -67,11 +77,11 @@ class FirebaseApi {
     print("Token:$fcmtoken");
     initPushNotifications();
     initLocalNotifications();
-    
+
     FirebaseMessaging.onMessage.listen((message) {
       final notification = message.notification;
       if (notification == null) return;
-      
+
       // Show local notification
       _localnoti.show(
         notification.hashCode,

@@ -102,6 +102,9 @@ class _AnnouncementState extends State<Announcement> {
               height: 8.0,
             ),
             inputtext(content, "Content"),
+            ElevatedButton(onPressed: (){
+              Navigator.pushNamed(context, '/list');
+            }, child: const Text("Notilist"))
           ],
         ),
       ),
