@@ -62,7 +62,7 @@ class _NavigationState extends State<Navigation> {
   Widget buildScaffold(String userRole) {
     List<Widget> pages = [
       userRole == "staff" ? Home() : Userhome(),
-      userRole == "staff" ?  Tablestatus() : Search(),
+      userRole == "staff" ? Tablestatus() : Search(),
       userRole == "staff" ? LeaveMan() : Restinfo(),
       userRole == "staff"
           ? Staff(onLogout: widget.onLogout)
@@ -76,7 +76,7 @@ class _NavigationState extends State<Navigation> {
         children: pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFF1578E6),
+        backgroundColor: Color(0),
         items: [
           const BottomNavigationBarItem(
             icon: Icon(Icons.home, color: Color(0xFF1578E6)),

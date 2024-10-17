@@ -36,13 +36,10 @@ class _backhome extends State<Backhome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Topbar(),
-      
       body: TextButton(
         onPressed: () {
           globalNavigationBarKey.currentState?.updateIndex(0);
           Navigator.of(context).pop();
-
-          
         },
         child: const Text(
           "Now in update and would like to go back to home screen",

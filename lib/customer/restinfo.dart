@@ -208,6 +208,7 @@ Widget restcard(List<Restaurant> data) {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: const searchbar(),
       body: Column(
         children: [

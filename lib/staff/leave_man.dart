@@ -13,7 +13,6 @@ class _LeaveManState extends State<LeaveMan> {
   Widget build(BuildContext context) {
  return  Scaffold(
       body: MaterialButton(onPressed: (){
-StripeService.instance.makePayment();
       },
       child: Text("Purchase"),
       color: Colors.green,

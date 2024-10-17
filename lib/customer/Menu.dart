@@ -131,7 +131,7 @@ class _OrderState extends State<Order> {
             foodbuilder(),
             ElevatedButton(
                 onPressed: () {
-                  StripeService.instance.makePayment();
+                  StripeService.instance.makePayment(context);
                 },
                 child: const Text("Pay"))
           ],

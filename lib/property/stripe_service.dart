@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fyp_mobile/property/const.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,7 +10,7 @@ class StripeService {
   StripeService._();
   static final StripeService instance = StripeService._();
 
-  Future<void> makePayment() async {
+  Future<void> makePayment(BuildContext context) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       List<String> cart = prefs.getStringList('cart') ?? [];
@@ -33,7 +34,7 @@ class StripeService {
           paymentSheetParameters: SetupPaymentSheetParameters(
               paymentIntentClientSecret: result,
               merchantDisplayName: "Hussain mustafa"));
-      await _processPayment();
+      await _processPayment(context, amount);
     } catch (e) {
       print("hi there");
 
@@ -41,9 +42,15 @@ class StripeService {
     }
   }
 
-  Future<void> _processPayment() async {
+  Future<void> _processPayment(BuildContext context, int amount) async {
     try {
       await Stripe.instance.presentPaymentSheet();
+      Navigator.pop(context);
+      Navigator.pushReplacementNamed(
+        context,
+        '/receipt',
+        arguments: amount, // Pass the amount as an argument
+      ); // Replace with your receipt screen route
     } catch (e) {
       print("hi");
       print(e);
@@ -70,7 +77,6 @@ class StripeService {
       );
       print('Response: ${response.data}');
       if (response.data != null) {
-        
         return response.data["client_secret"];
       }
       return null;

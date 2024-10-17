@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fyp_mobile/customer/Notification.dart';
 import 'package:fyp_mobile/customer/Notilist.dart';
+import 'package:fyp_mobile/customer/Receipt.dart';
 import 'package:fyp_mobile/customer/Search.dart';
 import 'package:fyp_mobile/firebase_options.dart';
 import 'package:fyp_mobile/login.dart';
@@ -85,7 +86,9 @@ class _MyAppState extends State<MyApp> {
           '/customer/edit': (context) => const Studentedit(),
           '/search': (context) => const Search(),
           '/noti':(context)=>const noti(),
-          '/list':(context)=>const Notilist()
+          '/list':(context)=>const Notilist(),
+          '/receipt':(context)=>const Receipt(),
+          
         });
   }
 }
