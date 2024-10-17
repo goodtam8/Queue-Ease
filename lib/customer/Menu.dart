@@ -124,16 +124,44 @@ class _OrderState extends State<Order> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: const Topbar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
             foodbuilder(),
             ElevatedButton(
-                onPressed: () {
-                  StripeService.instance.makePayment(context);
-                },
-                child: const Text("Pay"))
+              onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                List<String>? cart = prefs.getStringList('cart');
+
+                if (cart == null || cart.isEmpty) {
+                  // Show alert dialog if cart is null or empty
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text("Empty Cart"),
+                        content: const Text(
+                            "Your cart is empty. Please add items before checking out."),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Close the dialog
+                            },
+                            child: const Text("OK"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  // Navigate to checkout if cart is not empty
+                  Navigator.pushNamed(context, '/checkout');
+                }
+              },
+              child: const Text("Check out"),
+            ),
           ],
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:fyp_mobile/customer/Notification.dart';
 import 'package:fyp_mobile/customer/Notilist.dart';
 import 'package:fyp_mobile/customer/Receipt.dart';
 import 'package:fyp_mobile/customer/Search.dart';
+import 'package:fyp_mobile/customer/orderdetail.dart';
 import 'package:fyp_mobile/firebase_options.dart';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/const.dart';
@@ -88,6 +89,7 @@ class _MyAppState extends State<MyApp> {
           '/noti':(context)=>const noti(),
           '/list':(context)=>const Notilist(),
           '/receipt':(context)=>const Receipt(),
+          '/checkout':(context)=>const Orderdetail(),
           
         });
   }

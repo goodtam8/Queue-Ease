@@ -46,6 +46,8 @@ class StripeService {
     try {
       await Stripe.instance.presentPaymentSheet();
       Navigator.pop(context);
+      Navigator.pop(context);
+
       Navigator.pushReplacementNamed(
         context,
         '/receipt',
