@@ -16,6 +16,7 @@ class Tablestatus extends StatefulWidget {
 }
 
 class _Tablestate extends State<Tablestatus> {
+  int counter = 0;
   late Future<String?> _tokenValue;
 
   Future<Restaurant> getrestaurant(String objectid) async {
@@ -38,6 +39,23 @@ class _Tablestate extends State<Tablestatus> {
     final data = jsonDecode(response.body);
 
     return Tabledb.listFromJson(data['table']);
+  }
+
+  Future<dynamic> updatetablestatus(String option, String objectid) async {
+    Map<String, dynamic> data = {
+      'status': option,
+    };
+    try {
+      var response = await http.put(
+          Uri.parse('http://10.0.2.2:3000/api/table/$objectid'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(data));
+
+      return (response.statusCode);
+    } catch (e) {
+      print(e);
+      return e.toString();
+    }
   }
 
   void _showUpdateDialog(BuildContext context, Tabledb db) {
@@ -78,12 +96,17 @@ class _Tablestate extends State<Tablestatus> {
                   child: Text('Cancel'),
                 ),
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (selectedStatus != null) {
-                      // Here you can update the db.status if needed
-                      // db.status = selectedStatus;
-                      Navigator.of(context).pop(); // Close dialog
-                    }
+                      await updatetablestatus(selectedStatus!, db.id);
+                      // Refresh table data after updating status
+
+                      Navigator.of(context).pop();
+                      this.setState(() {
+                        counter++;
+                        print(counter);
+                      });
+                    } // Close dialog
                   },
                   child: Text('Submit'),
                 ),
