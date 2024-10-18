@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_mobile/customer/MyQueue.dart';
 import 'package:fyp_mobile/customer/Search.dart';
 import 'package:fyp_mobile/customer/restinfo.dart';
 import 'package:fyp_mobile/customer/Notification.dart';
@@ -62,21 +63,21 @@ class _NavigationState extends State<Navigation> {
   Widget buildScaffold(String userRole) {
     List<Widget> pages = [
       userRole == "staff" ? Home() : Userhome(),
-      userRole == "staff" ? Tablestatus() : Search(),
-      userRole == "staff" ? LeaveMan() : Restinfo(),
+      userRole == "staff" ? LeaveMan() : Myqueue(),
+      userRole == "staff" ? Tablestatus() : Restinfo(),
       userRole == "staff"
           ? Staff(onLogout: widget.onLogout)
           : Customer(onLogout: widget.onLogout),
     ];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.red,
       body: IndexedStack(
         index: currentPageIndex,
         children: pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Color(0),
+        backgroundColor: Colors.red,
         items: [
           const BottomNavigationBarItem(
             icon: Icon(Icons.home, color: Color(0xFF1578E6)),

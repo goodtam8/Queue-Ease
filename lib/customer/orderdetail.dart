@@ -56,7 +56,7 @@ class _OrderdetailState extends State<Orderdetail> {
       width: 343,
       height: 218,
       decoration: BoxDecoration(
-        color: Color(0xFFF1F1F1),
+        color: const Color(0xFFF1F1F1),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -64,7 +64,7 @@ class _OrderdetailState extends State<Orderdetail> {
           Column(
             children: no,
           ),
-          Divider(),
+          const Divider(),
           Row(
             children: [
               styledtext("Total:"),
@@ -93,22 +93,42 @@ class _OrderdetailState extends State<Orderdetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: Topbar(),
-      body: Column(
-        children: [
-          styledtext("Your Bill"),
-          SizedBox(
-            height: 10.0,
-          ),
-          Center(child: contain()),
-        ],
-      ),
-      bottomNavigationBar: ElevatedButton(
+        backgroundColor: Colors.white,
+        appBar: Topbar(),
+        body: Column(
+          children: [
+            styledtext("Your Bill"),
+            const SizedBox(
+              height: 10.0,
+            ),
+            Center(child: contain()),
+          ],
+        ),
+        bottomNavigationBar: ElevatedButton(
           onPressed: () {
             StripeService.instance.makePayment(context);
           },
-          child: Text("Check out")),
-    );
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 8), // Padding
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24), // Border radius
+            ),
+            backgroundColor: const Color(0xFF1578E6), // Background color
+            elevation: 0, // No shadow
+            textStyle: const TextStyle(
+              fontSize: 16, // Font size
+              fontFamily: 'Open Sans', // Font family
+              fontWeight: FontWeight.w600, // Font weight
+              height: 1.5, // Line height (24px/16px ≈ 1.5)
+            ),
+          ),
+          child: const Text(
+            "Check Out",
+            style: TextStyle(
+              color: Colors.white, // Text color
+              // Outline: None is default in Flutter
+            ),
+          ),
+        ));
   }
 }
