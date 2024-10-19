@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart';
@@ -30,6 +31,45 @@ class _Tablestate extends State<Tablestatus> {
     Restaurant abc = await getrestaurant(objectid);
     List<Tabledb> tables = await gettableinfo(abc.name);
     return TableList(tables);
+  }
+
+  Future<dynamic> createqueue(String name) async {
+    Map<String, dynamic> data = {
+      'restaurant': name,
+    };
+    try {
+      var response = await http.post(
+          Uri.parse('http://10.0.2.2:3000/api/queue/'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(data));
+
+      print(response.body);
+      setState(() {
+        counter++;
+      });
+      return (response.statusCode);
+    } catch (e) {
+      print(e);
+      return e.toString();
+    }
+  }
+
+  Future<bool> gettablestatus(String name) async {
+    var response = await http.get(
+        Uri.parse('http://10.0.2.2:3000/api/table/$name/status'),
+        headers: {'Content-Type': 'application/json'});
+    final data = jsonDecode(response.body);
+
+    return data['status'];
+  }
+
+  Future<bool> getqueue(String name) async {
+    var response = await http.get(
+        Uri.parse('http://10.0.2.2:3000/api/queue/check/$name'),
+        headers: {'Content-Type': 'application/json'});
+    final data = jsonDecode(response.body);
+
+    return data['exists'];
   }
 
   Future<List<Tabledb>> gettableinfo(String name) async {
@@ -134,11 +174,11 @@ class _Tablestate extends State<Tablestatus> {
                 "Table ${db.tableNum}",
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10.0,
               ),
               greenorred(db.status),
-              SizedBox(
+              const SizedBox(
                 height: 10.0,
               ),
               Text(
@@ -184,8 +224,13 @@ class _Tablestate extends State<Tablestatus> {
 
     // Return a column containing all the rows
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: rows,
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: rows,
+        ),
+        buttondecide(data[0].belong)
+      ],
     );
   }
 
@@ -205,7 +250,7 @@ class _Tablestate extends State<Tablestatus> {
         Container(
           width: 16,
           height: 16,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Color(0xFFEF4444), // Green color
             shape: BoxShape.circle, // Makes it a circle
           ),
@@ -224,7 +269,7 @@ class _Tablestate extends State<Tablestatus> {
         Container(
           width: 16,
           height: 16,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Color(0xFF22C55E), // Green color
             shape: BoxShape.circle, // Makes it a circle
           ),
@@ -232,6 +277,96 @@ class _Tablestate extends State<Tablestatus> {
         // If you want to keep the greenorred function, you can call it here
         // greenorred(),
       ],
+    );
+  }
+
+  Widget buttondecide(String name) {
+    return FutureBuilder(
+        future: gettablestatus(name),
+        builder: (context, tableSnapshot) {
+          if (tableSnapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (tableSnapshot.hasError) {
+            return Center(child: Text('Error: ${tableSnapshot.error}'));
+          } else {
+            return twocondition(tableSnapshot.data!, name);
+          }
+        });
+  }
+
+  Widget twocondition(bool full, String name) {
+    return FutureBuilder(
+        future: getqueue(name),
+        builder: (context, tableSnapshot) {
+          if (tableSnapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (tableSnapshot.hasError) {
+            print("hghghg");
+            return Center(child: Text('Error: ${tableSnapshot.error}'));
+          } else {
+            if (tableSnapshot.data == true || full == false) {
+              return disablebutton();
+            } else {
+              return ablebutton(name);
+            }
+          }
+        });
+  }
+
+  Widget disablebutton() {
+    return ElevatedButton(
+      onPressed: () {
+        // Add your onPressed logic here
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        backgroundColor: const Color(0xFF4A75A5)
+            .withOpacity(0.5), // Background color with opacity
+        elevation: 0, // No shadow
+      ),
+      child: Text(
+        "Create a queue",
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontFamily:
+              'Source Sans Pro', // Ensure this font is added in your pubspec.yaml
+          fontWeight: FontWeight.w600,
+          height: 1.19, // Line height (19px / 16px)
+        ),
+      ),
+    );
+  }
+
+  Widget ablebutton(String name) {
+    return ElevatedButton(
+      onPressed: () async {
+        // Add your onPressed logic here
+        createqueue(name);
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        backgroundColor:
+            const Color(0xFF1578E6), // Background color with opacity
+        elevation: 0, // No shadow
+      ),
+      child: Text(
+        "Create a queue",
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontFamily:
+              'Source Sans Pro', // Ensure this font is added in your pubspec.yaml
+          fontWeight: FontWeight.w600,
+          height: 1.19, // Line height (19px / 16px)
+        ),
+      ),
     );
   }
 
@@ -275,6 +410,30 @@ class _Tablestate extends State<Tablestatus> {
     );
   }
 
+  Widget Custom() {
+    return ElevatedButton(
+      onPressed: () {
+        // Define what happens when the button is pressed
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        backgroundColor: const Color(0xFF1578E6), // Background color
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24), // Rounded corners
+        ),
+      ),
+      child: Text(
+        "Queue Condition",
+        style: const TextStyle(
+          fontSize: 16,
+          fontFamily: 'Open Sans',
+          fontWeight: FontWeight.w600,
+          color: Colors.white, // Text color
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     _tokenValue = storage.read(key: 'jwt');
@@ -288,7 +447,7 @@ class _Tablestate extends State<Tablestatus> {
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Column(
-            children: [token()],
+            children: [token(), Custom()],
           ),
         ));
   }
