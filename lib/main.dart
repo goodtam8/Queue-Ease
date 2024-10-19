@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:fyp_mobile/customer/Join.dart';
 import 'package:fyp_mobile/customer/Notification.dart';
 import 'package:fyp_mobile/customer/Notilist.dart';
 import 'package:fyp_mobile/customer/QR.dart';
@@ -22,28 +23,30 @@ import 'package:fyp_mobile/staff/editstaffprofile.dart';
 import 'package:fyp_mobile/staff/QRscanner.dart';
 import 'package:fyp_mobile/staff/backhome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   await _setup();
-
 
   runApp(MyApp());
 }
 
 Future<void> _setup() async {
   WidgetsFlutterBinding.ensureInitialized();
-    await clearSharedPreferences();
+  await clearSharedPreferences();
 
   Stripe.publishableKey = stripePublishableKey;
   await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform); // Initialize Firebase
   await FirebaseApi().initNotifications();
 }
+
 Future<void> clearSharedPreferences() async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.clear();
 }
+
 class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
@@ -75,7 +78,7 @@ class _MyAppState extends State<MyApp> {
                 key: globalNavigationBarKey,
               )
             : Login(onLogin: login),
-            navigatorKey: navigatorKey,
+        navigatorKey: navigatorKey,
         routes: {
           '/login': (context) => Login(onLogin: login),
           '/register': (context) => const Register(),
@@ -87,12 +90,12 @@ class _MyAppState extends State<MyApp> {
           '/reg': (context) => const Customerregister(),
           '/customer/edit': (context) => const Studentedit(),
           '/search': (context) => const Search(),
-          '/noti':(context)=>const noti(),
-          '/list':(context)=>const Notilist(),
-          '/receipt':(context)=>const Receipt(),
-          '/checkout':(context)=>const Orderdetail(),
-          '/qr':(context)=>const Qr(),
-
+          '/noti': (context) => const noti(),
+          '/list': (context) => const Notilist(),
+          '/receipt': (context) => const Receipt(),
+          '/checkout': (context) => const Orderdetail(),
+          '/qr': (context) => const Qr(),
+          '/join': (context) => const Join(),
         });
   }
 }

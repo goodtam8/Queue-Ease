@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_mobile/customer/Menu.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
@@ -10,21 +11,53 @@ class Qr extends StatefulWidget {
 }
 
 class _QrState extends State<Qr> {
-  String ?qrdata;
+  Widget order(String id) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Order(restaurant: id),
+          ),
+        );
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        fixedSize: const Size(107, 40),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        backgroundColor: const Color(0xFF1578E6), // Equivalent to #1578e6
+        elevation: 0,
+      ),
+      child: const Text(
+        "Order",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontFamily:
+              'Source Sans Pro', // Ensure this font is available in your project
+          fontWeight: FontWeight.w600, // Equivalent to fontWeight: 600
+          height: 24 / 16, // lineHeight: 24px / fontSize: 16px
+        ),
+      ),
+    );
+  }
+
+  String? qrdata;
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)?.settings.arguments as Map;
+
+    final rest = args['restaurant'];
+    final party = args['party'];
+    qrdata = party;
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: Topbar(),
-      body: Column(children: [
-TextField(onSubmitted: (value){
-  setState(() {
-    qrdata=value;
-  });
-  if(qrdata!=null){
-    PrettyQrView.data(data: qrdata!);
-  }
-},)
-      ],),
+      body: Column(
+        children: [PrettyQrView.data(data: qrdata!)],
+      ),
     );
   }
 }

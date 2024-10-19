@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -36,6 +37,15 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
         image: DecorationImage(image: MemoryImage(data)),
       ),
     );
+  }
+
+  Future<bool> getqueue(String name) async {
+    var response = await http.get(
+        Uri.parse('http://10.0.2.2:3000/api/queue/check/$name'),
+        headers: {'Content-Type': 'application/json'});
+    final data = jsonDecode(response.body);
+
+    return data['exists'];
   }
 
   Future<Uint8List?> getImage(String id) async {
@@ -84,7 +94,6 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
                   ),
                 ),
                 Center(child: Text(data.location)),
-                order(data.id)
               ],
             );
           } else {
@@ -116,38 +125,16 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
           }
         });
   }
-  Widget order(String id){
+
+  Widget contain() {
     return Container(
-      margin: const EdgeInsets.only(top: 220, left: 128),
-      child: ElevatedButton(
-        onPressed: () {
-           Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Order(restaurant: id),
-            ),
-          );
-        },
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          fixedSize: const Size(107, 40),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          backgroundColor: const Color(0xFF1578E6), // Equivalent to #1578e6
-          elevation: 0,
-        ),
-        child: const Text(
-          "Order",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontFamily: 'Source Sans Pro', // Ensure this font is available in your project
-            fontWeight: FontWeight.w600, // Equivalent to fontWeight: 600
-            height: 24 / 16, // lineHeight: 24px / fontSize: 16px
-          ),
-        ),
+      width: 328,
+      height: 264,
+      decoration: BoxDecoration(
+        color: const Color(0xFFF1F1F1), // Background color
+        borderRadius: BorderRadius.circular(24), // Rounded corners
       ),
+      child: Text("Appromximately Waiting time"), // Display the child widget
     );
   }
 
@@ -157,10 +144,7 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
         backgroundColor: Colors.white,
         appBar: const Topbar(),
         body: Column(
-          children: [
-            futuredetail(),
-
-          ],
+          children: [futuredetail(), contain()],
         ),
         bottomNavigationBar: BottomAppBar(
           color: const Color(0xFF1578E6), // Background color
@@ -169,7 +153,38 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
             width: 50,
             height: 48,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () async {
+                var rest = await getrestdetail();
+                if (await getqueue(rest.name) == false) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text("Queue "),
+                        content: const Text(
+                          "The restaurant has space, no need to wait for the queue.",
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(); // Close the dialog
+                            },
+                            child: const Text("OK"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                } else {
+                  // Pass the restaurant details as arguments
+                  Navigator.pushNamed(
+                    context,
+                    '/join',
+                    arguments:
+                        rest, // Assuming 'rest' contains the data you want to pass
+                  );
+                }
+              },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 fixedSize: const Size(150, 56),
