@@ -170,10 +170,6 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
             height: 48,
             child: ElevatedButton(
               onPressed: () {},
-              child: const Text(
-                "Join the Queue",
-                style: TextStyle(color: Colors.white),
-              ),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 fixedSize: const Size(150, 56),
@@ -183,6 +179,10 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
                 backgroundColor:
                     const Color.fromARGB(0, 255, 255, 255), // Background color
                 elevation: 0, // Remove shadow
+              ),
+              child: const Text(
+                "Join the Queue",
+                style: TextStyle(color: Colors.white),
               ),
             ),
           ), // Display the child widget

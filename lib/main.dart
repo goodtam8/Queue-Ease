@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fyp_mobile/customer/Notification.dart';
 import 'package:fyp_mobile/customer/Notilist.dart';
+import 'package:fyp_mobile/customer/QR.dart';
 import 'package:fyp_mobile/customer/Receipt.dart';
 import 'package:fyp_mobile/customer/Search.dart';
 import 'package:fyp_mobile/customer/orderdetail.dart';
@@ -18,7 +19,7 @@ import 'package:fyp_mobile/staff/Home.dart';
 import 'package:fyp_mobile/staff/tablestatus.dart';
 import 'package:fyp_mobile/staff/announcement.dart';
 import 'package:fyp_mobile/staff/editstaffprofile.dart';
-import 'package:fyp_mobile/staff/leave_man.dart';
+import 'package:fyp_mobile/staff/QRscanner.dart';
 import 'package:fyp_mobile/staff/backhome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -79,7 +80,7 @@ class _MyAppState extends State<MyApp> {
           '/login': (context) => Login(onLogin: login),
           '/register': (context) => const Register(),
           '/home': (context) => const Home(),
-          '/leave': (context) => const LeaveMan(),
+          '/qrscan': (context) => const Qrscanner(),
           '/announce': (context) => const Announcement(),
           '/table': (context) => Tablestatus(),
           '/update': (context) => const Editstaffprofile(),
@@ -90,7 +91,8 @@ class _MyAppState extends State<MyApp> {
           '/list':(context)=>const Notilist(),
           '/receipt':(context)=>const Receipt(),
           '/checkout':(context)=>const Orderdetail(),
-          
+          '/qr':(context)=>const Qr(),
+
         });
   }
 }
