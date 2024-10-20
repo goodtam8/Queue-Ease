@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/customer/Menu.dart';
+import 'package:fyp_mobile/login.dart';
+import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/topbar.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:http/http.dart' as http;
 
 class Join extends StatefulWidget {
   const Join({super.key});
@@ -19,6 +25,25 @@ class _JoinState extends State<Join> {
     '5-6 people',
     '7+ people',
   ];
+  Future<dynamic> join(String restname, String objectid) async {
+    Map<String, dynamic> data = {
+      'customerId': objectid,
+      'numberOfPeople': _selectedSize
+    };
+    try {
+      var response = await http.put(
+          Uri.parse('http://10.0.2.2:3000/api/queue/$restname/add'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(data));
+      print("response:${response.body}");
+      final message = jsonDecode(response.body);
+
+      return (message['message']);
+    } catch (e) {
+      print(e);
+      return e.toString();
+    }
+  }
 
   Widget partypicker() {
     return Container(
@@ -47,20 +72,62 @@ class _JoinState extends State<Join> {
       ),
     );
   }
+  //add to the queue
 
   Widget joinbutton(Object rest) {
     return ElevatedButton(
-      onPressed: () {
+      onPressed: () async {
         if (_selectedSize != null) {
-          Navigator.pushNamed(
-            context,
-            '/qr',
-            arguments: {
-              'restaurant': rest,
-              'party': _selectedSize,
-              // Add more arguments as needed
-            },
-          );
+          final _tokenValue = await storage.read(key: 'jwt');
+          Map<String, dynamic> decodedToken =
+              JwtDecoder.decode(_tokenValue as String);
+          String oid = decodedToken["_id"].toString();
+          String mess = await join((rest as Restaurant).name, oid);
+          if (mess == "Customer is already in the queue") {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('Error'),
+                    content: Text('You are already in the queue'),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                        child: Text('OK'),
+                      ),
+                    ],
+                  );
+                });
+          } else {
+            Navigator.pushNamed(
+              context,
+              '/qr',
+              arguments: {
+                'restaurant': rest,
+                'id': oid,
+                // Add more arguments as needed
+              },
+            );
+          }
+        } else {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Error'),
+                  content: Text('Please select the party size'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close the dialog
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              });
         }
       },
       style: ElevatedButton.styleFrom(

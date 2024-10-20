@@ -413,7 +413,7 @@ class _Tablestate extends State<Tablestatus> {
   Widget Custom() {
     return ElevatedButton(
       onPressed: () {
-        // Define what happens when the button is pressed
+        Navigator.of(context).pushNamed('/condition');
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8),

@@ -17,6 +17,7 @@ import 'package:fyp_mobile/register.dart';
 import 'package:fyp_mobile/customer/CustomerEdit.dart';
 import 'package:fyp_mobile/customerregister.dart';
 import 'package:fyp_mobile/staff/Home.dart';
+import 'package:fyp_mobile/staff/quecondition.dart';
 import 'package:fyp_mobile/staff/tablestatus.dart';
 import 'package:fyp_mobile/staff/announcement.dart';
 import 'package:fyp_mobile/staff/editstaffprofile.dart';
@@ -96,6 +97,7 @@ class _MyAppState extends State<MyApp> {
           '/checkout': (context) => const Orderdetail(),
           '/qr': (context) => const Qr(),
           '/join': (context) => const Join(),
+          '/condition':(context)=>const Quecondition(),
         });
   }
 }

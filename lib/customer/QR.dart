@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/customer/Menu.dart';
+import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 
@@ -50,13 +51,17 @@ class _QrState extends State<Qr> {
     final args = ModalRoute.of(context)?.settings.arguments as Map;
 
     final rest = args['restaurant'];
-    final party = args['party'];
-    qrdata = party;
+    final id = args['id'];
+    qrdata = id;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: Topbar(),
       body: Column(
-        children: [PrettyQrView.data(data: qrdata!)],
+        children: [
+          PrettyQrView.data(data: qrdata!),
+          order((rest as Restaurant).id)
+        ],
       ),
     );
   }
