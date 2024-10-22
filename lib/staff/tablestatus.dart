@@ -29,6 +29,7 @@ class _Tablestate extends State<Tablestatus> {
 
   Future<Widget> gettable(String objectid) async {
     Restaurant abc = await getrestaurant(objectid);
+    
     List<Tabledb> tables = await gettableinfo(abc.name);
     return TableList(tables);
   }
@@ -229,7 +230,8 @@ class _Tablestate extends State<Tablestatus> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: rows,
         ),
-        buttondecide(data[0].belong)
+        buttondecide(data[0].belong),
+        Custom(data[0].belong)
       ],
     );
   }
@@ -410,10 +412,11 @@ class _Tablestate extends State<Tablestatus> {
     );
   }
 
-  Widget Custom() {
+  Widget Custom(String name) {
     return ElevatedButton(
       onPressed: () {
-        Navigator.of(context).pushNamed('/condition');
+        Navigator.of(context).pushNamed('/condition',arguments:
+                        name, );
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -447,7 +450,7 @@ class _Tablestate extends State<Tablestatus> {
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Column(
-            children: [token(), Custom()],
+            children: [token()],
           ),
         ));
   }
