@@ -29,7 +29,7 @@ class _Tablestate extends State<Tablestatus> {
 
   Future<Widget> gettable(String objectid) async {
     Restaurant abc = await getrestaurant(objectid);
-    
+
     List<Tabledb> tables = await gettableinfo(abc.name);
     return TableList(tables);
   }
@@ -82,13 +82,28 @@ class _Tablestate extends State<Tablestatus> {
     return Tabledb.listFromJson(data['table']);
   }
 
-  Future<dynamic> updatetablestatus(String option, String objectid) async {
-    Map<String, dynamic> data = {
-      'status': option,
-    };
+  Future<dynamic> updatetablestatus(
+      String option, String objectid, String type) async {
+    Map<String, dynamic> data = {'status': option, 'type': type};
     try {
       var response = await http.put(
-          Uri.parse('http://10.0.2.2:3000/api/table/$objectid'),
+          Uri.parse('http://10.0.2.2:3000/api/table/$objectid/occupied'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(data));
+
+      return (response.statusCode);
+    } catch (e) {
+      print(e);
+      return e.toString();
+    }
+  }
+
+  Future<dynamic> updatefree(
+      String option, String objectid, String type) async {
+    Map<String, dynamic> data = {'status': option, 'type': type};
+    try {
+      var response = await http.put(
+          Uri.parse('http://10.0.2.2:3000/api/table/$objectid/free'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(data));
 
@@ -102,6 +117,13 @@ class _Tablestate extends State<Tablestatus> {
   void _showUpdateDialog(BuildContext context, Tabledb db) {
     String? selectedStatus = db.status; // Start with the current status
     final List<String> statusOptions = ['available', 'in used'];
+    final List<String> type = [
+      '1-2 people',
+      '3-4 people',
+      '5-6 people',
+      '7+ people',
+    ];
+    String? selectedtype = db.type;
 
     showDialog(
       context: context,
@@ -127,6 +149,20 @@ class _Tablestate extends State<Tablestatus> {
                       );
                     }).toList(),
                   ),
+                  DropdownButton<String>(
+                    value: selectedtype,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedtype = newValue; // Update selected status
+                      });
+                    },
+                    items: type.map((String type) {
+                      return DropdownMenuItem<String>(
+                        value: type,
+                        child: Text(type),
+                      );
+                    }).toList(),
+                  ),
                 ],
               ),
               actions: [
@@ -138,8 +174,9 @@ class _Tablestate extends State<Tablestatus> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    if (selectedStatus != null) {
-                      await updatetablestatus(selectedStatus!, db.id);
+                    if (selectedStatus != null && selectedStatus == "in used") {
+                      await updatetablestatus(
+                          selectedStatus!, db.id, selectedtype!);
                       // Refresh table data after updating status
 
                       Navigator.of(context).pop();
@@ -148,6 +185,15 @@ class _Tablestate extends State<Tablestatus> {
                         print(counter);
                       });
                     } // Close dialog
+                    else if (selectedStatus != null &&
+                        selectedStatus == "available") {
+                      await updatefree(selectedStatus!, db.id, selectedtype!);
+                      Navigator.of(context).pop();
+                      this.setState(() {
+                        counter++;
+                        print(counter);
+                      });
+                    }
                   },
                   child: Text('Submit'),
                 ),
@@ -415,8 +461,10 @@ class _Tablestate extends State<Tablestatus> {
   Widget Custom(String name) {
     return ElevatedButton(
       onPressed: () {
-        Navigator.of(context).pushNamed('/condition',arguments:
-                        name, );
+        Navigator.of(context).pushNamed(
+          '/condition',
+          arguments: name,
+        );
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8),

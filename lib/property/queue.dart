@@ -39,11 +39,18 @@ class QueueItem {
   });
 
   factory QueueItem.fromJson(Map<String, dynamic> json) {
+    // Check if the checkInTime is a valid string before parsing
+    final checkInTimeString = json['checkInTime'] as String?;
+    final checkInTime =
+        checkInTimeString != null && checkInTimeString.isNotEmpty
+            ? DateTime.parse(checkInTimeString)
+            : DateTime(1970); // Default value if the string is null or empty
+
     return QueueItem(
       customerId: json['customerId'] as String? ?? '',
       numberOfPeople: json['numberOfPeople'], // This can be int or String
       queueNumber: json['queueNumber'] as int? ?? 0,
-      checkInTime: DateTime.parse(json['checkInTime'] as String? ?? ''),
+      checkInTime: checkInTime,
     );
   }
 }

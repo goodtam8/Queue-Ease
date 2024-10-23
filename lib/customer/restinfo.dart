@@ -213,6 +213,7 @@ Widget restcard(List<Restaurant> data) {
       body: Column(
         children: [
           futuregetrest(),
+          
           Row(
             children: [
               const SizedBox(
