@@ -16,7 +16,9 @@ import 'package:fyp_mobile/property/navgationbar.dart';
 import 'package:fyp_mobile/register.dart';
 import 'package:fyp_mobile/customer/CustomerEdit.dart';
 import 'package:fyp_mobile/customerregister.dart';
+import 'package:fyp_mobile/staff/FailureScan.dart';
 import 'package:fyp_mobile/staff/Home.dart';
+import 'package:fyp_mobile/staff/SucessfulScan.dart';
 import 'package:fyp_mobile/staff/quecondition.dart';
 import 'package:fyp_mobile/staff/tablestatus.dart';
 import 'package:fyp_mobile/staff/announcement.dart';
@@ -98,6 +100,8 @@ class _MyAppState extends State<MyApp> {
           '/qr': (context) => const Qr(),
           '/join': (context) => const Join(),
           '/condition':(context)=>const Quecondition(),
+          '/success':(context)=>const Sucessfulscan(),
+          '/fail':(context)=>const Failurescan()
         });
   }
 }

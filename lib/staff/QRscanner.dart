@@ -22,7 +22,7 @@ class _QrscannerState extends State<Qrscanner> {
   );
   late Future<String?> _tokenValue;
 
-  Future<dynamic> scan(String restname, String objectid) async {
+  Future<String> scan(String restname, String objectid) async {
     try {
       var response = await http.patch(
         Uri.parse('http://10.0.2.2:3000/api/queue/$objectid/$restname/checkin'),
@@ -79,7 +79,13 @@ class _QrscannerState extends State<Qrscanner> {
                   onPressed: () async {
                     Restaurant rest = await getrestaurant(oid);
 
-                    await scan(rest.name, scanvalue!);
+                    String response = await scan(rest.name, scanvalue!);
+                    if (response == "Customer checked in successfully") {
+                      Navigator.pop(context);
+                      Navigator.of(context).pushReplacementNamed("/success");
+                    } else {
+                      Navigator.of(context).pushReplacementNamed("/fail");
+                    }
                   },
                   child: Text("Scan"))
             ],

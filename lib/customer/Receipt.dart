@@ -49,6 +49,9 @@ class _ReceiptState extends State<Receipt> {
       onPressed: () {
         globalNavigationBarKey.currentState?.updateIndex(0);
         Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
       },
       child: Text(
         "Back to Home",
