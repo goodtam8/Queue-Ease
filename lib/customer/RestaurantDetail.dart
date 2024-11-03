@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/customer/Menu.dart';
 import 'package:fyp_mobile/property/add_data.dart';
+import 'package:fyp_mobile/property/queue.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:http/http.dart' as http;
@@ -46,6 +47,22 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
     final data = jsonDecode(response.body);
 
     return data['exists'];
+  }
+
+  Future<Queueing> queuedetail(String name) async {
+    var response = await http.get(
+        Uri.parse('http://10.0.2.2:3000/api/queue/$name'),
+        headers: {'Content-Type': 'application/json'});
+    return parseQueue(response.body);
+  }
+
+  Future<double> getwaitingtime(String name) async {
+    var response = await http.get(
+        Uri.parse('http://10.0.2.2:3000/api/predict/$name'),
+        headers: {'Content-Type': 'application/json'});
+    final data = jsonDecode(response.body);
+
+    return data['waitingTime'];
   }
 
   Future<Uint8List?> getImage(String id) async {
@@ -94,6 +111,7 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
                   ),
                 ),
                 Center(child: Text(data.location)),
+                contain(data.name)
               ],
             );
           } else {
@@ -126,16 +144,96 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
         });
   }
 
-  Widget contain() {
-    return Container(
-      width: 328,
-      height: 264,
-      decoration: BoxDecoration(
-        color: const Color(0xFFF1F1F1), // Background color
-        borderRadius: BorderRadius.circular(24), // Rounded corners
-      ),
-      child: Text("Appromximately Waiting time"), // Display the child widget
-    );
+  Widget queueinfo(String name) {
+    return FutureBuilder(
+        future: queuedetail(name),
+        builder: (BuildContext context, AsyncSnapshot<Queueing> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // Show a loading indicator while waiting
+          } else if (snapshot.hasError) {
+            print('hello there, there is where the error occur');
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            Queueing detail = snapshot.data!;
+            String next = "";
+            int length = detail.queueArray.length - detail.currentPosition;
+            if (detail.queueArray.length - detail.currentPosition == 0) {
+              length = 1;
+            }
+            if (detail.queueArray.length == detail.currentPosition) {
+              next = "Empty";
+            } else {
+              next = (detail.currentPosition + 1).toString();
+            }
+            return Column(
+              children: [
+                Text("Number of People in Queue:$length"),
+                Text("Current Queue Number: ${detail.currentPosition}"),
+                Text("Next queue Number:$next")
+              ],
+            );
+          } else {
+            return Text("an unexpected error occured");
+          }
+        });
+  }
+
+  Widget waitingtime(String name) {
+    return FutureBuilder(
+        future: getwaitingtime(name),
+        builder: (BuildContext context, AsyncSnapshot<double> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // Show a loading indicator while waiting
+          } else if (snapshot.hasError) {
+            print('hello there, there is where the error occur');
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            int time = snapshot.data!.ceil();
+            return Column(
+              children: [
+                Text("Estimated Waiting time: $time minutes"),
+                queueinfo(name)
+              ],
+            );
+          } else {
+            return Text("an unexpected error occured");
+          }
+        });
+  }
+
+  Widget contain(String name) {
+    return FutureBuilder(
+        future: getqueue(name),
+        builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // Show a loading indicator while waiting
+          } else if (snapshot.hasError) {
+            print('hello there, there is where the error occur');
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            bool exist = snapshot.data!;
+            return Container(
+              width: 328,
+              height: 264,
+              decoration: BoxDecoration(
+                color: const Color(0xFFF1F1F1), // Background color
+                borderRadius: BorderRadius.circular(24), // Rounded corners
+              ),
+              child: Column(
+                children: [
+                  Text("Appromximately Waiting time:"),
+                  exist == true
+                      ? waitingtime(name)
+                      : const Text("You can walk in now ")
+                ],
+              ),
+
+              // Display the child widget
+            );
+          } else {
+            return Text("an unexpected error occured");
+          }
+        });
   }
 
   @override
@@ -144,7 +242,7 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
         backgroundColor: Colors.white,
         appBar: const Topbar(),
         body: Column(
-          children: [futuredetail(), contain()],
+          children: [futuredetail()],
         ),
         bottomNavigationBar: BottomAppBar(
           color: const Color(0xFF1578E6), // Background color

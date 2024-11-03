@@ -17,7 +17,7 @@ class _FailureScanState extends State<Failurescan> {
       body: Center(
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 150.0,
             ),
             Container(
@@ -25,19 +25,20 @@ class _FailureScanState extends State<Failurescan> {
               width: 101,
               height: 101,
               decoration: BoxDecoration(
-                color: Color(0xFF4A75A5),
+                color: const Color(0xFF4A75A5),
                 borderRadius: BorderRadius.circular(9999), // Fully rounded
               ),
               child: Container(
                   width: 65,
                   height: 65,
-                  child: Icon(
+                  child: const Icon(
                     Icons.close,
                     color: Colors.white,
                     size: 65.0,
                   )),
             ),
-            Text("There is no queue number match with the qr code you scanned ",
+            const Text(
+                "There is no queue number match with the qr code you scanned ",
                 style: TextStyle(
                   color: Color(0xFF4A75A5), // Color in Flutter format
                   fontSize: 24,
@@ -45,18 +46,18 @@ class _FailureScanState extends State<Failurescan> {
                       'Open Sans', // Make sure to include this font in your pubspec.yaml
                   height: 1.33,
                 )),
-          
-            SizedBox(height: 50.0),
+            const SizedBox(height: 50.0),
             ElevatedButton(
               onPressed: () {
                 globalNavigationBarKey.currentState?.updateIndex(0);
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
+                Navigator.of(context).pop();
               },
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 backgroundColor: Color(0xFF4A75A5), // Background color
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 16,
                   fontFamily:
                       'Open Sans', // Ensure this font is added in pubspec.yaml

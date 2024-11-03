@@ -12,12 +12,12 @@ class _SucessfulscanState extends State<Sucessfulscan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFCEDFF2), // Hex color code
+      backgroundColor: const Color(0xFFCEDFF2), // Hex color code
 
       body: Center(
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 150.0,
             ),
             Container(
@@ -25,19 +25,19 @@ class _SucessfulscanState extends State<Sucessfulscan> {
               width: 101,
               height: 101,
               decoration: BoxDecoration(
-                color: Color(0xFF4A75A5),
+                color: const Color(0xFF4A75A5),
                 borderRadius: BorderRadius.circular(9999), // Fully rounded
               ),
               child: Container(
                   width: 65,
                   height: 65,
-                  child: Icon(
+                  child: const Icon(
                     Icons.check,
                     color: Colors.white,
                     size: 65.0,
                   )),
             ),
-            Text("You have Successful check in",
+            const Text("You have Successful check in",
                 style: TextStyle(
                   color: Color(0xFF4A75A5), // Color in Flutter format
                   fontSize: 24,
@@ -46,14 +46,14 @@ class _SucessfulscanState extends State<Sucessfulscan> {
                   height: 1.33,
                 )),
             Text("Time: ${DateTime.now()}",
-                style: TextStyle(
+                style: const TextStyle(
                   color: Color(0xFF4A75A5), // Color in Flutter format
                   fontSize: 24,
                   fontFamily:
                       'Open Sans', // Make sure to include this font in your pubspec.yaml
                   height: 1.33,
                 )),
-            SizedBox(height: 50.0),
+            const SizedBox(height: 50.0),
             ElevatedButton(
               onPressed: () {
                 globalNavigationBarKey.currentState?.updateIndex(0);
@@ -61,9 +61,9 @@ class _SucessfulscanState extends State<Sucessfulscan> {
                 Navigator.of(context).pop();
               },
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 backgroundColor: Color(0xFF4A75A5), // Background color
-                textStyle: TextStyle(
+                textStyle: const TextStyle(
                   fontSize: 16,
                   fontFamily:
                       'Open Sans', // Ensure this font is added in pubspec.yaml

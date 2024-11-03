@@ -231,60 +231,25 @@ class _EditstaffprofileState extends State<Editstaffprofile> {
                                       const SizedBox(
                                         height: 15.0,
                                       ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          Expanded(
-                                            child: ListTile(
-                                              title: const Text('Men'),
-                                              leading: Radio<String>(
-                                                value: gender[0],
-                                                groupValue: currentOption,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    currentOption =
-                                                        value.toString();
-                                                  });
-                                                },
-                                                fillColor: WidgetStateProperty
-                                                    .resolveWith((states) {
-                                                  if (states.contains(
-                                                      WidgetState.selected)) {
-                                                    return customRadioColor;
-                                                  }
-                                                  return Colors
-                                                      .grey; // Change this color as needed for unselected state
-                                                }),
-                                              ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: ListTile(
-                                              selectedColor: Color(0xFF4a75a5),
-                                              title: const Text('Women'),
-                                              leading: Radio<String>(
-                                                value: gender[1],
-                                                groupValue: currentOption,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    currentOption =
-                                                        value.toString();
-                                                  });
-                                                },
-                                                fillColor: WidgetStateProperty
-                                                    .resolveWith((states) {
-                                                  if (states.contains(
-                                                      WidgetState.selected)) {
-                                                    return customRadioColor;
-                                                  }
-                                                  return Colors
-                                                      .grey; // Change this color as needed for unselected state
-                                                }),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
+                                      DropdownButton<String>(
+                                        isExpanded:
+                                            true, // Make the dropdown take the full width
+                                        value: currentOption,
+                                        hint: Text('Select party size'),
+                                        items: gender.map((String size) {
+                                          return DropdownMenuItem<String>(
+                                            value: size,
+                                            child: Text(size),
+                                          );
+                                        }).toList(),
+                                        onChanged: (String? newValue) {
+                                          setState(() {
+                                            currentOption =
+                                                newValue!; // Update the selected size
+                                          });
+                                        },
+                                        underline:
+                                            SizedBox(), // Hide the underline
                                       ),
                                       Styled_button(
                                           onPressed: () async {
