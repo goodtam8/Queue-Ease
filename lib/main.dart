@@ -5,6 +5,7 @@ import 'package:fyp_mobile/customer/Join.dart';
 import 'package:fyp_mobile/customer/Notification.dart';
 import 'package:fyp_mobile/customer/Notilist.dart';
 import 'package:fyp_mobile/customer/QR.dart';
+import 'package:fyp_mobile/customer/QR2.dart';
 import 'package:fyp_mobile/customer/Receipt.dart';
 import 'package:fyp_mobile/customer/Search.dart';
 import 'package:fyp_mobile/customer/orderdetail.dart';
@@ -99,9 +100,10 @@ class _MyAppState extends State<MyApp> {
           '/checkout': (context) => const Orderdetail(),
           '/qr': (context) => const Qr(),
           '/join': (context) => const Join(),
-          '/condition':(context)=>const Quecondition(),
-          '/success':(context)=>const Sucessfulscan(),
-          '/fail':(context)=>const Failurescan()
+          '/condition': (context) => const Quecondition(),
+          '/success': (context) => const Sucessfulscan(),
+          '/fail': (context) => const Failurescan(),
+          '/qr2': (context) => const Qr2()
         });
   }
 }

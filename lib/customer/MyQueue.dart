@@ -44,14 +44,14 @@ class _MyqueueState extends State<Myqueue> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             List<Queueing> queuelist = snapshot.data!;
-            return queuecard(queuelist);
+            return queuecard(queuelist, id);
           }
         });
   }
 
-  Widget queuecard(List<Queueing> data) {
+  Widget queuecard(List<Queueing> data, String oid) {
     List<Widget> queuecard = [];
-    DateTime now = DateTime.now();
+    DateTime now = DateTime.now().toUtc();
     for (var queue in data) {
       queuecard.add(Container(
         width: 343,
@@ -81,11 +81,21 @@ class _MyqueueState extends State<Myqueue> {
                         1.29, // This is equivalent to lineHeight of 18px with fontSize 14px
                   ),
                 ),
+                Spacer(),
                 ElevatedButton(
                   onPressed: () {
-                    // Define the action on button press here
+                    Navigator.pushNamed(
+                      context,
+                      '/qr2',
+                      arguments: {
+                        'restaurant': queue.restaurantName,
+                        'id': oid,
+                        // Add more arguments as needed
+                      },
+                    );
                   },
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF1578E6),
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8), // Horizontal padding
 
@@ -94,9 +104,10 @@ class _MyqueueState extends State<Myqueue> {
                     ),
                     elevation: 0, // No shadow
                   ),
-                  child: Text(
+                  child: const Text(
                     "View",
-                    style: const TextStyle(
+                    style: TextStyle(
+                      color: Colors.white,
                       fontSize: 16,
                       fontFamily: 'Source Sans Pro',
                     ),
