@@ -60,3 +60,7 @@ Queueing parseQueue(String responseBody) {
   final Map<String, dynamic> queueData = jsonMap['queue'];
   return Queueing.fromJson(queueData);
 }
+
+List<Queueing> listFromJson(List<dynamic> json) {
+  return json.map((item) => Queueing.fromJson(item)).toList();
+}
