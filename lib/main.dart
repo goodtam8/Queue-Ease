@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fyp_mobile/customer/Join.dart';
+import 'package:fyp_mobile/customer/Map.dart';
 import 'package:fyp_mobile/customer/Notification.dart';
 import 'package:fyp_mobile/customer/Notilist.dart';
 import 'package:fyp_mobile/customer/QR.dart';
@@ -103,7 +104,8 @@ class _MyAppState extends State<MyApp> {
           '/condition': (context) => const Quecondition(),
           '/success': (context) => const Sucessfulscan(),
           '/fail': (context) => const Failurescan(),
-          '/qr2': (context) => const Qr2()
+          '/qr2': (context) => const Qr2(),
+          '/map':(context)=> MapView()
         });
   }
 }

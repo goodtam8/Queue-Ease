@@ -189,6 +189,7 @@ class _Homestate extends State<Userhome> {
           ),
           ElevatedButton(
             onPressed: () {
+              Navigator.of(context).pushNamed('/map');
               // Define the button action here
             },
             style: ElevatedButton.styleFrom(

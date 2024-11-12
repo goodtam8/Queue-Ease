@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 class Restaurant {
   final String id;
   final String img;
@@ -13,46 +15,48 @@ class Restaurant {
   final String location;
   final int quota;
   final List<dynamic> menu;
+  final double lat;
+  final double lng;
 
-  const Restaurant({
-    required this.id,
-    required this.img,
-    required this.name,
-    required this.startTime,
-    required this.endTime,
-    required this.type,
-    required this.outside,
-    required this.numOfTable,
-    required this.year,
-    required this.location,
-    required this.quota,
-    required this.menu,
-  });
-static  List<Restaurant> listFromJson(List<dynamic> json) {
+  const Restaurant(
+      {required this.id,
+      required this.img,
+      required this.name,
+      required this.startTime,
+      required this.endTime,
+      required this.type,
+      required this.outside,
+      required this.numOfTable,
+      required this.year,
+      required this.location,
+      required this.quota,
+      required this.menu,
+      required this.lat,
+      required this.lng});
+  static List<Restaurant> listFromJson(List<dynamic> json) {
     return json.map((item) => Restaurant.fromJson(item)).toList();
-  }  
+  }
+  LatLng get coordinate => LatLng(this.lat, this.lng);
 
   factory Restaurant.fromJson(Map<String, dynamic> json) {
     return Restaurant(
-      id: json['_id'] as String? ?? '', // Provide a default value
-      img: json['img'] as String? ?? '', // Provide a default value
-      name: json['name'] as String? ?? '', // Provide a default value
-      startTime: json['start_time'] as String? ?? '', // Provide a default value
-      endTime: json['end_time'] as String? ?? '', // Provide a default value
-      type: json['type'] as String? ?? '', // Provide a default value
-      outside: json['outside'] as bool? ?? false, // Provide a default value
-      numOfTable: json['numoftable'] as int? ?? 0, // Provide a default value
-      year: json['year'] as String? ?? '', // Provide a default value
-      location: json['location'] as String? ?? '', // Provide a default value
-      quota: json['quota'] as int? ?? 0, // Provide a default value
-      menu: json['menu'] as List<dynamic>? ?? [], // Provide a default value
-    );
+        id: json['_id'] as String? ?? '', // Provide a default value
+        img: json['img'] as String? ?? '', // Provide a default value
+        name: json['name'] as String? ?? '', // Provide a default value
+        startTime:
+            json['start_time'] as String? ?? '', // Provide a default value
+        endTime: json['end_time'] as String? ?? '', // Provide a default value
+        type: json['type'] as String? ?? '', // Provide a default value
+        outside: json['outside'] as bool? ?? false, // Provide a default value
+        numOfTable: json['numoftable'] as int? ?? 0, // Provide a default value
+        year: json['year'] as String? ?? '', // Provide a default value
+        location: json['location'] as String? ?? '', // Provide a default value
+        quota: json['quota'] as int? ?? 0, // Provide a default value
+        menu: json['menu'] as List<dynamic>? ?? [], // Provide a default value
+        lat: json['lat'] ?? 0,
+        lng: json['lng'] ?? 0);
   }
-
 }
-
-
-   
 
 Restaurant parseRestaurant(String responseBody) {
   final parsed = jsonDecode(responseBody) as Map<String, dynamic>;
