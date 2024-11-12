@@ -301,6 +301,9 @@ class _Homestate extends State<Userhome> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               fastlunch(),
+              ElevatedButton(onPressed: (){
+                Navigator.of(context).pushNamed('/chat');
+              }, child: const Text("Ask your ai assistant!"))
             ],
           ),
         ),

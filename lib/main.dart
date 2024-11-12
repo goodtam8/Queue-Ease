@@ -9,6 +9,7 @@ import 'package:fyp_mobile/customer/QR.dart';
 import 'package:fyp_mobile/customer/QR2.dart';
 import 'package:fyp_mobile/customer/Receipt.dart';
 import 'package:fyp_mobile/customer/Search.dart';
+import 'package:fyp_mobile/customer/chatroom.dart';
 import 'package:fyp_mobile/customer/orderdetail.dart';
 import 'package:fyp_mobile/firebase_options.dart';
 import 'package:fyp_mobile/login.dart';
@@ -105,7 +106,8 @@ class _MyAppState extends State<MyApp> {
           '/success': (context) => const Sucessfulscan(),
           '/fail': (context) => const Failurescan(),
           '/qr2': (context) => const Qr2(),
-          '/map':(context)=> MapView()
+          '/map':(context)=> MapView(),
+          '/chat':(context)=>const Chatroom(),
         });
   }
 }
