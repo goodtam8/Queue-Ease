@@ -119,7 +119,6 @@ class _Homestate extends State<Userhome> {
     List<Widget> queuecard = [];
     DateTime now = DateTime.now().toUtc();
     for (var queue in data) {
-      
       queuecard.add(Container(
         width: 343,
         height: 96,
@@ -385,7 +384,7 @@ class _Homestate extends State<Userhome> {
     for (var not in messages) {
       final message = jsonDecode(not);
       index++;
-      if(index>3){
+      if (index > 3) {
         break;
       }
       noticard.add(Padding(
@@ -431,9 +430,23 @@ class _Homestate extends State<Userhome> {
             const SizedBox(height: 10.0),
             debugtoken(),
             const SizedBox(height: 10.0),
-            const Text(
-              "Notification",
-              style: TextStyle(fontWeight: FontWeight.bold),
+            Row(
+              children: [
+                const Text(
+                  "Notification",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Spacer(),
+                TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pushNamed('/list');
+                    },
+                    child: const Text(
+                      "View More",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.black),
+                    ))
+              ],
             ),
             notilistfut(),
             const SizedBox(height: 10.0),

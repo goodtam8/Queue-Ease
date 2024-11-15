@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:fyp_mobile/customer/Menu.dart';
+import 'package:fyp_mobile/customer/queue/Menu.dart';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/topbar.dart';

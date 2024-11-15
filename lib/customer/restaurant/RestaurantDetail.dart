@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:fyp_mobile/customer/Menu.dart';
+import 'package:fyp_mobile/customer/queue/Menu.dart';
 import 'package:fyp_mobile/property/add_data.dart';
 import 'package:fyp_mobile/property/queue.dart';
 import 'package:fyp_mobile/property/restaurant.dart';

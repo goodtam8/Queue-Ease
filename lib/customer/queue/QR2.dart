@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fyp_mobile/customer/Menu.dart';
+import 'package:fyp_mobile/customer/queue/Menu.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
