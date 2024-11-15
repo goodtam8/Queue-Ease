@@ -1,14 +1,19 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:fyp_mobile/customer/Notification.dart';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/customer.dart';
 import 'package:fyp_mobile/property/firebase_api.dart';
+import 'package:fyp_mobile/property/queue.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:fyp_mobile/property/warningsignal.dart';
 import 'package:fyp_mobile/property/warningsignalicon.dart';
 import 'package:fyp_mobile/property/weather.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Userhome extends StatefulWidget {
   const Userhome({super.key});
@@ -19,13 +24,35 @@ class Userhome extends StatefulWidget {
 
 class _Homestate extends State<Userhome> {
   late Future<String?> _tokenValue;
-  List<RemoteMessage> messages = [];
-  Future<void> loadMessages() async {
+  Future<List<String>> loadMessages() async {
     FirebaseApi api = FirebaseApi();
-    List<RemoteMessage> loadedMessages = await api.loadMessages();
-    setState(() {
-      messages = loadedMessages;
-    });
+    final prefs = await SharedPreferences.getInstance();
+    List<String> loadedmessages = prefs.getStringList('messages') ?? [];
+    return loadedmessages;
+  }
+
+  Widget notilistfut() {
+    return FutureBuilder(
+        future: loadMessages(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/update');
+                },
+                child: const Text("Update"),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            print("hi there is the error occur");
+            print(snapshot.error);
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            List<String> message = snapshot.data!;
+            return notilist(message);
+          }
+        });
   }
 
   String timeformatting(DateTime now) {
@@ -55,6 +82,84 @@ class _Homestate extends State<Userhome> {
     return parseCustomer(response.body);
   }
 
+  Future<List<Queueing>> getqueue(String id) async {
+    var response = await http.get(
+        Uri.parse('http://10.0.2.2:3000/api/queue/$id/verify'),
+        headers: {'Content-Type': 'application/json'});
+    final data = jsonDecode(response.body);
+
+    return listFromJson(data['exists']);
+  }
+
+  Widget queueinfo(String id) {
+    return FutureBuilder(
+        future: getqueue(id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/update');
+                },
+                child: const Text("Update"),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            print("hi there is the error occur");
+            print(snapshot.error);
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            List<Queueing> queuelist = snapshot.data!;
+            return queuecard(queuelist, id);
+          }
+        });
+  }
+
+  Widget queuecard(List<Queueing> data, String oid) {
+    List<Widget> queuecard = [];
+    DateTime now = DateTime.now().toUtc();
+    for (var queue in data) {
+      
+      queuecard.add(Container(
+        width: 343,
+        height: 96,
+        decoration: BoxDecoration(
+          color: const Color(0xFFF1F1F1),
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Text("$now"),
+                ElevatedButton(onPressed: () {}, child: Text("restaurant")),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  "hi ${queue.restaurantName}",
+                  style: const TextStyle(
+                    color: Color(0xFF030303),
+                    fontSize: 14,
+                    fontFamily: 'Source Sans Pro',
+                    fontWeight: FontWeight.w700,
+                    height:
+                        1.29, // This is equivalent to lineHeight of 18px with fontSize 14px
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ));
+    }
+
+    return Column(
+      children: queuecard,
+    );
+  }
+
   Widget mornoraft() {
     DateTime now = DateTime.now();
     if (now.hour >= 12) {
@@ -74,18 +179,6 @@ class _Homestate extends State<Userhome> {
   void initState() {
     _tokenValue = storage.read(key: 'jwt');
     super.initState();
-  }
-
-  Widget notilist() {
-    return ListView.builder(
-      itemCount: messages.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          title: Text(messages[index].notification?.title ?? 'No Title'),
-          subtitle: Text(messages[index].notification?.body ?? 'No Body'),
-        );
-      },
-    );
   }
 
   Future<WeatherForecast> getweatherinfo() async {
@@ -260,6 +353,64 @@ class _Homestate extends State<Userhome> {
         });
   }
 
+  Widget debugtoken2() {
+    return FutureBuilder<String?>(
+        future: _tokenValue,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/update');
+                },
+                child: const Text("Update"),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            print("hi there is the error occur");
+            print(snapshot.error);
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            Map<String, dynamic> decodedToken =
+                JwtDecoder.decode(snapshot.data as String);
+            String oid = decodedToken["_id"].toString();
+            return queueinfo(oid);
+          }
+        });
+  }
+
+  Widget notilist(List<String> messages) {
+    List<Widget> noticard = [];
+    int index = 0;
+    for (var not in messages) {
+      final message = jsonDecode(not);
+      index++;
+      if(index>3){
+        break;
+      }
+      noticard.add(Padding(
+          padding: const EdgeInsets.all(8.0),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: const Text(
+                'Admin',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            Text(message['title'] ?? 'No Title'),
+            Text(message['body'] ?? 'No Title'),
+          ])));
+    }
+
+    return Row(children: noticard);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -273,39 +424,42 @@ class _Homestate extends State<Userhome> {
                 storage.read(key: 'jwt'); // Ensure this triggers a rebuild
           });
         },
-        child: SingleChildScrollView(
-          // Make the body scrollable
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              mornoraft(),
-              const SizedBox(height: 10.0),
-              debugtoken(),
-              const SizedBox(height: 10.0),
-              const Text(
-                "Notification",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10.0),
-              const Row(children: []),
-              const Text(
-                "Today's Weather",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              weatherforecast(),
-              const SizedBox(height: 10.0),
-              weatherwarning(),
-              const SizedBox(height: 10.0),
-              const Text(
-                "Your Queue",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              fastlunch(),
-              ElevatedButton(onPressed: (){
-                Navigator.of(context).pushNamed('/chat');
-              }, child: const Text("Ask your ai assistant!"))
-            ],
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            mornoraft(),
+            const SizedBox(height: 10.0),
+            debugtoken(),
+            const SizedBox(height: 10.0),
+            const Text(
+              "Notification",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            notilistfut(),
+            const SizedBox(height: 10.0),
+            const Row(children: []),
+            const Text(
+              "Today's Weather",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            //weatherforecast(),
+            const SizedBox(height: 10.0),
+            //weatherwarning(),
+            const SizedBox(height: 10.0),
+            const Text(
+              "Your Queue",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            fastlunch(),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/chat');
+                },
+                child: const Text("Ask your ai assistant!"))
+          ],
         ),
       ),
     );

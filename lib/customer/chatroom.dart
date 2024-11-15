@@ -21,6 +21,7 @@ class _ChatroomState extends State<Chatroom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: Topbar(),
       body: DashChat(
           currentUser: _currentUser,
@@ -66,6 +67,8 @@ class _ChatroomState extends State<Chatroom> {
           _messages.insert(0, botMessage);
         });
       } else {
+        final responseData = json.decode(response.body);
+
         // Handle error response
         ChatMessage errorMessage = ChatMessage(
           text: 'Error: ${response.statusCode} ${responseData['Error']}',

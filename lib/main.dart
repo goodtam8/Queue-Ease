@@ -106,8 +106,8 @@ class _MyAppState extends State<MyApp> {
           '/success': (context) => const Sucessfulscan(),
           '/fail': (context) => const Failurescan(),
           '/qr2': (context) => const Qr2(),
-          '/map':(context)=> MapView(),
-          '/chat':(context)=>const Chatroom(),
+          '/map': (context) => MapView(),
+          '/chat': (context) => const Chatroom(),
         });
   }
 }

@@ -148,36 +148,104 @@ class _LoginState extends State<Login> {
         ));
   }
 
-  Widget inputtext(TextEditingController control, String field) {
-    return TextFormField(
-      validator: (value) {
-        if (value!.isEmpty) {
-          return 'Please enter your $field'; // Validation error message
-        } else if (int.tryParse(value) == null) {
-          return 'Please input a valid $field';
-        }
-        return null; // Return null if the input is valid
-      },
-      controller: control,
-      decoration: InputDecoration(
-        hintText: "Enter your $field", border: const OutlineInputBorder(),
-    
-        filled: true,
-        fillColor: const Color(0xFFF1F1F1), // Background color
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8), // Padding
-        hintStyle: const TextStyle(
-          color: Color(0xFF94A3B8), // Hint text color
-          fontSize: 14, // Font size
-          fontFamily: 'Source Sans Pro', // Font family
+  Widget inputtext(TextEditingController control, String field,
+      {bool isPassword = false}) {
+    return Row(
+      children: [
+        Expanded(
+          child: TextFormField(
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Please enter your $field'; // Validation error message
+              } else if (isPassword && int.tryParse(value) != null) {
+                return 'Please input a valid $field'; // Ensure password is not a number
+              }
+              return null; // Return null if the input is valid
+            },
+            controller: control,
+            obscureText:
+                isPassword && issecured, // Toggle visibility for password
+            decoration: InputDecoration(
+              suffixIcon: isPassword ? TogglePassword() : null,
+              hintText: "Enter your $field",
+              border: const OutlineInputBorder(),
+              filled: true,
+              fillColor: const Color(0xFFF1F1F1), // Background color
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 8), // Padding
+              hintStyle: const TextStyle(
+                color: Color(0xFF94A3B8), // Hint text color
+                fontSize: 14, // Font size
+                fontFamily: 'Source Sans Pro', // Font family
+              ),
+            ),
+            style: const TextStyle(
+              fontSize: 14,
+              fontFamily: 'Source Sans Pro',
+              color: Colors.black, // Text color
+              height: 1.0, // Line height
+            ),
+            cursorColor: Colors.black,
+            // Cursor color
+          ),
         ),
+        // Show toggle if it's a password field
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const Topbar(),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(children: [
+          const SizedBox(height: 30),
+          Padding(
+            padding: const EdgeInsets.all(32),
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'User Name',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8.0),
+                    inputtext(username, "Username"),
+                    const SizedBox(height: 15.0),
+                    const Text(
+                      'Password',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8.0),
+                    inputtext(password, "Password",
+                        isPassword: true), // Pass true for password
+                    const SizedBox(height: 15.0),
+                    Row(children: [
+                      registerbutton("staff"),
+                      registerbutton("customer")
+                    ]),
+                    loginbutton("Staff"),
+                    loginbutton("Customer"),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ]),
       ),
-      style: const TextStyle(
-        fontSize: 14,
-        fontFamily: 'Source Sans Pro',
-        color: Colors.black, // Text color
-        height: 1.0, // Line height
-      ),
-      cursorColor: Colors.black, // Cursor color
+    );
+  }
+
+  Widget TogglePassword() {
+    return IconButton(
+      onPressed: updatepasswordstate,
+      icon: issecured ? Icon(Icons.visibility) : Icon(Icons.visibility_off),
     );
   }
 
@@ -201,65 +269,5 @@ class _LoginState extends State<Login> {
       print(e);
       return e.toString();
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: const Topbar(),
-        backgroundColor: Colors.white,
-        body: SafeArea(
-            child: Column(children: [
-          const SizedBox(
-            height: 30,
-          ),
-          Padding(
-              padding: const EdgeInsets.all(32),
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'User Name',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
-                        height: 8.0,
-                      ),
-                      inputtext(username, "Username"),
-                      const SizedBox(
-                        height: 15.0,
-                      ),
-                      const Text(
-                        'Password',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
-                        height: 8.0,
-                      ),
-                      inputtext(password, "Password"),
-                      const SizedBox(
-                        height: 15.0,
-                      ),
-                      Row(children: [
-                        registerbutton("staff"),
-                        registerbutton("customer")
-                      ]),
-                      loginbutton("Staff"),
-                      loginbutton("Customer"),
-                    ],
-                  ),
-                ),
-              )),
-        ])));
-  }
-
-  Widget TogglePassword() {
-    return IconButton(
-        onPressed: updatepasswordstate,
-        icon: issecured ? Icon(Icons.visibility) : Icon(Icons.visibility_off));
   }
 }
