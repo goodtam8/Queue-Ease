@@ -46,7 +46,7 @@ class Restaurant {
   factory Restaurant.fromJson(Map<String, dynamic> json) {
     return Restaurant(
         id: json['_id'] is Map
-            ? (json['_id'] as Map<String, dynamic>)['oid'] as String? ?? ''
+            ? (json['_id'] as Map<String, dynamic>)['\$oid'] as String? ?? ''
             : json['_id'] as String? ?? '',
         img: json['img'] as String? ?? '', // Provide a default value
         name: json['name'] as String? ?? '', // Provide a default value
