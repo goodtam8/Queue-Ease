@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fyp_mobile/customer/restaurant/RestaurantDetail.dart';
 import 'package:fyp_mobile/property/add_data.dart';
 import 'package:fyp_mobile/property/appbarwithsearch.dart';
+import 'package:fyp_mobile/property/recommender.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:http/http.dart' as http;
@@ -60,7 +61,9 @@ Widget restcard(List<Restaurant> data) {
   for (var restaurant in data) {
     restaurantCards.add(
       GestureDetector(
-        onTap: () {
+        onTap: () async {
+              await recommender
+                        .updateLastClickedCategory(restaurant.type);
           // Navigate to the new screen and pass the restaurant data
           Navigator.push(
             context,
@@ -204,6 +207,7 @@ Widget restcard(List<Restaurant> data) {
           }
         });
   }
+  final RecommenderSystem recommender = RecommenderSystem();
 
   @override
   Widget build(BuildContext context) {

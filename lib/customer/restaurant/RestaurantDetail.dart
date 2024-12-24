@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fyp_mobile/customer/queue/Menu.dart';
 import 'package:fyp_mobile/property/add_data.dart';
 import 'package:fyp_mobile/property/queue.dart';
+import 'package:fyp_mobile/property/recommender.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:http/http.dart' as http;
@@ -26,6 +27,26 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
         headers: {'Content-Type': 'application/json'});
 
     return parseRestaurant(response.body);
+  }
+
+  Future<void> _loadData() async {
+    await recommender.loadRestaurants(context);
+    await recommender.loadLastClickedCategory();
+    _updateRecommendations();
+  }
+
+  final RecommenderSystem recommender = RecommenderSystem();
+  List<Restaurant> recommendations = [];
+  void _updateRecommendations() {
+    setState(() {
+      recommendations = recommender.getRecommendations();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
   }
 
   Widget imagecontainer(Uint8List data) {
@@ -242,7 +263,37 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
         backgroundColor: Colors.white,
         appBar: const Topbar(),
         body: Column(
-          children: [futuredetail()],
+          children: [
+            futuredetail(),
+            Expanded(
+              child: recommendations.isEmpty
+                  ? Center(child: Text('No recommendations available'))
+                  : ListView.builder(
+                      itemCount: 3,
+                      itemBuilder: (context, index) {
+                        // Check if the current recommendation is the same as the current restaurant
+                        print("id");
+                        print(recommendations[index].id);
+                        if (recommendations[index].id == widget.restaurant) {
+                          print("it match");
+                          // Skip this recommendation and don't build the ListTile
+                          return SizedBox.shrink();
+                        }
+                        return ListTile(
+                          title: Text(recommendations[index].name),
+                          subtitle: Text(recommendations[index].type),
+                          trailing:
+                              Text(recommendations[index].rating.toString()),
+                          onTap: () async {
+                            await recommender.updateLastClickedCategory(
+                                recommendations[index].type);
+                            _updateRecommendations();
+                          },
+                        );
+                      },
+                    ),
+            ),
+          ],
         ),
         bottomNavigationBar: BottomAppBar(
           color: const Color(0xFF1578E6), // Background color
