@@ -85,67 +85,69 @@ class _LoginState extends State<Login> {
   }
 
   Widget loginbutton(String type) {
-    return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          fixedSize: Size(295, 44),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
+    return Center(
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            fixedSize: Size(295, 44),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
+            backgroundColor: const Color(0xFF030303),
+            textStyle: const TextStyle(
+              fontSize: 14,
+              fontFamily: 'Source Sans Pro',
+              color: Colors.white,
+              height: 1.43, // line height equivalent
+            ),
           ),
-          backgroundColor: const Color(0xFF030303),
-          textStyle: const TextStyle(
-            fontSize: 14,
-            fontFamily: 'Source Sans Pro',
-            color: Colors.white,
-            height: 1.43, // line height equivalent
-          ),
-        ),
-        onPressed: () async {
-          late var response;
-          if (type == "Customer") {
-            response = await userlogin();
-          } else {
-            response = await login();
-          }
-          if (response == 401) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                content: Container(
-                  padding: const EdgeInsets.all(16),
-                  height: 90,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    color: Colors.red,
-                  ),
-                  child: const Row(children: [
-                    SizedBox(
-                      width: 48.0,
+          onPressed: () async {
+            late var response;
+            if (type == "Customer") {
+              response = await userlogin();
+            } else {
+              response = await login();
+            }
+            if (response == 401) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  content: Container(
+                    padding: const EdgeInsets.all(16),
+                    height: 90,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      color: Colors.red,
                     ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Text(
-                              "Your userid or password is wrong. Please try again")
-                        ],
+                    child: const Row(children: [
+                      SizedBox(
+                        width: 48.0,
                       ),
-                    ),
-                  ]),
-                )));
-          } else {
-            widget.onLogin();
-          }
-        },
-        child: Text(
-          'Login as $type',
-          style: const TextStyle(
-            fontSize: 14,
-            fontFamily: 'Source Sans Pro',
-            color: Colors.white,
-            height: 1.43, // line height equivalent
-          ),
-        ));
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Text(
+                                "Your userid or password is wrong. Please try again")
+                          ],
+                        ),
+                      ),
+                    ]),
+                  )));
+            } else {
+              widget.onLogin();
+            }
+          },
+          child: Text(
+            'Login as $type',
+            style: const TextStyle(
+              fontSize: 14,
+              fontFamily: 'Source Sans Pro',
+              color: Colors.white,
+              height: 1.43, // line height equivalent
+            ),
+          )),
+    );
   }
 
   Widget inputtext(TextEditingController control, String field,

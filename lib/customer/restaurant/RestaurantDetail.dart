@@ -269,7 +269,9 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
               child: recommendations.isEmpty
                   ? Center(child: Text('No recommendations available'))
                   : ListView.builder(
-                      itemCount: 3,
+                      itemCount: recommendations.length > 3
+                          ? 3
+                          : recommendations.length,
                       itemBuilder: (context, index) {
                         // Check if the current recommendation is the same as the current restaurant
                         print("id");
