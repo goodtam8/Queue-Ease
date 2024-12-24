@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/customer/Notification.dart';
 import 'package:fyp_mobile/login.dart';
+import 'package:fyp_mobile/property/add_data.dart';
 import 'package:fyp_mobile/property/customer.dart';
 import 'package:fyp_mobile/property/firebase_api.dart';
 import 'package:fyp_mobile/property/queue.dart';
@@ -117,8 +119,13 @@ class _Homestate extends State<Userhome> {
 
   Widget queuecard(List<Queueing> data, String oid) {
     List<Widget> queuecard = [];
+    int count = 0;
     DateTime now = DateTime.now().toUtc();
     for (var queue in data) {
+      if (count == 2) {
+        break;
+      }
+      count++;
       queuecard.add(Container(
         width: 343,
         height: 96,
@@ -131,7 +138,10 @@ class _Homestate extends State<Userhome> {
             Row(
               children: [
                 Text("$now"),
-                ElevatedButton(onPressed: () {}, child: Text("restaurant")),
+                SizedBox(
+                  width: 10.0,
+                ),
+                buttonrest(),
               ],
             ),
             Row(
@@ -201,6 +211,7 @@ class _Homestate extends State<Userhome> {
   }
 
   late int weather;
+  Uint8List? _image;
 
   Future<WeatherWarningSummary> getwarningsignalinfo() async {
     var response = await http.get(
@@ -276,9 +287,7 @@ class _Homestate extends State<Userhome> {
             "Fast lunch Restaurant",
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          SizedBox(
-            width: 100.0,
-          ),
+          Spacer(),
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).pushNamed('/map');
@@ -304,6 +313,56 @@ class _Homestate extends State<Userhome> {
     );
   }
 
+  Widget button(String text) {
+    return ElevatedButton(
+      onPressed: () {},
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        fixedSize: const Size(400, 50),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        backgroundColor: const Color(0xFF1578E6), // Background color
+      ),
+      child: Text(
+        text,
+        style: const TextStyle(
+            fontSize: 16,
+            fontFamily: 'Open Sans',
+            fontWeight: FontWeight.w600,
+            height: 1.5,
+            color: Colors.white // Equivalent to lineHeight
+            ),
+      ),
+    );
+  }
+
+  Future<void> getImage(String id) async {
+    String url = await StoreData().getuserurl(id);
+    if (url != "error") {
+      setState(() async {
+        _image = await fetchImageAsUint8List(url);
+      });
+    }
+  }
+
+  Future<Uint8List?> fetchImageAsUint8List(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Convert the response body to Uint8List
+        return response.bodyBytes;
+      } else {
+        print('Failed to load image: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching image: $e');
+      return null;
+    }
+  }
+
   Widget customerinfo(String oid) {
     return FutureBuilder(
         future:
@@ -316,9 +375,37 @@ class _Homestate extends State<Userhome> {
             return Text('Error: ${snapshot.error}');
           } else if (snapshot.hasData) {
             Customerper person = snapshot.data!;
-            return Text(
-              person.name,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+            getImage(oid);
+            return Row(
+              children: [
+                Stack(
+                  children: [
+                    _image != null
+                        ? CircleAvatar(
+                            radius: 64,
+                            backgroundImage: MemoryImage(_image!),
+                          )
+                        : const CircleAvatar(
+                            radius: 64,
+                            backgroundImage: AssetImage('assets/user.png'),
+                          ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    mornoraft(),
+                    const SizedBox(height: 10.0),
+                    Text(
+                      person.name,
+                      textAlign: TextAlign.left,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             );
           } else {
             return Text("an unexpected error occured");
@@ -410,6 +497,23 @@ class _Homestate extends State<Userhome> {
     return Row(children: noticard);
   }
 
+  Widget buttonrest() {
+    return Container(
+      // Positioning the card using Positioned widget inside a Stack
+      width: 90,
+      height: 16,
+      decoration: BoxDecoration(
+        color: Color(0xFF1578E6),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Center(
+          child: Text(
+        "Restaurant",
+        style: TextStyle(color: Colors.white),
+      )),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -426,8 +530,6 @@ class _Homestate extends State<Userhome> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            mornoraft(),
-            const SizedBox(height: 10.0),
             debugtoken(),
             const SizedBox(height: 10.0),
             Row(
@@ -436,7 +538,7 @@ class _Homestate extends State<Userhome> {
                   "Notification",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                Spacer(),
+                const Spacer(),
                 TextButton(
                     onPressed: () {
                       Navigator.of(context).pushNamed('/list');
@@ -455,23 +557,24 @@ class _Homestate extends State<Userhome> {
               "Today's Weather",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            //weatherforecast(),
+            weatherforecast(),
             const SizedBox(height: 10.0),
-            //weatherwarning(),
+            weatherwarning(),
             const SizedBox(height: 10.0),
             const Text(
               "Your Queue",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
+            const SizedBox(height: 10.0),
+            debugtoken2(),
             SizedBox(
               height: 10.0,
             ),
             fastlunch(),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed('/chat');
-                },
-                child: const Text("Ask your ai assistant!"))
+            SizedBox(
+              height: 10.0,
+            ),
+            Center(child: button("Ask your AI assistant"))
           ],
         ),
       ),

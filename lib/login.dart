@@ -230,9 +230,14 @@ class _LoginState extends State<Login> {
                     const SizedBox(height: 15.0),
                     Row(children: [
                       registerbutton("staff"),
+                      const SizedBox(width: 5.0),
                       registerbutton("customer")
                     ]),
+                    const SizedBox(height: 15.0),
+
                     loginbutton("Staff"),
+                    const SizedBox(height: 15.0),
+
                     loginbutton("Customer"),
                   ],
                 ),

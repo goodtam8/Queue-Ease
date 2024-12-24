@@ -24,6 +24,23 @@ class _MyqueueState extends State<Myqueue> {
     return listFromJson(data['exists']);
   }
 
+  Widget buttonrest() {
+    return Container(
+      // Positioning the card using Positioned widget inside a Stack
+      width: 90,
+      height: 16,
+      decoration: BoxDecoration(
+        color: Color(0xFF1578E6),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Center(
+          child: Text(
+        "Restaurant",
+        style: TextStyle(color: Colors.white),
+      )),
+    );
+  }
+
   late Future<String?> _tokenValue;
   Widget queueinfo(String id) {
     return FutureBuilder(
@@ -63,10 +80,7 @@ class _MyqueueState extends State<Myqueue> {
         child: Column(
           children: [
             Row(
-              children: [
-                Text("$now"),
-                ElevatedButton(onPressed: () {}, child: Text("restaurant")),
-              ],
+              children: [Text("$now"), buttonrest()],
             ),
             Row(
               children: [
