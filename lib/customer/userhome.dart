@@ -315,7 +315,9 @@ class _Homestate extends State<Userhome> {
 
   Widget button(String text) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.of(context).pushNamed('/chat');
+      },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         fixedSize: const Size(400, 50),
