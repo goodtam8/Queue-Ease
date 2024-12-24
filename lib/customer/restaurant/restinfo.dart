@@ -20,7 +20,7 @@ class Restinfo extends StatefulWidget {
 class _Restinfostate extends State<Restinfo> {
   int page = 1;
   late int totalpage;
-    Uint8List? _image;
+  Uint8List? _image;
 
   Widget restimage(String _id) {
     return FutureBuilder<Uint8List?>(
@@ -55,64 +55,66 @@ class _Restinfostate extends State<Restinfo> {
         });
   }
 
-Widget restcard(List<Restaurant> data) {
-  List<Widget> restaurantCards = [];
+  Widget restcard(List<Restaurant> data) {
+    List<Widget> restaurantCards = [];
 
-  for (var restaurant in data) {
-    restaurantCards.add(
-      GestureDetector(
-        onTap: () async {
-              await recommender
-                        .updateLastClickedCategory(restaurant.type);
-          // Navigate to the new screen and pass the restaurant data
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Restaurantdetail(restaurant: restaurant.id),
-            ),
-          );
-        },
-        child: Container(
-          margin: const EdgeInsets.only(top: 16, left: 16),
-          width: 343,
-          height: 132,
-          decoration: BoxDecoration(
-            color: const Color(0xFFF1F1F1),
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: Row(
-            children: [
-              Stack(children: [restimage(restaurant.id)]),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    restaurant.name,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    restaurant.type,
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
-                  )
-                ],
+    for (var restaurant in data) {
+      restaurantCards.add(
+        GestureDetector(
+          onTap: () async {
+            await recommender.updateLastClickedCategory(restaurant.type);
+            // Navigate to the new screen and pass the restaurant data
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    Restaurantdetail(restaurant: restaurant.id),
               ),
-            ],
+            );
+          },
+          child: Container(
+            margin: const EdgeInsets.only(top: 16, left: 16),
+            width: 343,
+            height: 132,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF1F1F1),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Row(
+              children: [
+                Stack(children: [restimage(restaurant.id)]),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      restaurant.name,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      restaurant.type,
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
+      );
+    }
+
+    return Expanded(
+      child: Column(
+        children: restaurantCards,
       ),
     );
   }
-
-  return Column(
-    children: restaurantCards,
-  );
-}
 
   void incrementpage() {
     setState(() {
@@ -177,8 +179,6 @@ Widget restcard(List<Restaurant> data) {
   }
 
   Future<List<Restaurant>> getrestinfo() async {
-
-
     var response = await http.get(
         Uri.parse('http://10.0.2.2:3000/api/rest?page=$page&&perPage=4'),
         headers: {'Content-Type': 'application/json'});
@@ -207,6 +207,7 @@ Widget restcard(List<Restaurant> data) {
           }
         });
   }
+
   final RecommenderSystem recommender = RecommenderSystem();
 
   @override
@@ -217,7 +218,6 @@ Widget restcard(List<Restaurant> data) {
       body: Column(
         children: [
           futuregetrest(),
-          
           Row(
             children: [
               const SizedBox(

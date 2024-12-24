@@ -66,68 +66,83 @@ class _MyqueueState extends State<Myqueue> {
         });
   }
 
+//add an algorithm to it
+//if the status is finished then no display
   Widget queuecard(List<Queueing> data, String oid) {
     List<Widget> queuecard = [];
     DateTime now = DateTime.now().toUtc();
     for (var queue in data) {
       queuecard.add(Container(
-        width: 343,
-        height: 96,
+        width: 400,
+        height: 100,
         decoration: BoxDecoration(
           color: const Color(0xFFF1F1F1),
           borderRadius: BorderRadius.circular(24),
         ),
         child: Column(
           children: [
-            Row(
-              children: [Text("$now"), buttonrest()],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text("$now"),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  buttonrest()
+                ],
+              ),
             ),
-            Row(
-              children: [
-                Text(
-                  "hi ${queue.restaurantName}",
-                  style: const TextStyle(
-                    color: Color(0xFF030303),
-                    fontSize: 14,
-                    fontFamily: 'Source Sans Pro',
-                    fontWeight: FontWeight.w700,
-                    height:
-                        1.29, // This is equivalent to lineHeight of 18px with fontSize 14px
-                  ),
-                ),
-                Spacer(),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/qr2',
-                      arguments: {
-                        'restaurant': queue.restaurantName,
-                        'id': oid,
-                        // Add more arguments as needed
-                      },
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF1578E6),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8), // Horizontal padding
-
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24), // Border radius
-                    ),
-                    elevation: 0, // No shadow
-                  ),
-                  child: const Text(
-                    "View",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    "hi ${queue.restaurantName}",
+                    style: const TextStyle(
+                      color: Color(0xFF030303),
+                      fontSize: 14,
                       fontFamily: 'Source Sans Pro',
+                      fontWeight: FontWeight.w700,
+                      height:
+                          1.29, // This is equivalent to lineHeight of 18px with fontSize 14px
                     ),
                   ),
-                )
-              ],
+                  Spacer(),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/qr2',
+                        arguments: {
+                          'restaurant': queue.restaurantName,
+                          'id': oid,
+                          // Add more arguments as needed
+                        },
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF1578E6),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8), // Horizontal padding
+
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(24), // Border radius
+                      ),
+                      elevation: 0, // No shadow
+                    ),
+                    child: const Text(
+                      "View",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'Source Sans Pro',
+                      ),
+                    ),
+                  )
+                ],
+              ),
             )
           ],
         ),
@@ -176,8 +191,15 @@ class _MyqueueState extends State<Myqueue> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: Topbar(),
-      body: Column(
-        children: [debugtoken()],
+      body: Center(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 20.0,
+            ),
+            debugtoken()
+          ],
+        ),
       ),
     );
   }

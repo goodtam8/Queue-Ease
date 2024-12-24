@@ -127,37 +127,43 @@ class _Homestate extends State<Userhome> {
       }
       count++;
       queuecard.add(Container(
-        width: 343,
-        height: 96,
+        width: 400,
+        height: 100,
         decoration: BoxDecoration(
           color: const Color(0xFFF1F1F1),
           borderRadius: BorderRadius.circular(24),
         ),
         child: Column(
           children: [
-            Row(
-              children: [
-                Text("$now"),
-                SizedBox(
-                  width: 10.0,
-                ),
-                buttonrest(),
-              ],
-            ),
-            Row(
-              children: [
-                Text(
-                  "hi ${queue.restaurantName}",
-                  style: const TextStyle(
-                    color: Color(0xFF030303),
-                    fontSize: 14,
-                    fontFamily: 'Source Sans Pro',
-                    fontWeight: FontWeight.w700,
-                    height:
-                        1.29, // This is equivalent to lineHeight of 18px with fontSize 14px
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text("$now"),
+                  SizedBox(
+                    width: 10.0,
                   ),
-                ),
-              ],
+                  buttonrest(),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    "hi ${queue.restaurantName}",
+                    style: const TextStyle(
+                      color: Color(0xFF030303),
+                      fontSize: 14,
+                      fontFamily: 'Source Sans Pro',
+                      fontWeight: FontWeight.w700,
+                      height:
+                          1.29, // This is equivalent to lineHeight of 18px with fontSize 14px
+                    ),
+                  ),
+                ],
+              ),
             )
           ],
         ),
@@ -281,34 +287,37 @@ class _Homestate extends State<Userhome> {
         borderRadius:
             BorderRadius.circular(2), // Equivalent to 2px border radius
       ),
-      child: Row(
-        children: [
-          Text(
-            "Fast lunch Restaurant",
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Spacer(),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed('/map');
-              // Define the button action here
-            },
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              foregroundColor: Color(0xFF1578E6), // Equivalent to #1578e6
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(2), // Border radius
-              ),
-              textStyle: const TextStyle(
-                fontSize: 14,
-                fontFamily: 'Roboto',
-                fontWeight: FontWeight.w700,
-                height: 1.14, // Equivalent to line-height of 16px
-              ),
+      child: Padding(
+        padding: const EdgeInsets.all(6.0),
+        child: Row(
+          children: [
+            Text(
+              "Fast lunch Restaurant",
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            child: Text("Find"),
-          ),
-        ],
+            Spacer(),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/map');
+                // Define the button action here
+              },
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                foregroundColor: Color(0xFF1578E6), // Equivalent to #1578e6
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(2), // Border radius
+                ),
+                textStyle: const TextStyle(
+                  fontSize: 14,
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w700,
+                  height: 1.14, // Equivalent to line-height of 16px
+                ),
+              ),
+              child: Text("Find"),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -529,55 +538,58 @@ class _Homestate extends State<Userhome> {
                 storage.read(key: 'jwt'); // Ensure this triggers a rebuild
           });
         },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            debugtoken(),
-            const SizedBox(height: 10.0),
-            Row(
-              children: [
-                const Text(
-                  "Notification",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const Spacer(),
-                TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed('/list');
-                    },
-                    child: const Text(
-                      "View More",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.black),
-                    ))
-              ],
-            ),
-            notilistfut(),
-            const SizedBox(height: 10.0),
-            const Row(children: []),
-            const Text(
-              "Today's Weather",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            weatherforecast(),
-            const SizedBox(height: 10.0),
-            weatherwarning(),
-            const SizedBox(height: 10.0),
-            const Text(
-              "Your Queue",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10.0),
-            debugtoken2(),
-            SizedBox(
-              height: 10.0,
-            ),
-            fastlunch(),
-            SizedBox(
-              height: 10.0,
-            ),
-            Center(child: button("Ask your AI assistant"))
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              debugtoken(),
+              const SizedBox(height: 10.0),
+              Row(
+                children: [
+                  const Text(
+                    "Notification",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const Spacer(),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/list');
+                      },
+                      child: const Text(
+                        "View More",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.black),
+                      ))
+                ],
+              ),
+              notilistfut(),
+              const SizedBox(height: 10.0),
+              const Row(children: []),
+              const Text(
+                "Today's Weather",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              weatherforecast(),
+              const SizedBox(height: 10.0),
+              weatherwarning(),
+              const SizedBox(height: 10.0),
+              const Text(
+                "Your Queue",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10.0),
+              debugtoken2(),
+              SizedBox(
+                height: 10.0,
+              ),
+              fastlunch(),
+              SizedBox(
+                height: 10.0,
+              ),
+              Center(child: button("Ask your AI assistant"))
+            ],
+          ),
         ),
       ),
     );
