@@ -335,91 +335,94 @@ class _HomeState extends State<Home> {
     return Scaffold(
         appBar: const Topbar(),
         backgroundColor: Colors.white,
-        body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          mornoraft(),
-          Row(
-            children: [
-              token(),
-            ],
-          ),
-          Row(
-            children: [resttoken()],
-          ),
-          Row(
-            children: [
-              const Text(
-                "Currenent Queue",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-              ),
-              const SizedBox(
-                width: 45.0,
-              ),
-              custombutton()
-            ],
-          ),
-          Center(
-            child: Container(
-              width: 343.0,
-              height: 200.0,
-              decoration: BoxDecoration(
-                color: Color(0xFFF1F1F1),
-                borderRadius: BorderRadius.circular(24.0),
-              ),
-              child: const Padding(
-                padding:
-                    EdgeInsets.all(16.0), // Optional padding for better layout
-                child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start, // Aligns children to the left
-                  children: [
-                    Text(
-                      "Queue Number",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            mornoraft(),
+            Row(
+              children: [
+                token(),
+              ],
+            ),
+            Row(
+              children: [resttoken()],
+            ),
+            Row(
+              children: [
+                const Text(
+                  "Currenent Queue",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                ),
+                const SizedBox(
+                  width: 45.0,
+                ),
+                custombutton()
+              ],
+            ),
+            Center(
+              child: Container(
+                width: 343.0,
+                height: 200.0,
+                decoration: BoxDecoration(
+                  color: Color(0xFFF1F1F1),
+                  borderRadius: BorderRadius.circular(24.0),
+                ),
+                child: const Padding(
+                  padding:
+                      EdgeInsets.all(16.0), // Optional padding for better layout
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start, // Aligns children to the left
+                    children: [
+                      Text(
+                        "Queue Number",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
                       ),
+                      SizedBox(height: 8.0), // Adds space between the texts
+                      Text(
+                        "It is hardcode. Queue Number: 100",
+                        textAlign: TextAlign
+                            .start, // Ensures text is aligned to the start
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 30.0,
+            ),
+            Center(
+              child: Container(
+                width: 343.0,
+                height: 200.0,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF1F1F1),
+                  borderRadius: BorderRadius.circular(24.0),
+                ),
+                child: Column(
+                  children: [
+                    const Text(
+                      "Today's Weather",
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 8.0), // Adds space between the texts
-                    Text(
-                      "It is hardcode. Queue Number: 100",
-                      textAlign: TextAlign
-                          .start, // Ensures text is aligned to the start
+                    weatherforecast(),
+                    const SizedBox(height: 10.0),
+                    weatherwarning(),
+                    const SizedBox(
+                      height: 10.0,
                     ),
                   ],
                 ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 30.0,
-          ),
-          Center(
-            child: Container(
-              width: 343.0,
-              height: 200.0,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF1F1F1),
-                borderRadius: BorderRadius.circular(24.0),
-              ),
-              child: Column(
-                children: [
-                  const Text(
-                    "Today's Weather",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  weatherforecast(),
-                  const SizedBox(height: 10.0),
-                  weatherwarning(),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                ],
-              ),
+            const SizedBox(
+              height: 10.0,
             ),
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-        ]));
+          ]),
+        ));
   }
 }

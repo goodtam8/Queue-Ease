@@ -290,6 +290,12 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
                             await recommender.updateLastClickedCategory(
                                 recommendations[index].type);
                             _updateRecommendations();
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Restaurantdetail(
+                                      restaurant: recommendations[index].id),
+                                ));
                           },
                         );
                       },

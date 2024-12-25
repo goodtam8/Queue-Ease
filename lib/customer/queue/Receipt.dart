@@ -47,8 +47,6 @@ class _ReceiptState extends State<Receipt> {
         ),
       ),
       onPressed: () {
-        globalNavigationBarKey.currentState?.updateIndex(0);
-        Navigator.of(context).pop();
         Navigator.of(context).pop();
         Navigator.of(context).pop();
         Navigator.of(context).pop();
@@ -104,7 +102,28 @@ class _ReceiptState extends State<Receipt> {
         children: [
           Center(child: paymentimage()),
           paymentcard(amount),
-          custombutton(),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              textStyle: const TextStyle(
+                fontSize: 16,
+                fontFamily: 'Source Sans Pro',
+                fontWeight: FontWeight.w600,
+                height: 1.5, // Line height equivalent
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).popUntil((route) => route.isFirst);
+            },
+            child: Text(
+              "Back to Home",
+              style: const TextStyle(color: Colors.white),
+            ),
+          )
         ],
       ),
     );

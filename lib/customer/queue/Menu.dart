@@ -37,20 +37,22 @@ class _OrderState extends State<Order> {
   }
 
   Widget Menucard(String title, String price) {
-    return Container(
-      margin: const EdgeInsets.only(top: 124, left: 16),
-      width: 343,
-      height: 152,
-      decoration: BoxDecoration(
-        color: Color(0xFFF1F1F1), // Equivalent to #f1f1f1
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Column(
-        children: [
-          Text(title),
-          Text(price),
-          OrderButton(title, price),
-        ],
+    return Center(
+      child: Container(
+        margin: const EdgeInsets.only(top: 124, left: 16),
+        width: 343,
+        height: 152,
+        decoration: BoxDecoration(
+          color: Color(0xFFF1F1F1), // Equivalent to #f1f1f1
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Column(
+          children: [
+            Text(title),
+            Text(price),
+            OrderButton(title, price),
+          ],
+        ),
       ),
     );
   }
@@ -160,7 +162,27 @@ class _OrderState extends State<Order> {
                   Navigator.pushNamed(context, '/checkout');
                 }
               },
-              child: const Text("Check out"),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 8), // Padding
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24), // Border radius
+                ),
+                backgroundColor: const Color(0xFF1578E6), // Background color
+                elevation: 0, // No shadow
+                textStyle: const TextStyle(
+                  fontSize: 16, // Font size
+                  fontFamily: 'Open Sans', // Font family
+                  fontWeight: FontWeight.w600, // Font weight
+                  height: 1.5, // Line height (24px/16px ≈ 1.5)
+                ),
+              ),
+              child: const Text(
+                "Check Out",
+                style: TextStyle(
+                  color: Colors.white, // Text color
+                  // Outline: None is default in Flutter
+                ),
+              ),
             ),
           ],
         ),

@@ -61,16 +61,22 @@ class _OrderdetailState extends State<Orderdetail> {
       ),
       child: Column(
         children: [
-          Column(
-            children: no,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: no,
+            ),
           ),
           const Divider(),
-          Row(
-            children: [
-              styledtext("Total:"),
-              Spacer(),
-              styledtext("\$ $amount")
-            ],
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                styledtext("Total:"),
+                Spacer(),
+                styledtext("\$ $amount")
+              ],
+            ),
           )
         ],
       ),
@@ -97,7 +103,10 @@ class _OrderdetailState extends State<Orderdetail> {
         appBar: Topbar(),
         body: Column(
           children: [
-            styledtext("Your Bill"),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: styledtext("Your Bill"),
+            ),
             const SizedBox(
               height: 10.0,
             ),
