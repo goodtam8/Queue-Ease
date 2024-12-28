@@ -166,7 +166,12 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
             Queueing detail = snapshot.data!;
             String next = "";
             int length = detail.queueArray.length - detail.currentPosition;
-            if (detail.queueArray.length - detail.currentPosition == 0) {
+            if(detail.queueArray.length==0){
+              length=0;
+              
+
+            }
+           else if (detail.queueArray.length - detail.currentPosition == 0) {
               length = 1;
             }
             if (detail.queueArray.length == detail.currentPosition) {
