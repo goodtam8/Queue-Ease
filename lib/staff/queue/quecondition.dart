@@ -40,6 +40,20 @@ class _QueconditionState extends State<Quecondition> {
       print(e);
       return 0;
     }
+  }
+
+  Future<int> delete(String objectid) async {
+    try {
+      var response = await http.delete(
+        Uri.parse('http://10.0.2.2:3000/api/queue/$objectid'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      return (response.statusCode);
+    } catch (e) {
+      print(e);
+      return 0;
+    }
 
     ;
   }
@@ -89,7 +103,12 @@ class _QueconditionState extends State<Quecondition> {
                             });
                       }
                     },
-                    child: const Text("Call Next"))
+                    child: const Text("Call Next")),
+                ElevatedButton(
+                    onPressed: () async {
+                      await delete(data.id!);
+                    },
+                    child: Text("Close the Queue"))
               ],
             );
           } else {
