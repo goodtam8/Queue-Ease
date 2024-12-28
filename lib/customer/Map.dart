@@ -3,6 +3,7 @@ import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
+import 'package:fyp_mobile/property/singleton/QueueService.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -17,6 +18,7 @@ class _MapViewState extends State<MapView> {
   static const double initialZoom = 15.0;
 
   GoogleMapController? _controller;
+  final QueueService queueService=QueueService();
 
   void _onMapCreated(GoogleMapController controller) {
     _controller = controller;
@@ -43,17 +45,8 @@ class _MapViewState extends State<MapView> {
         });
   }
 
-  Future<bool> getqueue(String name) async {
-    var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/queue/check/$name'),
-        headers: {'Content-Type': 'application/json'});
-    final data = jsonDecode(response.body);
-
-    return data['exists'];
-  }
-
   Future<double> decidecolor(Restaurant rest) async {
-    if (await getqueue(rest.name)) {
+    if (await queueService.checkqueue(rest.name)) {
       return BitmapDescriptor.hueRed;
     } else {
       return BitmapDescriptor.hueBlue;

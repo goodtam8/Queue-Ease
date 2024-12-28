@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
+import 'package:fyp_mobile/property/singleton/QueueService.dart';
 import 'package:fyp_mobile/property/singleton/RestuarantService.dart';
 import 'package:fyp_mobile/property/table.dart';
 import 'package:fyp_mobile/property/topbar.dart';
@@ -20,7 +21,8 @@ class Tablestatus extends StatefulWidget {
 class _Tablestate extends State<Tablestatus> {
   int counter = 0;
   late Future<String?> _tokenValue;
-  final Restuarantservice service=Restuarantservice();
+  final Restuarantservice service = Restuarantservice();
+  final QueueService queueService = QueueService();
 
   Future<Widget> gettable(String objectid) async {
     Restaurant abc = await service.getrestaurant(objectid);
@@ -57,15 +59,6 @@ class _Tablestate extends State<Tablestatus> {
     final data = jsonDecode(response.body);
 
     return data['status'];
-  }
-
-  Future<bool> getqueue(String name) async {
-    var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/queue/check/$name'),
-        headers: {'Content-Type': 'application/json'});
-    final data = jsonDecode(response.body);
-
-    return data['exists'];
   }
 
   Future<List<Tabledb>> gettableinfo(String name) async {
@@ -339,12 +332,11 @@ class _Tablestate extends State<Tablestatus> {
 
   Widget twocondition(bool full, String name) {
     return FutureBuilder(
-        future: getqueue(name),
+        future: queueService.checkqueue(name),
         builder: (context, tableSnapshot) {
           if (tableSnapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (tableSnapshot.hasError) {
-            print("hghghg");
             return Center(child: Text('Error: ${tableSnapshot.error}'));
           } else {
             if (tableSnapshot.data == true || full == false) {

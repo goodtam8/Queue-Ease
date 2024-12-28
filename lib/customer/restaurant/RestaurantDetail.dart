@@ -7,6 +7,7 @@ import 'package:fyp_mobile/property/add_data.dart';
 import 'package:fyp_mobile/property/queue.dart';
 import 'package:fyp_mobile/property/recommender.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
+import 'package:fyp_mobile/property/singleton/QueueService.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:http/http.dart' as http;
 
@@ -20,6 +21,7 @@ class Restaurantdetail extends StatefulWidget {
 
 class _RestaurantdetailState extends State<Restaurantdetail> {
   Uint8List? _image;
+  final QueueService queueService = QueueService();
 
   Future<Restaurant> getrestdetail() async {
     var response = await http.get(
@@ -61,21 +63,7 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
     );
   }
 
-  Future<bool> getqueue(String name) async {
-    var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/queue/check/$name'),
-        headers: {'Content-Type': 'application/json'});
-    final data = jsonDecode(response.body);
 
-    return data['exists'];
-  }
-
-  Future<Queueing> queuedetail(String name) async {
-    var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/queue/$name'),
-        headers: {'Content-Type': 'application/json'});
-    return parseQueue(response.body);
-  }
 
   Future<double> getwaitingtime(String name) async {
     var response = await http.get(
@@ -167,7 +155,7 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
 
   Widget queueinfo(String name) {
     return FutureBuilder(
-        future: queuedetail(name),
+        future: queueService.queuedetail(name),
         builder: (BuildContext context, AsyncSnapshot<Queueing> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator(); // Show a loading indicator while waiting
@@ -224,7 +212,7 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
 
   Widget contain(String name) {
     return FutureBuilder(
-        future: getqueue(name),
+        future: queueService.checkqueue(name),
         builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator(); // Show a loading indicator while waiting
@@ -312,7 +300,7 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
             child: ElevatedButton(
               onPressed: () async {
                 var rest = await getrestdetail();
-                if (await getqueue(rest.name) == false) {
+                if (await queueService.checkqueue(rest.name) == false) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {

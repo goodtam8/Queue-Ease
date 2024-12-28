@@ -11,6 +11,14 @@ class QueueService {
   }
 
   QueueService._internal();
+  Future<bool> checkqueue(String name) async {
+    var response = await http.get(
+        Uri.parse('http://10.0.2.2:3000/api/queue/check/$name'),
+        headers: {'Content-Type': 'application/json'});
+    final data = jsonDecode(response.body);
+
+    return data['exists'];
+  }
 
   Future<List<Queueing>> getQueue(String id) async {
     try {
@@ -34,5 +42,11 @@ class QueueService {
       // Handle any other exceptions that may occur
       rethrow;
     }
+  }
+    Future<Queueing> queuedetail(String name) async {
+    var response = await http.get(
+        Uri.parse('http://10.0.2.2:3000/api/queue/$name'),
+        headers: {'Content-Type': 'application/json'});
+    return parseQueue(response.body);
   }
 }

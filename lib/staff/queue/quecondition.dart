@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/property/queue.dart';
+import 'package:fyp_mobile/property/singleton/QueueService.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,14 +16,8 @@ class Quecondition extends StatefulWidget {
 
 class _QueconditionState extends State<Quecondition> {
   late int position;
-  Future<Queueing> getQueue(String name) async {
-    var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/queue/$name'),
-        headers: {'Content-Type': 'application/json'});
-
-    return parseQueue(response.body);
-  }
   //reminder
+  final QueueService queueService=QueueService();
 
   Future<int> update(int push, String objectid) async {
     Map<String, dynamic> data = {
@@ -54,13 +49,11 @@ class _QueconditionState extends State<Quecondition> {
       print(e);
       return 0;
     }
-
-    ;
   }
 
   Widget queuenumber(String name) {
     return FutureBuilder(
-        future: getQueue(name),
+        future: queueService.queuedetail(name),
         builder: (BuildContext context, AsyncSnapshot<Queueing> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator(); // Show a loading indicator while waiting
