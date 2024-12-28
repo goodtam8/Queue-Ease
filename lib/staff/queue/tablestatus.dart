@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
+import 'package:fyp_mobile/property/singleton/RestuarantService.dart';
 import 'package:fyp_mobile/property/table.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:http/http.dart' as http;
@@ -19,16 +20,10 @@ class Tablestatus extends StatefulWidget {
 class _Tablestate extends State<Tablestatus> {
   int counter = 0;
   late Future<String?> _tokenValue;
-
-  Future<Restaurant> getrestaurant(String objectid) async {
-    var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/staff/$objectid/get'),
-        headers: {'Content-Type': 'application/json'});
-    return parseRestaurant(response.body);
-  }
+  final Restuarantservice service=Restuarantservice();
 
   Future<Widget> gettable(String objectid) async {
-    Restaurant abc = await getrestaurant(objectid);
+    Restaurant abc = await service.getrestaurant(objectid);
 
     List<Tabledb> tables = await gettableinfo(abc.name);
     return TableList(tables);

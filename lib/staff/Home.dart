@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:fyp_mobile/login.dart';
+import 'package:fyp_mobile/property/Personal.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
+import 'package:fyp_mobile/property/singleton/RestuarantService.dart';
+import 'package:fyp_mobile/property/singleton/weather.dart';
 import 'package:fyp_mobile/property/timetable.dart';
 import 'package:fyp_mobile/property/warningsignal.dart';
 import 'package:fyp_mobile/property/warningsignalicon.dart';
@@ -13,43 +16,6 @@ import 'package:fyp_mobile/property/icon.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
-class personal {
-  final String id;
-  final int sid;
-  final String name;
-  final String pw;
-  final String gender;
-  final String email;
-  final int phone;
-
-  const personal({
-    required this.id,
-    required this.sid,
-    required this.name,
-    required this.pw,
-    required this.gender,
-    required this.email,
-    required this.phone,
-  });
-
-  factory personal.fromJson(Map<String, dynamic> json) {
-    return personal(
-      sid: json['sid'] as int,
-      id: json['_id'] as String,
-      name: json['name'] as String,
-      pw: json['pw'] as String,
-      gender: json['gender'] as String,
-      email: json['email'] as String,
-      phone: json['phone'] as int,
-    );
-  }
-}
-
-personal parsepersonal(String responseBody) {
-  final parsed = (jsonDecode(responseBody)) as Map<String, dynamic>;
-
-  return personal.fromJson(parsed);
-}
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -60,6 +26,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late Future<String?> _tokenValue;
+  final Restuarantservice service=Restuarantservice();
 
   String timeformatting(DateTime now) {
     late String day;
@@ -126,6 +93,8 @@ class _HomeState extends State<Home> {
     _tokenValue = storage.read(key: 'jwt');
     super.initState();
   }
+  final weather = Weather();
+
 
   Future<personal> getuserinfo(String objectid) async {
     var response = await http.get(
@@ -135,47 +104,13 @@ class _HomeState extends State<Home> {
     return parsepersonal(response.body);
   }
 
-  Future<WeatherForecast> getweatherinfo() async {
-    try {
-      var response = await http.get(
-          Uri.parse(
-              'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc'),
-          headers: {'Content-Type': 'application/json'});
 
-      return parseWeatherForecast(response.body);
-    } catch (e) {
-      var response = await http.get(
-          Uri.parse(
-              'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc'),
-          headers: {'Content-Type': 'application/json'});
-      print("error ocured");
-      print(e);
-      return parseWeatherForecast(response.body);
-      ;
-    }
-  }
 
   Future<void> _refresh() {
     setState(() {
       _tokenValue = storage.read(key: 'jwt');
     });
     return Future.delayed(Duration(seconds: 2));
-  }
-
-  Future<WeatherWarningSummary> getwarningsignalinfo() async {
-    var response = await http.get(
-        Uri.parse(
-            'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum'),
-        headers: {'Content-Type': 'application/json'});
-
-    return parseWeatherWarningSummary(response.body);
-  }
-
-  Future<Restaurant> getrestaurant(String objectid) async {
-    var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/staff/$objectid/get'),
-        headers: {'Content-Type': 'application/json'});
-    return parseRestaurant(response.body);
   }
 
   FutureBuilder token() {
@@ -254,7 +189,7 @@ class _HomeState extends State<Home> {
 
   Widget weatherwarning() {
     return FutureBuilder(
-        future: getwarningsignalinfo(),
+        future: weather.getwarningsignalinfo(),
         builder: (BuildContext context,
             AsyncSnapshot<WeatherWarningSummary> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -280,7 +215,7 @@ class _HomeState extends State<Home> {
 
   Widget weatherforecast() {
     return FutureBuilder(
-        future: getweatherinfo(),
+        future: weather.getweatherinfo(),
         builder:
             (BuildContext context, AsyncSnapshot<WeatherForecast> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -293,19 +228,19 @@ class _HomeState extends State<Home> {
                 snapshot.data!; // You now have your 'personal' data
             String formattedtime = timeformatting(DateTime.now());
             int indextobedisplayed = 0;
-            weather = data.weatherForecast[0].forecastMaxtemp["value"];
+            temperature = data.weatherForecast[0].forecastMaxtemp["value"];
             return Text(
-                "$weather\u00b0C ,${DateTime.now().hour}:${DateTime.now().minute}");
+                "$temperature\u00b0C ,${DateTime.now().hour}:${DateTime.now().minute}");
           } else {
             return Text("An unexpected error occured");
           }
         });
   }
 
-  late int weather;
+  late int temperature;
   Widget restaurantget(String oid) {
     return FutureBuilder<Restaurant>(
-        future: getrestaurant(oid),
+        future: service.getrestaurant(oid),
         builder: (BuildContext context, AsyncSnapshot<Restaurant> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator(); // Show a loading indicator while waiting

@@ -1,8 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/queue.dart';
+import 'package:fyp_mobile/property/singleton/QueueService.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -15,14 +15,7 @@ class Myqueue extends StatefulWidget {
 }
 
 class _MyqueueState extends State<Myqueue> {
-  Future<List<Queueing>> getqueue(String id) async {
-    var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/queue/$id/verify'),
-        headers: {'Content-Type': 'application/json'});
-    final data = jsonDecode(response.body);
-
-    return listFromJson(data['exists']);
-  }
+  final queueService = QueueService();
 
   Widget buttonrest() {
     return Container(
@@ -44,7 +37,7 @@ class _MyqueueState extends State<Myqueue> {
   late Future<String?> _tokenValue;
   Widget queueinfo(String id) {
     return FutureBuilder(
-        future: getqueue(id),
+        future: queueService.getQueue(id),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -58,7 +51,8 @@ class _MyqueueState extends State<Myqueue> {
           } else if (snapshot.hasError) {
             print("hi there is the error occur");
             print(snapshot.error);
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+                child: Text('You have not queue in a restaurant yet'));
           } else {
             List<Queueing> queuelist = snapshot.data!;
             return queuecard(queuelist, id);

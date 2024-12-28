@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
+import 'package:fyp_mobile/property/singleton/RestuarantService.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/property/stripe_service.dart';
@@ -21,7 +22,7 @@ class _QrscannerState extends State<Qrscanner> {
     detectionSpeed: DetectionSpeed.noDuplicates,
   );
   late Future<String?> _tokenValue;
-
+final Restuarantservice service=Restuarantservice();
   Future<String> scan(String restname, String objectid) async {
     try {
       var response = await http.patch(
@@ -41,13 +42,6 @@ class _QrscannerState extends State<Qrscanner> {
   void initState() {
     _tokenValue = storage.read(key: 'jwt');
     super.initState();
-  }
-
-  Future<Restaurant> getrestaurant(String objectid) async {
-    var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/staff/$objectid/get'),
-        headers: {'Content-Type': 'application/json'});
-    return parseRestaurant(response.body);
   }
 
   Widget token(String scanvalue) {
@@ -77,7 +71,7 @@ class _QrscannerState extends State<Qrscanner> {
             actions: [
               TextButton(
                   onPressed: () async {
-                    Restaurant rest = await getrestaurant(oid);
+                    Restaurant rest = await service.getrestaurant(oid);
 
                     String response = await scan(rest.name, scanvalue!);
                     if (response == "Customer checked in successfully") {

@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:fyp_mobile/customer/restaurant/RestaurantDetail.dart';
+import 'package:fyp_mobile/property/recommender.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:http/http.dart' as http;
@@ -14,6 +16,8 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   int page = 1;
   int totalpage = 1;
+  final RecommenderSystem recommender = RecommenderSystem();
+
   TextEditingController input = TextEditingController();
   Future<List<Restaurant>>? searchResults; // Store the future here
 
@@ -93,8 +97,18 @@ class _SearchState extends State<Search> {
     List<Widget> restaurantCards = [];
 
     for (var restaurant in data) {
-      restaurantCards.add(
-        Container(
+      restaurantCards.add(GestureDetector(
+        onTap: () async {
+          await recommender.updateLastClickedCategory(restaurant.type);
+          // Navigate to the new screen and pass the restaurant data
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Restaurantdetail(restaurant: restaurant.id),
+            ),
+          );
+        },
+        child: Container(
           margin: const EdgeInsets.only(top: 16, left: 16),
           width: 343,
           height: 132,
@@ -122,7 +136,7 @@ class _SearchState extends State<Search> {
             ],
           ),
         ),
-      );
+      ));
     }
     return Column(children: restaurantCards);
   }

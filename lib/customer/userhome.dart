@@ -9,6 +9,8 @@ import 'package:fyp_mobile/property/add_data.dart';
 import 'package:fyp_mobile/property/customer.dart';
 import 'package:fyp_mobile/property/firebase_api.dart';
 import 'package:fyp_mobile/property/queue.dart';
+import 'package:fyp_mobile/property/singleton/QueueService.dart';
+import 'package:fyp_mobile/property/singleton/weather.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:fyp_mobile/property/warningsignal.dart';
 import 'package:fyp_mobile/property/warningsignalicon.dart';
@@ -25,6 +27,9 @@ class Userhome extends StatefulWidget {
 }
 
 class _Homestate extends State<Userhome> {
+  final queueService = QueueService();
+  final weather = Weather();
+
   late Future<String?> _tokenValue;
   Future<List<String>> loadMessages() async {
     FirebaseApi api = FirebaseApi();
@@ -84,18 +89,9 @@ class _Homestate extends State<Userhome> {
     return parseCustomer(response.body);
   }
 
-  Future<List<Queueing>> getqueue(String id) async {
-    var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/queue/$id/verify'),
-        headers: {'Content-Type': 'application/json'});
-    final data = jsonDecode(response.body);
-
-    return listFromJson(data['exists']);
-  }
-
   Widget queueinfo(String id) {
     return FutureBuilder(
-        future: getqueue(id),
+        future: queueService.getQueue(id),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
@@ -109,7 +105,8 @@ class _Homestate extends State<Userhome> {
           } else if (snapshot.hasError) {
             print("hi there is the error occur");
             print(snapshot.error);
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return const Center(
+                child: Text('You have not queue for a restaurant yet'));
           } else {
             List<Queueing> queuelist = snapshot.data!;
             return queuecard(queuelist, id);
@@ -196,41 +193,12 @@ class _Homestate extends State<Userhome> {
     super.initState();
   }
 
-  Future<WeatherForecast> getweatherinfo() async {
-    try {
-      var response = await http.get(
-          Uri.parse(
-              'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc'),
-          headers: {'Content-Type': 'application/json'});
-
-      return parseWeatherForecast(response.body);
-    } catch (e) {
-      var response = await http.get(
-          Uri.parse(
-              'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc'),
-          headers: {'Content-Type': 'application/json'});
-      print("error ocured");
-      print(e);
-      return parseWeatherForecast(response.body);
-      ;
-    }
-  }
-
-  late int weather;
+  late int temperature;
   Uint8List? _image;
-
-  Future<WeatherWarningSummary> getwarningsignalinfo() async {
-    var response = await http.get(
-        Uri.parse(
-            'https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=warnsum'),
-        headers: {'Content-Type': 'application/json'});
-
-    return parseWeatherWarningSummary(response.body);
-  }
 
   Widget weatherforecast() {
     return FutureBuilder(
-        future: getweatherinfo(),
+        future: weather.getweatherinfo(),
         builder:
             (BuildContext context, AsyncSnapshot<WeatherForecast> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -243,9 +211,9 @@ class _Homestate extends State<Userhome> {
                 snapshot.data!; // You now have your 'personal' data
             String formattedtime = timeformatting(DateTime.now());
             int indextobedisplayed = 0;
-            weather = data.weatherForecast[0].forecastMaxtemp["value"];
+            temperature = data.weatherForecast[0].forecastMaxtemp["value"];
             return Text(
-                "$weather\u00b0C ,${DateTime.now().hour}:${DateTime.now().minute}");
+                "$temperature\u00b0C ,${DateTime.now().hour}:${DateTime.now().minute}");
           } else {
             return Text("An unexpected error occured");
           }
@@ -254,7 +222,7 @@ class _Homestate extends State<Userhome> {
 
   Widget weatherwarning() {
     return FutureBuilder(
-        future: getwarningsignalinfo(),
+        future: weather.getwarningsignalinfo(),
         builder: (BuildContext context,
             AsyncSnapshot<WeatherWarningSummary> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

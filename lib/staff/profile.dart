@@ -6,6 +6,7 @@ import 'package:fyp_mobile/login.dart'; // Assuming storage is defined here
 import 'package:fyp_mobile/property/add_data.dart';
 import 'package:fyp_mobile/property/button.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
+import 'package:fyp_mobile/property/singleton/RestuarantService.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:fyp_mobile/property/utils.dart';
 import 'package:http/http.dart' as http;
@@ -16,44 +17,7 @@ import 'dart:typed_data';
 
 import 'package:jwt_decoder/jwt_decoder.dart';
 
-//state management
-class personal {
-  final String id;
-  final int sid;
-  final String name;
-  final String pw;
-  final String gender;
-  final String email;
-  final int phone;
-
-  const personal({
-    required this.id,
-    required this.sid,
-    required this.name,
-    required this.pw,
-    required this.gender,
-    required this.email,
-    required this.phone,
-  });
-
-  factory personal.fromJson(Map<String, dynamic> json) {
-    return personal(
-      sid: json['sid'] as int,
-      id: json['_id'] as String,
-      name: json['name'] as String,
-      pw: json['pw'] as String,
-      gender: json['gender'] as String,
-      email: json['email'] as String,
-      phone: json['phone'] as int,
-    );
-  }
-}
-
-personal parsepersonal(String responseBody) {
-  final parsed = (jsonDecode(responseBody)) as Map<String, dynamic>;
-
-  return personal.fromJson(parsed);
-}
+import '../property/Personal.dart';
 
 class Staff extends StatefulWidget {
   final VoidCallback onLogout;
@@ -73,6 +37,7 @@ class _StaffState extends State<Staff> {
     super.initState();
   }
 
+  final Restuarantservice service = Restuarantservice();
   void saveImage(String id, Uint8List? img) async {
     if (img != null) {
       String resp = await StoreData().saveData(id: id, file: img!);
@@ -131,14 +96,6 @@ class _StaffState extends State<Staff> {
     return await parsepersonal(response.body);
   }
 
-  Future<Restaurant> getrestinfo(String objectid) async {
-    var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/staff/$objectid/get'),
-        headers: {'Content-Type': 'application/json'});
-
-    return await parseRestaurant(response.body);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -177,7 +134,7 @@ class _StaffState extends State<Staff> {
                   personal data =
                       snapshot.data!; // You now have your 'personal' data
                   return FutureBuilder<Restaurant>(
-                      future: getrestinfo(data.id),
+                      future: service.getrestaurant(data.id),
                       builder: (BuildContext context,
                           AsyncSnapshot<Restaurant> snapshot) {
                         if (snapshot.connectionState ==
