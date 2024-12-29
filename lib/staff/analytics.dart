@@ -1,7 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/payment_data.dart';
+import 'package:fyp_mobile/property/restaurant.dart';
+import 'package:fyp_mobile/property/singleton/RestuarantService.dart';
 import 'package:fyp_mobile/property/topbar.dart';
+import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class Analytics extends StatefulWidget {
   const Analytics({super.key});
@@ -12,6 +19,7 @@ class Analytics extends StatefulWidget {
 
 class _AnalyticsState extends State<Analytics> {
   late Future<List<Map<String, dynamic>>> _paymentDataFuture;
+  final Restuarantservice service = Restuarantservice();
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +30,10 @@ class _AnalyticsState extends State<Analytics> {
         children: [
           Text("The last 7 days of Transaction Record"),
           linechart(),
+          SizedBox(
+            height: 10.0,
+          ),
+          resttoken()
         ],
       )),
       backgroundColor: Colors.white,
@@ -42,6 +54,168 @@ class _AnalyticsState extends State<Analytics> {
           return buildLineChart(snapshot.data!);
         }
       },
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> fetchBookingStats() async {
+    final response = await http.get(
+        Uri.parse("http://10.0.2.2:3000/api/table/stats/restaurant"),
+        headers: {'Content-Type': 'application/json'});
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+      return List<Map<String, dynamic>>.from(data);
+    } else {
+      throw Exception('Failed to load booking stats');
+    }
+  }
+
+  late Future<String?> _tokenValue;
+  @override
+  void initState() {
+    _tokenValue = storage.read(key: 'jwt');
+    super.initState();
+  }
+
+  Widget resttoken() {
+    return FutureBuilder<String?>(
+        future: _tokenValue,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/update');
+                },
+                child: const Text("Update"),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            print("hi there is the error occur");
+            print(snapshot.error);
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            Map<String, dynamic> decodedToken =
+                JwtDecoder.decode(snapshot.data as String);
+            String oid = decodedToken["_id"].toString();
+
+            return restaurantget(oid);
+          }
+        });
+  }
+
+  Widget restaurantget(String oid) {
+    return FutureBuilder<Restaurant>(
+        future: service.getrestaurant(oid),
+        builder: (BuildContext context, AsyncSnapshot<Restaurant> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // Show a loading indicator while waiting
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            return piechart(snapshot.data!.name);
+          } else {
+            return const Text('Unexpected error occurred');
+          }
+        });
+  }
+
+  Map<String, Map<String, int>> parseBookingStats(
+      List<Map<String, dynamic>> data) {
+    Map<String, Map<String, int>> stats = {};
+
+    for (var entry in data) {
+      String restaurant = entry['_id']['belong'];
+      String status = entry['_id']['status'];
+      int total = entry['total'];
+
+      if (!stats.containsKey(restaurant)) {
+        stats[restaurant] = {'free': 0, 'available': 0};
+      }
+
+      stats[restaurant]![status] = total;
+    }
+
+    return stats;
+  }
+
+  Widget piechart(String name) {
+    return FutureBuilder(
+      future: fetchBookingStats(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No booking stats available'));
+        } else {
+          return buildPieChart(parseBookingStats(snapshot.data!), name);
+        }
+      },
+    );
+  }
+
+  Widget buildPieChart(
+      Map<String, Map<String, int>> bookingStats, String name) {
+    // Filter the map to find the entry with the key equal to the provided name
+    var filteredEntry = bookingStats.entries
+        .where((entry) => entry.key == name)
+        .take(1)
+        .toList();
+
+    if (filteredEntry.isEmpty) {
+      return Center(child: Text('No data available for $name'));
+    }
+
+    var entry = filteredEntry.first;
+    String restaurant = entry.key;
+    Map<String, int> stats = entry.value;
+
+    return Column(
+      children: [
+        const Text(
+          "name",
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+        SizedBox(
+          height: 10.0,
+        ),
+        SizedBox(
+          height: 200.0,
+          width: 200.0,
+          child: PieChart(
+            PieChartData(
+              sections: [
+                PieChartSectionData(
+                    color: Colors.green,
+                    value: stats['in used']!.toDouble(),
+                    title: 'in used:${stats['in used']}',
+                    radius: 100,
+                    titleStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    showTitle: true),
+                PieChartSectionData(
+                    color: Colors.blue,
+                    value: stats['available']!.toDouble(),
+                    title: 'Available:${stats['available']}',
+                    radius: 100,
+                    titleStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    showTitle: true),
+              ],
+              sectionsSpace: 2,
+              centerSpaceRadius: 40,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
