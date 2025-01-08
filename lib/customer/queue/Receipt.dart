@@ -52,7 +52,7 @@ class _ReceiptState extends State<Receipt> {
         Navigator.of(context).pop();
       },
       child: Text(
-        "Back to Home",
+        "Back",
         style: const TextStyle(color: Colors.white),
       ),
     );

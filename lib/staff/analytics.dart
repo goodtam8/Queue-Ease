@@ -57,6 +57,21 @@ class _AnalyticsState extends State<Analytics> {
     );
   }
 
+  Widget buildaiandchart( Map<String, Map<String, int>>  bookingStats){
+    return FutureBuilder(future:getBotAnalytic(bookingStats),builder: (context, snapshot) {
+       if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No payment data available'));
+        } else {
+          return Container();
+        }
+
+    });
+  }
+
   Future<List<Map<String, dynamic>>> fetchBookingStats() async {
     final response = await http.get(
         Uri.parse("http://10.0.2.2:3000/api/table/stats/restaurant"),
@@ -219,6 +234,32 @@ class _AnalyticsState extends State<Analytics> {
     );
   }
 
+  Future<String> getBotAnalytic(
+      Map<String, Map<String, int>> bookingStats) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+            "http://10.0.2.2:3000/api/gpt/analysis"), // Replace with your backend URL
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'message': bookingStats}), // Send the user's message
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        final botReply = responseData['reply'];
+        // Process the bot's reply as needed
+        print('Bot reply: $botReply');
+        return botReply;
+      } else {
+        print('Error: ${response.statusCode} - ${response.body}');
+        return "Error";
+      }
+    } catch (e) {
+      print('Error: $e');
+      return "Error";
+    }
+  }
+
   Widget buildLineChart(List<Map<String, dynamic>> paymentData) {
     // Get the current date and the date 7 days ago
     DateTime now = DateTime.now();
@@ -247,6 +288,8 @@ class _AnalyticsState extends State<Analytics> {
 
     // Take the latest 5 entries
     final latestData = filteredData.take(5).toList();
+
+    print(latestData);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),

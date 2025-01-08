@@ -46,7 +46,7 @@ class _ChatroomState extends State<Chatroom> {
     try {
       final response = await http.post(
         Uri.parse(
-            'http://10.0.2.2:3000/api/gpt'), // Replace with your backend URL
+            'http://10.0.2.2:3000/api/gpt'), 
         headers: {'Content-Type': 'application/json'},
         body: json.encode({'message': m.text}), // Send the user's message
       );
