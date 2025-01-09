@@ -235,7 +235,7 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
               ),
               child: Column(
                 children: [
-                  Text("Appromximately Waiting time:"),
+                  Text("Appromximately Waiting time"),
                   exist == true
                       ? waitingtime(name)
                       : const Text("You can walk in now ")

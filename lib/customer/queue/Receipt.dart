@@ -120,7 +120,7 @@ class _ReceiptState extends State<Receipt> {
               Navigator.of(context).popUntil((route) => route.isFirst);
             },
             child: Text(
-              "Back to Home",
+              "Back",
               style: const TextStyle(color: Colors.white),
             ),
           )

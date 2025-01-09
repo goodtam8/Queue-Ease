@@ -71,12 +71,16 @@ class _OrderState extends State<Order> {
         showDialog(
             context: context,
             builder: (context) => AlertDialog(
+                  backgroundColor: const Color(0xFFF1F1F1),
                   actions: [
                     TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: const Text('ok'))
+                        child: const Text(
+                          'ok',
+                          style: TextStyle(color: Color(0xFF1578E6)),
+                        ))
                   ],
                   title: const Text('Order Status'),
                   content: const Text('Successful add to chart'),
