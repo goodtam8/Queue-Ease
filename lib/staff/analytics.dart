@@ -57,19 +57,20 @@ class _AnalyticsState extends State<Analytics> {
     );
   }
 
-  Widget buildaiandchart( Map<String, Map<String, int>>  bookingStats){
-    return FutureBuilder(future:getBotAnalytic(bookingStats),builder: (context, snapshot) {
-       if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No payment data available'));
-        } else {
-          return Container();
-        }
-
-    });
+  Widget buildaiandchart(Map<String, Map<String, int>> bookingStats) {
+    return FutureBuilder(
+        future: getBotAnalytic(bookingStats),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No payment data available'));
+          } else {
+            return Container();
+          }
+        });
   }
 
   Future<List<Map<String, dynamic>>> fetchBookingStats() async {
@@ -238,8 +239,7 @@ class _AnalyticsState extends State<Analytics> {
       Map<String, Map<String, int>> bookingStats) async {
     try {
       final response = await http.post(
-        Uri.parse(
-            "http://10.0.2.2:3000/api/gpt/analysis"), // Replace with your backend URL
+        Uri.parse("http://10.0.2.2:3000/api/gpt/analysis"),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({'message': bookingStats}), // Send the user's message
       );
@@ -294,8 +294,8 @@ class _AnalyticsState extends State<Analytics> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: SizedBox(
-        width: 350, // Set your desired width
-        height: 200, // Set your desired height
+        width: 350,
+        height: 200,
         child: LineChart(
           LineChartData(
             lineBarsData: [

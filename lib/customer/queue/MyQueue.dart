@@ -51,7 +51,7 @@ class _MyqueueState extends State<Myqueue> {
           } else if (snapshot.hasError) {
             print("hi there is the error occur");
             print(snapshot.error);
-            return Center(
+            return const Center(
                 child: Text('You have not queue in a restaurant yet'));
           } else {
             List<Queueing> queuelist = snapshot.data!;
@@ -80,7 +80,7 @@ class _MyqueueState extends State<Myqueue> {
               child: Row(
                 children: [
                   Text("$now"),
-                  SizedBox(
+                  const SizedBox(
                     width: 10.0,
                   ),
                   buttonrest()
@@ -102,7 +102,7 @@ class _MyqueueState extends State<Myqueue> {
                           1.29, // This is equivalent to lineHeight of 18px with fontSize 14px
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.pushNamed(
@@ -116,7 +116,7 @@ class _MyqueueState extends State<Myqueue> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF1578E6),
+                      backgroundColor: const Color(0xFF1578E6),
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8), // Horizontal padding
 
@@ -184,7 +184,7 @@ class _MyqueueState extends State<Myqueue> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: Topbar(),
+      appBar: const Topbar(),
       body: Center(
         child: Column(
           children: [

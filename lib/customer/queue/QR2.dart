@@ -67,12 +67,53 @@ class _Qr2State extends State<Qr2> {
         });
   }
 
+  Widget deletebutton(String name, String id) {
+    return ElevatedButton(
+      onPressed: () async {
+        await delete(name, id);
+      },
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        backgroundColor: Color(0xFFE63946), // Background color
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        elevation: 0, // No shadow
+      ),
+      child: const Text(
+        "Leave Queue",
+        style: TextStyle(
+          fontSize: 16,
+          fontFamily: 'Source Sans Pro',
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+          height: 1.5, // Line height equivalent
+        ),
+      ),
+    );
+  }
+
   Future<Restaurant> getrestdetail(String name) async {
     var response = await http.get(
         Uri.parse('http://10.0.2.2:3000/api/rest/${name}'),
         headers: {'Content-Type': 'application/json'});
 
     return parseRestaurant(response.body);
+  }
+
+  Future<dynamic> delete(String name, String id) async {
+    try {
+      var response = await http.delete(
+        Uri.parse('http://10.0.2.2:3000/api/queue/$name/leave/$id'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      print(response.body);
+      return (response.statusCode);
+    } catch (e) {
+      print(e);
+      return e.toString();
+    }
   }
 
   String? qrdata;
@@ -88,7 +129,11 @@ class _Qr2State extends State<Qr2> {
       backgroundColor: Colors.white,
       appBar: Topbar(),
       body: Column(
-        children: [PrettyQrView.data(data: qrdata!), order(rest)],
+        children: [
+          PrettyQrView.data(data: qrdata!),
+          order(rest),
+          deletebutton(rest, id)
+        ],
       ),
     );
   }
