@@ -11,6 +11,7 @@ class StripeService {
   static final StripeService instance = StripeService._();
 
   Future<void> makePayment(BuildContext context) async {
+    
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       List<String> cart = prefs.getStringList('cart') ?? [];
@@ -44,6 +45,8 @@ class StripeService {
 
   Future<void> _processPayment(BuildContext context, int amount) async {
     try {
+      // trigger the post request for storing payment detail in mongo db
+
       await Stripe.instance.presentPaymentSheet();
       Navigator.pop(context);
       Navigator.pop(context);
@@ -52,7 +55,7 @@ class StripeService {
         context,
         '/receipt',
         arguments: amount, // Pass the amount as an argument
-      ); // Replace with your receipt screen route
+      ); 
     } catch (e) {
       print("hi");
       print(e);

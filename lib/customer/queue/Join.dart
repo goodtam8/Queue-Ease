@@ -26,16 +26,30 @@ class _JoinState extends State<Join> {
     '7+ people',
   ];
   Future<dynamic> join(String restname, String objectid) async {
-    Map<String, dynamic> data = {
+    Map<String, dynamic> record = {
       'customerId': objectid,
-      'numberOfPeople': _selectedSize
+      'numberOfPeople': _selectedSize,
+      'status': "waiting",
+      'name': restname
     };
+
     try {
+      var order = await http.post(Uri.parse('http://10.0.2.2:3000/api/record'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(record));
+
+      final rid = jsonDecode(order.body);
+      print(rid);
+      Map<String, dynamic> data = {
+        'customerId': objectid,
+        'numberOfPeople': _selectedSize,
+        'rid': rid
+      };
       var response = await http.put(
           Uri.parse('http://10.0.2.2:3000/api/queue/$restname/add'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(data));
-      print("response:${response.body}");
+
       final message = jsonDecode(response.body);
 
       return (message['message']);

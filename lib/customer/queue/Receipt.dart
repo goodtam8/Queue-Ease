@@ -21,7 +21,7 @@ class _ReceiptState extends State<Receipt> {
   }
 
   Widget TitleText() {
-    return Text("Payment Details",
+    return const Text("Payment Details",
         style: TextStyle(
           color: Color(0xFF030303), // Hex color
           fontSize: 16, // Font size
@@ -83,10 +83,10 @@ class _ReceiptState extends State<Receipt> {
       ),
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
         TitleText(),
-        Text("Order Number:A123415151"),
-        Text("Amount Paid:USD${amount}"),
-        Text("Payment Method: Visa Card"),
-        Text("Date:${formattedDate}")
+        const Text("Order Number:A123415151"),
+        Text("Amount Paid:USD$amount"),
+        const Text("Payment Method: Visa Card"),
+        Text("Date:$formattedDate")
       ]),
     );
   }

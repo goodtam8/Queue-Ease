@@ -63,15 +63,13 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
     );
   }
 
-
-
   Future<double> getwaitingtime(String name) async {
     var response = await http.get(
         Uri.parse('http://10.0.2.2:3000/api/predict/$name'),
         headers: {'Content-Type': 'application/json'});
     final data = jsonDecode(response.body);
 
-    return data['waitingTime'];
+    return data['waitingTime'].toDouble();
   }
 
   Future<Uint8List?> getImage(String id) async {
@@ -166,12 +164,9 @@ class _RestaurantdetailState extends State<Restaurantdetail> {
             Queueing detail = snapshot.data!;
             String next = "";
             int length = detail.queueArray.length - detail.currentPosition;
-            if(detail.queueArray.length==0){
-              length=0;
-              
-
-            }
-           else if (detail.queueArray.length - detail.currentPosition == 0) {
+            if (detail.queueArray.length == 0) {
+              length = 0;
+            } else if (detail.queueArray.length - detail.currentPosition == 0) {
               length = 1;
             }
             if (detail.queueArray.length == detail.currentPosition) {

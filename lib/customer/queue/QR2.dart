@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/customer/queue/Menu.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
@@ -103,8 +105,18 @@ class _Qr2State extends State<Qr2> {
 
   Future<dynamic> delete(String name, String id) async {
     try {
+      var search = await http.get(
+        Uri.parse('http://10.0.2.2:3000/api/queue/$id/search/$name'),
+        headers: {'Content-Type': 'application/json'},
+      );
+      final rid = jsonDecode(search.body);
+
       var response = await http.delete(
         Uri.parse('http://10.0.2.2:3000/api/queue/$name/leave/$id'),
+        headers: {'Content-Type': 'application/json'},
+      );
+      var deleterecord = await http.delete(
+        Uri.parse('http://10.0.2.2:3000/api/record/$rid'),
         headers: {'Content-Type': 'application/json'},
       );
 
