@@ -59,25 +59,12 @@ class Order {
   }
 }
 
-// Class for the entire response
-class OrderResponse {
-  final List<Order> result;
 
-  const OrderResponse({
-    required this.result,
-  });
-
-  factory OrderResponse.fromJson(Map<String, dynamic> json) {
-    return OrderResponse(
-      result: (json['result'] as List)
-          .map((orderJson) => Order.fromJson(orderJson))
-          .toList(),
-    );
-  }
-}
-
-// Function to parse the JSON response
-OrderResponse parseOrderResponse(String responseBody) {
+Order parseRestaurant(String responseBody) {
   final parsed = jsonDecode(responseBody) as Map<String, dynamic>;
-  return OrderResponse.fromJson(parsed);
+
+  return Order.fromJson(parsed);
 }
+   List<Order> listFromJson(List<dynamic> json) {
+    return json.map((item) => Order.fromJson(item)).toList();
+  }
