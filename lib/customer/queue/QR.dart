@@ -15,7 +15,7 @@ class Qr extends StatefulWidget {
 }
 
 class _QrState extends State<Qr> {
-  Widget order(String name) {
+  Widget order(String name,String id) {
     return FutureBuilder(
         future: getrestdetail(name),
         builder: (context, snapshot) {
@@ -39,7 +39,7 @@ class _QrState extends State<Qr> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Order(restaurant: detail.id),
+                    builder: (context) => Order(restaurant: detail.name,id: id ,),
                   ),
                 );
               },
@@ -75,8 +75,8 @@ class _QrState extends State<Qr> {
         await delete(name, id);
       },
       style: ElevatedButton.styleFrom(
-        padding: EdgeInsets.symmetric(horizontal: 8),
-        backgroundColor: Color(0xFFE63946), // Background color
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        backgroundColor: const Color(0xFFE63946), // Background color
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
@@ -143,7 +143,7 @@ class _QrState extends State<Qr> {
       body: Column(
         children: [
           PrettyQrView.data(data: qrdata!),
-          order(rest.name),
+          order(rest,id),
           deletebutton(rest.name, id)
         ],
       ),

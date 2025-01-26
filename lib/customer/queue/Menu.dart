@@ -9,7 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Order extends StatefulWidget {
   final String restaurant;
-  const Order({super.key, required this.restaurant});
+  final String id;
+  const Order({super.key, required this.restaurant,required this.id});
 
   @override
   State<Order> createState() => _OrderState();
@@ -163,7 +164,11 @@ class _OrderState extends State<Order> {
                   );
                 } else {
                   // Navigate to checkout if cart is not empty
-                  Navigator.pushNamed(context, '/checkout');
+                  Navigator.pushNamed(context, '/checkout',arguments: {
+                          'restaurant': widget.restaurant,
+                          'id': widget.id,
+                          // Add more arguments as needed
+                        });
                 }
               },
               style: ElevatedButton.styleFrom(

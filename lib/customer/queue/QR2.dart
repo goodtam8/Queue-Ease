@@ -15,7 +15,7 @@ class Qr2 extends StatefulWidget {
 }
 
 class _Qr2State extends State<Qr2> {
-  Widget order(String name) {
+  Widget order(String name, String id) {
     return FutureBuilder(
         future: getrestdetail(name),
         builder: (context, snapshot) {
@@ -39,7 +39,7 @@ class _Qr2State extends State<Qr2> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => Order(restaurant: detail.id),
+                    builder: (context) => Order(restaurant: detail.id, id: id),
                   ),
                 );
               },
@@ -143,7 +143,7 @@ class _Qr2State extends State<Qr2> {
       body: Column(
         children: [
           PrettyQrView.data(data: qrdata!),
-          order(rest),
+          order(rest, id),
           deletebutton(rest, id)
         ],
       ),

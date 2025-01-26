@@ -40,7 +40,7 @@ class _OrderdetailState extends State<Orderdetail> {
 
             return OrderCard(menulistcard, amount);
           } else {
-            return Text("An unexpected error occured");
+            return const Text("An unexpected error occured");
           }
         });
   }
@@ -98,9 +98,14 @@ class _OrderdetailState extends State<Orderdetail> {
 
   @override
   Widget build(BuildContext context) {
+        final args = ModalRoute.of(context)?.settings.arguments as Map;
+
+    final rest = args['restaurant'];
+    final id = args['id'];
+
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: Topbar(),
+        appBar: const Topbar(),
         body: Column(
           children: [
             Padding(
@@ -115,7 +120,7 @@ class _OrderdetailState extends State<Orderdetail> {
         ),
         bottomNavigationBar: ElevatedButton(
           onPressed: () {
-            StripeService.instance.makePayment(context);
+            StripeService.instance.makePayment(context,rest,id);
           },
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 8), // Padding

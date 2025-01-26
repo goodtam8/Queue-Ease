@@ -70,7 +70,7 @@ class _ReceiptState extends State<Receipt> {
     );
   }
 
-  Widget paymentcard(int amount) {
+  Widget paymentcard(String amount) {
     DateTime now = new DateTime.now();
     var formatter = DateFormat('yyyy-MM-dd');
     String formattedDate = formatter.format(now);
@@ -93,7 +93,11 @@ class _ReceiptState extends State<Receipt> {
 
   @override
   Widget build(BuildContext context) {
-    final int amount = ModalRoute.of(context)!.settings.arguments as int;
+    final args = ModalRoute.of(context)?.settings.arguments as Map;
+    final amount = args['amount'];
+    final name = args['restaurant'];
+    final id = args['rid'];
+    
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -121,6 +125,29 @@ class _ReceiptState extends State<Receipt> {
             },
             child: Text(
               "Back",
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              textStyle: const TextStyle(
+                fontSize: 16,
+                fontFamily: 'Source Sans Pro',
+                fontWeight: FontWeight.w600,
+                height: 1.5, // Line height equivalent
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed('/prev',
+                  arguments: {'rid':id});
+            },
+            child: Text(
+              "Previous Order detail",
               style: const TextStyle(color: Colors.white),
             ),
           )

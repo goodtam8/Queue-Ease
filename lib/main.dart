@@ -8,6 +8,7 @@ import 'package:fyp_mobile/customer/Notilist.dart';
 import 'package:fyp_mobile/customer/queue/QR.dart';
 import 'package:fyp_mobile/customer/queue/QR2.dart';
 import 'package:fyp_mobile/customer/queue/Receipt.dart';
+import 'package:fyp_mobile/customer/queue/previousorder.dart';
 import 'package:fyp_mobile/customer/restaurant/Search.dart';
 import 'package:fyp_mobile/customer/chatroom.dart';
 import 'package:fyp_mobile/customer/queue/orderdetail.dart';
@@ -108,6 +109,7 @@ class _MyAppState extends State<MyApp> {
           '/qr2': (context) => const Qr2(),
           '/map': (context) => MapView(),
           '/chat': (context) => const Chatroom(),
+          '/prev':(context) => const Previousorder(),
         });
   }
 }
