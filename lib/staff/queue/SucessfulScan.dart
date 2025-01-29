@@ -42,7 +42,7 @@ class _SucessfulscanState extends State<Sucessfulscan> {
                   color: Color(0xFF4A75A5), // Color in Flutter format
                   fontSize: 24,
                   fontFamily:
-                      'Open Sans', // Make sure to include this font in your pubspec.yaml
+                      'Open Sans', 
                   height: 1.33,
                 )),
             Text("Time: ${DateTime.now()}",
@@ -50,7 +50,7 @@ class _SucessfulscanState extends State<Sucessfulscan> {
                   color: Color(0xFF4A75A5), // Color in Flutter format
                   fontSize: 24,
                   fontFamily:
-                      'Open Sans', // Make sure to include this font in your pubspec.yaml
+                      'Open Sans',
                   height: 1.33,
                 )),
             const SizedBox(height: 50.0),

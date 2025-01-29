@@ -27,7 +27,7 @@ class _NotificationState extends State<noti> {
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16.0), // Add your desired padding here
+          padding: const EdgeInsets.all(16.0), 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

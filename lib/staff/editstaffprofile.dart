@@ -123,8 +123,7 @@ class _EditstaffprofileState extends State<Editstaffprofile> {
                       return Text('Error: ${snapshot.error}');
                     } else if (snapshot.hasData) {
                       personal data =
-                          snapshot.data!; // You now have your 'personal' data
-                      // ... rest of your code to setup the form ...
+                          snapshot.data!; 
                       staff_id.text = data.sid.toString();
                       password.text = data.pw.toString();
                       email.text = data.email.toString();
@@ -245,7 +244,6 @@ class _EditstaffprofileState extends State<Editstaffprofile> {
                                           child: const Text("Save"))
                                     ],
                                   ))));
-                      // Return your form widget here
                     } else {
                       return const Text(
                           'Unexpected error occurred'); // Handle the case where there's no data

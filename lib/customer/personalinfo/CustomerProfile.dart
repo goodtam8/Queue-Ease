@@ -144,7 +144,7 @@ class _Customerstate extends State<Customer> {
                   return Text('Error: ${snapshot.error}');
                 } else if (snapshot.hasData) {
                   Customerper data =
-                      snapshot.data!; // You now have your 'personal' data
+                      snapshot.data!; 
                   return Center(
                     child: Column(
                       children: [
@@ -300,7 +300,7 @@ class _Customerstate extends State<Customer> {
                     ),
                   );
 
-                  // Return your form widget here
+              
                 } else {
                   return Text(
                       'Unexpected error occurred'); // Handle the case where there's no data

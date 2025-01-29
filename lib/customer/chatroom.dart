@@ -42,7 +42,7 @@ class _ChatroomState extends State<Chatroom> {
       _messages.insert(0, m);
     });
 
-    // Send the message to your backend
+   
     try {
       final response = await http.post(
         Uri.parse(

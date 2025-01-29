@@ -102,7 +102,7 @@ class _OrderState extends State<Order> {
           color: Colors.white,
           fontSize: 16,
           fontFamily:
-              'Source Sans Pro', // Ensure this font is available in your project
+              'Source Sans Pro', 
           fontWeight: FontWeight.w600, // Equivalent to fontWeight: 600
           height: 24 / 16, // lineHeight: 24px / fontSize: 16px
         ),

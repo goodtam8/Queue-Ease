@@ -222,7 +222,7 @@ class _Tablestate extends State<Tablestatus> {
                   color: Color(0xFF919191), // Similar to '#919191'
                   fontSize: 14, // Font size in pixels
                   fontFamily:
-                      'Source Sans Pro', // Ensure this font is included in your project
+                      'Source Sans Pro', 
                   height: 1.14, // Line height (16px / 14px)
                 ),
               )
@@ -351,7 +351,7 @@ class _Tablestate extends State<Tablestatus> {
   Widget disablebutton() {
     return ElevatedButton(
       onPressed: () {
-        // Add your onPressed logic here
+       
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -368,7 +368,7 @@ class _Tablestate extends State<Tablestatus> {
           color: Colors.white,
           fontSize: 16,
           fontFamily:
-              'Source Sans Pro', // Ensure this font is added in your pubspec.yaml
+              'Source Sans Pro', 
           fontWeight: FontWeight.w600,
           height: 1.19, // Line height (19px / 16px)
         ),
@@ -379,7 +379,7 @@ class _Tablestate extends State<Tablestatus> {
   Widget ablebutton(String name) {
     return ElevatedButton(
       onPressed: () async {
-        // Add your onPressed logic here
+      
         createqueue(name);
       },
       style: ElevatedButton.styleFrom(
@@ -397,7 +397,7 @@ class _Tablestate extends State<Tablestatus> {
           color: Colors.white,
           fontSize: 16,
           fontFamily:
-              'Source Sans Pro', // Ensure this font is added in your pubspec.yaml
+              'Source Sans Pro', 
           fontWeight: FontWeight.w600,
           height: 1.19, // Line height (19px / 16px)
         ),

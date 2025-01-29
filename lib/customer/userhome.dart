@@ -208,7 +208,7 @@ class _Homestate extends State<Userhome> {
             return Text('Error: ${snapshot.error}');
           } else if (snapshot.hasData) {
             WeatherForecast data =
-                snapshot.data!; // You now have your 'personal' data
+                snapshot.data!;
             String formattedtime = timeformatting(DateTime.now());
             int indextobedisplayed = 0;
             temperature = data.weatherForecast[0].forecastMaxtemp["value"];

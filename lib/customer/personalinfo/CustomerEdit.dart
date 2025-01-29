@@ -136,9 +136,9 @@ class _studenteditstate extends State<Studentedit> {
                       return Text('Error: ${snapshot.error}');
                     } else if (snapshot.hasData) {
                       Customerper data =
-                          snapshot.data!; // You now have your 'personal' data
+                          snapshot.data!; 
                       sid.text = data.uid.toString();
-                      // ... rest of your code to setup the form ...
+                   
                       password.text = data.pw.toString();
                       name.text = data.name.toString();
                       phone_num.text = data.phone.toString();
@@ -264,7 +264,7 @@ class _studenteditstate extends State<Studentedit> {
                                           child: const Text("Save"))
                                     ],
                                   ))));
-                      // Return your form widget here
+                    
                     } else {
                       return const Text(
                           'Unexpected error occurred'); // Handle the case where there's no data
