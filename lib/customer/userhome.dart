@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/customer/Notification.dart';
 import 'package:fyp_mobile/login.dart';
@@ -207,8 +208,7 @@ class _Homestate extends State<Userhome> {
             print('hi again there is where the error occure');
             return Text('Error: ${snapshot.error}');
           } else if (snapshot.hasData) {
-            WeatherForecast data =
-                snapshot.data!;
+            WeatherForecast data = snapshot.data!;
             String formattedtime = timeformatting(DateTime.now());
             int indextobedisplayed = 0;
             temperature = data.weatherForecast[0].forecastMaxtemp["value"];
@@ -325,6 +325,15 @@ class _Homestate extends State<Userhome> {
     }
   }
 
+  Future<Uint8List?> imagenewget(String id) async {
+    String url = await StoreData().getuserurl(id);
+    if (url != "error") {
+      Uint8List? img = await fetchImageAsUint8List(url);
+      return img;
+    }
+    return null;
+  }
+
   Future<Uint8List?> fetchImageAsUint8List(String url) async {
     try {
       final response = await http.get(Uri.parse(url));
@@ -342,6 +351,33 @@ class _Homestate extends State<Userhome> {
     }
   }
 
+  Widget avatar(String oid) {
+    return FutureBuilder(
+        future: imagenewget(oid),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // Show a loading indicator while waiting
+          } else if (snapshot.hasError) {
+            print('hello there, there is where the error occur');
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            Uint8List imgdata = snapshot.data;
+
+            return imgdata != null
+                ? CircleAvatar(
+                    radius: 64,
+                    backgroundImage: MemoryImage(imgdata),
+                  )
+                : const CircleAvatar(
+                    radius: 64,
+                    backgroundImage: AssetImage('assets/user.png'),
+                  );
+          } else {
+            return Text('Error: An unexpected error occured');
+          }
+        });
+  }
+
   Widget customerinfo(String oid) {
     return FutureBuilder(
         future:
@@ -354,21 +390,10 @@ class _Homestate extends State<Userhome> {
             return Text('Error: ${snapshot.error}');
           } else if (snapshot.hasData) {
             Customerper person = snapshot.data!;
-            getImage(oid);
             return Row(
               children: [
                 Stack(
-                  children: [
-                    _image != null
-                        ? CircleAvatar(
-                            radius: 64,
-                            backgroundImage: MemoryImage(_image!),
-                          )
-                        : const CircleAvatar(
-                            radius: 64,
-                            backgroundImage: AssetImage('assets/user.png'),
-                          ),
-                  ],
+                  children: [avatar(oid)],
                 ),
                 Column(
                   children: [

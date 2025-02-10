@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/customer/queue/Menu.dart';
+import 'package:fyp_mobile/property/queue.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
+import 'package:fyp_mobile/property/singleton/QueueService.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:http/http.dart' as http;
@@ -58,10 +60,52 @@ class _Qr2State extends State<Qr2> {
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
-                  fontFamily:
-                      'Source Sans Pro', 
+                  fontFamily: 'Source Sans Pro',
                   fontWeight: FontWeight.w600, // Equivalent to fontWeight: 600
                   height: 24 / 16, // lineHeight: 24px / fontSize: 16px
+                ),
+              ),
+            );
+          }
+        });
+  }
+
+  final QueueService queueService = QueueService();
+
+  Widget queuecondition(String name) {
+    return FutureBuilder(
+        future: queueService.queuedetail(name),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/update');
+                },
+                child: const Text("Update"),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            print("hi there is the error occur");
+            print(snapshot.error);
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            Queueing data = snapshot.data!; // You now have your 'personal' data
+            int position = data.currentPosition;
+            return Positioned(
+              child: Container(
+                width: 226,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(7),
+                ),
+                child: Column(
+                  children: [
+                    Text("Current Queue Number:${data.currentPosition}"),
+                    Text(
+                        "People Waiting in the queue:${data.queueArray.length}"),
+                  ],
                 ),
               ),
             );
@@ -140,12 +184,24 @@ class _Qr2State extends State<Qr2> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: Topbar(),
-      body: Column(
-        children: [
-          PrettyQrView.data(data: qrdata!),
-          order(rest, id),
-          deletebutton(rest, id)
-        ],
+      body: Center(
+        child: Column(
+          children: [
+            queuecondition(rest),
+            Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                  //Optional styling
+                  ),
+              child: PrettyQrView.data(
+                data: qrdata!,
+              ),
+            ),
+            order(rest, id),
+            deletebutton(rest, id)
+          ],
+        ),
       ),
     );
   }

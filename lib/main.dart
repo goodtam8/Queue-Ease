@@ -109,7 +109,7 @@ class _MyAppState extends State<MyApp> {
           '/qr2': (context) => const Qr2(),
           '/map': (context) => MapView(),
           '/chat': (context) => const Chatroom(),
-          '/prev':(context) => const Previousorder(),
+          '/prev': (context) => const Previousorder(),
         });
   }
 }
