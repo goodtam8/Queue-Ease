@@ -17,7 +17,7 @@ class Quecondition extends StatefulWidget {
 class _QueconditionState extends State<Quecondition> {
   late int position;
   //reminder
-  final QueueService queueService=QueueService();
+  final QueueService queueService = QueueService();
 
   Future<int> update(int push, String objectid) async {
     Map<String, dynamic> data = {
@@ -68,6 +68,20 @@ class _QueconditionState extends State<Quecondition> {
                 Text("Current Queue Number:${data.currentPosition}"),
                 Text("People Waiting in the queue:${data.queueArray.length}"),
                 ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      fixedSize: Size(295, 44),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      backgroundColor: const Color(0xFF030303),
+                      textStyle: const TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Source Sans Pro',
+                        color: Colors.white,
+                        height: 1.43, // line height equivalent
+                      ),
+                    ),
                     onPressed: () async {
                       int responsecode = await update(position + 1, data.id);
 
@@ -81,7 +95,7 @@ class _QueconditionState extends State<Quecondition> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: Text('Error'),
-                                content: Text(
+                                content: const Text(
                                     'You have reach to the end of the queue'),
                                 actions: <Widget>[
                                   TextButton(
@@ -96,12 +110,32 @@ class _QueconditionState extends State<Quecondition> {
                             });
                       }
                     },
-                    child: const Text("Call Next")),
+                    child: const Text(
+                      "Call Next",
+                      style: TextStyle(color: Colors.white),
+                    )),
                 ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      fixedSize: const Size(295, 44),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      backgroundColor: const Color(0xFF030303),
+                      textStyle: const TextStyle(
+                        fontSize: 14,
+                        fontFamily: 'Source Sans Pro',
+                        color: Colors.white,
+                        height: 1.43, // line height equivalent
+                      ),
+                    ),
                     onPressed: () async {
                       await delete(data.id!);
                     },
-                    child: Text("Close the Queue"))
+                    child: const Text(
+                      "Close the Queue",
+                      style: TextStyle(color: Colors.white),
+                    ))
               ],
             );
           } else {
@@ -117,15 +151,34 @@ class _QueconditionState extends State<Quecondition> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: Topbar(),
-      body: Column(
-        children: [
-          queuenumber(rest.toString()),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed('/qrscan');
-              },
-              child: Text("Scan the qr code "))
-        ],
+      body: Center(
+        child: Column(
+          children: [
+            queuenumber(rest.toString()),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  fixedSize: Size(295, 44),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  backgroundColor: const Color(0xFF030303),
+                  textStyle: const TextStyle(
+                    fontSize: 14,
+                    fontFamily: 'Source Sans Pro',
+                    color: Colors.white,
+                    height: 1.43, // line height equivalent
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/qrscan');
+                },
+                child: Text(
+                  "Scan the qr code ",
+                  style: TextStyle(color: Colors.white),
+                ))
+          ],
+        ),
       ),
     );
   }

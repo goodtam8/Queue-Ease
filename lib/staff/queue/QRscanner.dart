@@ -22,7 +22,7 @@ class _QrscannerState extends State<Qrscanner> {
     detectionSpeed: DetectionSpeed.noDuplicates,
   );
   late Future<String?> _tokenValue;
-final Restuarantservice service=Restuarantservice();
+  final Restuarantservice service = Restuarantservice();
   Future<String> scan(String restname, String objectid) async {
     try {
       var response = await http.patch(
@@ -66,8 +66,9 @@ final Restuarantservice service=Restuarantservice();
               JwtDecoder.decode(snapshot.data as String);
           String oid = decodedToken["_id"].toString();
           return AlertDialog(
-            title: Text("Qr Code detected"),
-            content: Text("Scan the Qr Code?"),
+            backgroundColor: Colors.white,
+            title: const Text("Qr Code detected"),
+            content: const Text("Scan the Qr Code?"),
             actions: [
               TextButton(
                   onPressed: () async {
@@ -81,7 +82,10 @@ final Restuarantservice service=Restuarantservice();
                       Navigator.of(context).pushReplacementNamed("/fail");
                     }
                   },
-                  child: Text("Scan"))
+                  child: const Text(
+                    "Scan",
+                    style: TextStyle(color: Colors.black),
+                  ))
             ],
           );
         }

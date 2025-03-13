@@ -30,7 +30,7 @@ import 'package:fyp_mobile/staff/editstaffprofile.dart';
 import 'package:fyp_mobile/staff/queue/QRscanner.dart';
 import 'package:fyp_mobile/staff/backhome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+//class diagram
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {

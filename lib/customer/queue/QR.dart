@@ -183,6 +183,7 @@ class _QrState extends State<Qr> {
     final rest = args['restaurant'];
     final id = args['id'];
     qrdata = id;
+    final restName = rest.name; // Extract the name from Restaurant object
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -190,9 +191,9 @@ class _QrState extends State<Qr> {
       body: Column(
         children: [
           PrettyQrView.data(data: qrdata!),
-          order(rest, id),
-          deletebutton(rest, id),
-          queuecondition(rest)
+          order(restName, id),
+          deletebutton(restName, id),
+          queuecondition(restName)
         ],
       ),
     );

@@ -60,7 +60,7 @@ class _MapViewState extends State<MapView> {
         return Marker(
           markerId: MarkerId(restaurant.name),
           position: restaurant.coordinate,
-          infoWindow: InfoWindow(title: restaurant.name),
+          infoWindow: InfoWindow(title: restaurant.name,),
           icon: BitmapDescriptor.defaultMarkerWithHue(
               color), // Use the awaited color
         );

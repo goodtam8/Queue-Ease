@@ -117,6 +117,7 @@ class _Qr2State extends State<Qr2> {
     return ElevatedButton(
       onPressed: () async {
         await delete(name, id);
+        Navigator.of(context).pop();
       },
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.symmetric(horizontal: 8),

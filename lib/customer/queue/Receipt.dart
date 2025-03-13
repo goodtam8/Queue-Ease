@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:intl/intl.dart';
-
+//class diagram 
 class Receipt extends StatefulWidget {
   const Receipt({super.key});
 

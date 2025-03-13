@@ -135,10 +135,9 @@ class _studenteditstate extends State<Studentedit> {
                     } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     } else if (snapshot.hasData) {
-                      Customerper data =
-                          snapshot.data!; 
+                      Customerper data = snapshot.data!;
                       sid.text = data.uid.toString();
-                   
+
                       password.text = data.pw.toString();
                       name.text = data.name.toString();
                       phone_num.text = data.phone.toString();
@@ -183,6 +182,11 @@ class _studenteditstate extends State<Studentedit> {
                                       const SizedBox(
                                         height: 15.0,
                                       ),
+                                      const Text(
+                                        'Year of Birth',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
                                       Container(
                                         decoration: BoxDecoration(
                                           border: Border.all(
@@ -223,15 +227,9 @@ class _studenteditstate extends State<Studentedit> {
                                       ),
                                       inputtextfield(
                                           phone_num, 'Phone Number', false),
-                                      const Text(
-                                        'Gender',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
                                       const SizedBox(
                                         height: 15.0,
                                       ),
-                                     
                                       Styled_button(
                                           onPressed: () async {
                                             if (_formKey.currentState!
@@ -264,7 +262,6 @@ class _studenteditstate extends State<Studentedit> {
                                           child: const Text("Save"))
                                     ],
                                   ))));
-                    
                     } else {
                       return const Text(
                           'Unexpected error occurred'); // Handle the case where there's no data
