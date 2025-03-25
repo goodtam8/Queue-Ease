@@ -72,40 +72,41 @@ class _NavigationState extends State<Navigation> {
     ];
 
     return Scaffold(
-      backgroundColor: Colors.red,
+      backgroundColor: Colors.red, // You can update or remove this as needed.
       body: IndexedStack(
         index: currentPageIndex,
         children: pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.red,
-        items: [
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Color(0xFF1578E6)),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-                userRole == "staff" ? Icons.bar_chart : Icons.calendar_month,
-                color: Color(0xFF1578E6)),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(userRole == "staff" ? Icons.list : Icons.restaurant,
-                color: Color(0xFF1578E6)),
-            label: '',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.account_box, color: Color(0xFF1578E6)),
-            label: '',
-          ),
-        ],
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: Color(0xFF1578E6),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white.withOpacity(0.6),
         currentIndex: currentPageIndex,
         onTap: (int index) {
           setState(() {
-            updateIndex(index);
+            currentPageIndex = index;
           });
         },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+                userRole == "staff" ? Icons.bar_chart : Icons.calendar_month),
+            label: userRole == "staff" ? 'Analytics' : 'Queue',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(userRole == "staff" ? Icons.list : Icons.restaurant),
+            label: userRole == "staff" ? 'Table Status' : 'Restaurant',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_box),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }

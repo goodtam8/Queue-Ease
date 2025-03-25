@@ -17,6 +17,7 @@ class Join extends StatefulWidget {
 
 class _JoinState extends State<Join> {
   String? _selectedSize; // Variable to hold the selected size
+  String? _childrenSize;
 
   // List of party sizes
   final List<String> _partySizes = [
@@ -24,6 +25,12 @@ class _JoinState extends State<Join> {
     '3-4 people',
     '5-6 people',
     '7+ people',
+  ];
+  final List<String> _childrenSizes = [
+    '0',
+    '1',
+    '2',
+    '3+',
   ];
   Future<dynamic> join(String restname, String objectid) async {
     Map<String, dynamic> record = {
@@ -80,6 +87,34 @@ class _JoinState extends State<Join> {
         onChanged: (String? newValue) {
           setState(() {
             _selectedSize = newValue; // Update the selected size
+          });
+        },
+        underline: SizedBox(), // Hide the underline
+      ),
+    );
+  }
+
+  Widget childrenpicker() {
+    return Container(
+      width: 327,
+      height: 52,
+      decoration: BoxDecoration(
+        color: const Color(0xFFF1F1F1), // Background color
+        borderRadius: BorderRadius.circular(24), // Border radius
+      ),
+      child: DropdownButton<String>(
+        isExpanded: true, // Make the dropdown take the full width
+        value: _childrenSize,
+        hint: Text('Select Number of Children/Elderly'),
+        items: _childrenSizes.map((String size) {
+          return DropdownMenuItem<String>(
+            value: size,
+            child: Text(size),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          setState(() {
+            _childrenSize = newValue; // Update the selected size
           });
         },
         underline: SizedBox(), // Hide the underline
@@ -158,7 +193,7 @@ class _JoinState extends State<Join> {
           color: Colors.white,
         ),
       ),
-      child: Text(
+      child: const Text(
         "Join",
         style: TextStyle(color: Colors.white),
       ),
@@ -175,11 +210,15 @@ class _JoinState extends State<Join> {
       body: Center(
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 30.0,
             ),
             partypicker(),
-            SizedBox(
+            const SizedBox(
+              height: 30.0,
+            ),
+            childrenpicker(),
+            const SizedBox(
               height: 30.0,
             ),
             joinbutton(rest!)

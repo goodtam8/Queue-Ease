@@ -30,6 +30,7 @@ import 'package:fyp_mobile/staff/editstaffprofile.dart';
 import 'package:fyp_mobile/staff/queue/QRscanner.dart';
 import 'package:fyp_mobile/staff/backhome.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 //class diagram
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -79,6 +80,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        theme: ThemeData(
+          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            backgroundColor: Colors.blue,
+            selectedItemColor: Colors.white,
+            unselectedItemColor: Colors.white.withOpacity(0.6),
+          ),
+        ),
         home: isLoggedIn
             ? Navigation(
                 onLogout: logout,

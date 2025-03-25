@@ -63,15 +63,23 @@ class _Restinfostate extends State<Restinfo> {
         GestureDetector(
           onTap: () async {
             await recommender.updateLastClickedCategory(restaurant.type);
-            // Navigate to the new screen and pass the restaurant data
-            Navigator.push(
+            final result = await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) =>
                     Restaurantdetail(restaurant: restaurant.id),
               ),
             );
-          },
+
+            if (result == true) {
+              setState(() {
+                // Refresh your data here
+                // For example: fetch the latest queue data
+              });
+            }
+          }
+          // Navigate to the new screen and pass the restaurant data
+          ,
           child: Container(
             margin: const EdgeInsets.only(top: 16, left: 16),
             width: 343,

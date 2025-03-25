@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Order extends StatefulWidget {
   final String restaurant;
   final String id;
-  const Order({super.key, required this.restaurant,required this.id});
+  const Order({super.key, required this.restaurant, required this.id});
 
   @override
   State<Order> createState() => _OrderState();
@@ -30,28 +30,73 @@ class _OrderState extends State<Order> {
     List<Widget> menulistcard = [];
 
     for (var menu in data) {
-      menulistcard.add(Menucard(menu.name, menu.price.toString()));
+      menulistcard.add(
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16), // Space between cards
+          child: Menucard(menu.name, menu.price.toString(), menu.image),
+        ),
+      );
     }
+
     return Column(
       children: menulistcard,
     );
   }
 
-  Widget Menucard(String title, String price) {
+  Widget Menucard(String title, String price, String url) {
     return Center(
       child: Container(
-        margin: const EdgeInsets.only(top: 124, left: 16),
+        margin: const EdgeInsets.only(top: 24),
         width: 343,
         height: 152,
         decoration: BoxDecoration(
-          color: Color(0xFFF1F1F1), // Equivalent to #f1f1f1
+          color: const Color(0xFFF1F1F1),
           borderRadius: BorderRadius.circular(24),
         ),
-        child: Column(
+        child: Row(
           children: [
-            Text(title),
-            Text(price),
-            OrderButton(title, price),
+            // Left side - Circular Image
+            Padding(
+              padding:
+                  const EdgeInsets.all(16), // Adds spacing around the image
+              child: ClipOval(
+                child: Image.network(
+                  url,
+                  width: 80, // Adjust size of the circular image
+                  height: 80,
+                  fit: BoxFit.cover, // Ensures the image fits within the circle
+                ),
+              ),
+            ),
+            // Right side - Text and Button
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "\$$price",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    OrderButton(title, price),
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -101,8 +146,7 @@ class _OrderState extends State<Order> {
         style: TextStyle(
           color: Colors.white,
           fontSize: 16,
-          fontFamily:
-              'Source Sans Pro', 
+          fontFamily: 'Source Sans Pro',
           fontWeight: FontWeight.w600, // Equivalent to fontWeight: 600
           height: 24 / 16, // lineHeight: 24px / fontSize: 16px
         ),
@@ -136,6 +180,10 @@ class _OrderState extends State<Order> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            const Text(
+              "Order Your Food",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25.0),
+            ),
             foodbuilder(),
             ElevatedButton(
               onPressed: () async {
@@ -164,11 +212,11 @@ class _OrderState extends State<Order> {
                   );
                 } else {
                   // Navigate to checkout if cart is not empty
-                  Navigator.pushNamed(context, '/checkout',arguments: {
-                          'restaurant': widget.restaurant,
-                          'id': widget.id,
-                          // Add more arguments as needed
-                        });
+                  Navigator.pushNamed(context, '/checkout', arguments: {
+                    'restaurant': widget.restaurant,
+                    'id': widget.id,
+                    // Add more arguments as needed
+                  });
                 }
               },
               style: ElevatedButton.styleFrom(
