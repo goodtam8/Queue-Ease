@@ -104,16 +104,23 @@ class _MyqueueState extends State<Myqueue> {
                   ),
                   const Spacer(),
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
+                    onPressed: () async {
+                      // Make this async
+                      final result = await Navigator.pushNamed(
                         context,
                         '/qr2',
                         arguments: {
                           'restaurant': queue.restaurantName,
                           'id': oid,
-                          // Add more arguments as needed
                         },
                       );
+
+                      if (result == true) {
+                        setState(() {
+                          // Refresh your data here
+                          // For example: fetch the latest queue data
+                        });
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF1578E6),

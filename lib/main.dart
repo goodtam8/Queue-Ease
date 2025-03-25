@@ -6,7 +6,7 @@ import 'package:fyp_mobile/customer/Map.dart';
 import 'package:fyp_mobile/customer/Notification.dart';
 import 'package:fyp_mobile/customer/Notilist.dart';
 import 'package:fyp_mobile/customer/queue/QR.dart';
-import 'package:fyp_mobile/customer/queue/QR2.dart';
+import 'package:fyp_mobile/customer/queue/Myqueueqr.dart';
 import 'package:fyp_mobile/customer/queue/Receipt.dart';
 import 'package:fyp_mobile/customer/queue/previousorder.dart';
 import 'package:fyp_mobile/customer/restaurant/Search.dart';
