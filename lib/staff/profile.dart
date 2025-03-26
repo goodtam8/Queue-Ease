@@ -31,6 +31,8 @@ class Staff extends StatefulWidget {
 class _StaffState extends State<Staff> {
   late Future<String?> _tokenValue;
   Uint8List? _image;
+  Uint8List? rest_image;
+
   @override
   void initState() {
     _tokenValue = storage.read(key: 'jwt');
@@ -49,6 +51,35 @@ class _StaffState extends State<Staff> {
     }
   }
 
+  Widget restuarntimage(String oid) {
+    return FutureBuilder(
+        future: getRestauranturl(oid),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // Show a loading indicator while waiting
+          } else if (snapshot.hasError) {
+            print('hello there, there is where the error occur');
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            Uint8List imgdata = snapshot.data;
+
+            return AspectRatio(
+              aspectRatio: 16 / 9, // Adjust this ratio as needed
+              child: imgdata != null
+                  ? Image(
+                      image: MemoryImage(imgdata),
+                      fit: BoxFit.cover,
+                    )
+                  : const CircleAvatar(
+                      backgroundImage: AssetImage('assets/user.png'),
+                    ),
+            );
+          } else {
+            return Text('Error: An unexpected error occured');
+          }
+        });
+  }
+
   Future<void> getImage(String id) async {
     String url = await StoreData().getImageUrl(id);
     if (url != "error") {
@@ -59,6 +90,15 @@ class _StaffState extends State<Staff> {
     } else {
       print("error");
     }
+  }
+
+  Future<Uint8List?> getRestauranturl(String id) async {
+    String url = await StoreData().getresturl(id);
+    if (url != "error") {
+      Uint8List? img = await fetchImageAsUint8List(url);
+      return img;
+    }
+    return null;
   }
 
   Future<Uint8List?> fetchImageAsUint8List(String url) async {
@@ -101,274 +141,314 @@ class _StaffState extends State<Staff> {
     return Scaffold(
       appBar: const Topbar(),
       backgroundColor: Colors.white,
-      body: FutureBuilder<String?>(
-        future: _tokenValue,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).pushNamed('/update');
-                },
-                child: const Text("Update"),
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            Map<String, dynamic> decodedToken =
-                JwtDecoder.decode(snapshot.data as String);
-            String oid = decodedToken["_id"].toString();
-            getImage(oid);
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: FutureBuilder<String?>(
+          future: _tokenValue,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('/update');
+                  },
+                  child: const Text("Update"),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else {
+              Map<String, dynamic> decodedToken =
+                  JwtDecoder.decode(snapshot.data as String);
+              String oid = decodedToken["_id"].toString();
+              getImage(oid);
 
-            return FutureBuilder<personal>(
-              future: getuserinfo(
-                  oid), // Assuming getuserinfo returns a Future<personal>
-              builder:
-                  (BuildContext context, AsyncSnapshot<personal> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator(); // Show a loading indicator while waiting
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (snapshot.hasData) {
-                  personal data =
-                      snapshot.data!; // You now have your 'personal' data
-                  return FutureBuilder<Restaurant>(
-                      future: service.getrestaurant(data.id),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<Restaurant> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator(); // Show a loading indicator while waiting
-                        } else if (snapshot.hasError) {
-                          return Text(
-                              'Error: restaurant trigger ${snapshot.error}');
-                        } else if (snapshot.hasData) {
-                          Restaurant rest = snapshot.data!;
-                          return Center(
-                            child: Column(
-                              children: [
-                                const SizedBox(
-                                  height: 15.0,
-                                ),
-                                Column(
-                                  children: [
-                                    Row(
+              return FutureBuilder<personal>(
+                future: getuserinfo(
+                    oid), // Assuming getuserinfo returns a Future<personal>
+                builder:
+                    (BuildContext context, AsyncSnapshot<personal> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator(); // Show a loading indicator while waiting
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    personal data =
+                        snapshot.data!; // You now have your 'personal' data
+                    return FutureBuilder<Restaurant>(
+                        future: service.getrestaurant(data.id),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<Restaurant> snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator(); // Show a loading indicator while waiting
+                          } else if (snapshot.hasError) {
+                            return Text(
+                                'Error: restaurant trigger ${snapshot.error}');
+                          } else if (snapshot.hasData) {
+                            Restaurant rest = snapshot.data!;
+
+                            return Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const SizedBox(height: 15.0),
+                                  Container(
+                                    width: double.infinity,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 5),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5, vertical: 10),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
-                                        Stack(children: [
-                                          _image != null
-                                              ? CircleAvatar(
-                                                  radius: 64,
-                                                  backgroundImage:
-                                                      MemoryImage(_image!),
-                                                )
-                                              : const CircleAvatar(
-                                                  radius: 64,
-                                                  backgroundImage: AssetImage(
-                                                      'assets/user.png'),
-                                                ),
-                                          Positioned(
-                                            bottom: -10,
-                                            left: 80,
-                                            child: IconButton(
+                                        Stack(
+                                          children: [
+                                            _image != null
+                                                ? CircleAvatar(
+                                                    radius: 64,
+                                                    backgroundImage:
+                                                        MemoryImage(_image!),
+                                                  )
+                                                : const CircleAvatar(
+                                                    radius: 64,
+                                                    backgroundImage: AssetImage(
+                                                        'assets/user.png'),
+                                                  ),
+                                            Positioned(
+                                              bottom: -10,
+                                              left: 80,
+                                              child: IconButton(
                                                 onPressed: () {
                                                   selectimage(oid);
                                                 },
                                                 icon: const Icon(
-                                                    Icons.add_a_photo)),
-                                          ),
-                                        ]),
-                                        Text(
-                                          data.name,
-                                          style: const TextStyle(
-                                            color: Color(0xFF030303),
-                                            fontSize: 16,
-                                            fontFamily: 'Open Sans',
-                                            fontWeight: FontWeight
-                                                .w700, // 700 corresponds to FontWeight.bold
-                                            height:
-                                                1.5, // lineHeight can be set using height
+                                                    Icons.add_a_photo),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                            width:
+                                                20), // Add space between image and text
+                                        Expanded(
+                                          child: Text(
+                                            data.name,
+                                            textAlign: TextAlign.left,
+                                            style: const TextStyle(
+                                              color: Color(0xFF030303),
+                                              fontSize: 16,
+                                              fontFamily: 'Open Sans',
+                                              fontWeight: FontWeight.w700,
+                                              height: 1.5,
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 30.0,
-                                ),
-                                Container(
-                                  width: 343,
-                                  height: 108,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFF1F1F1),
-                                    borderRadius: BorderRadius.circular(24),
                                   ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        "Personal Information",
-                                        style: TextStyle(
-                                          color: Color(0xFF030303),
-                                          fontSize: 16,
-                                          fontFamily: 'Open Sans',
-                                          fontWeight: FontWeight
-                                              .w700, // 700 corresponds to FontWeight.bold
-                                          height:
-                                              1.5, // lineHeight can be set using height
+
+                                  const SizedBox(height: 30.0),
+                                  Container(
+                                    width: double.infinity,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 16), // Added margin
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30,
+                                        vertical:
+                                            20), // Increased vertical padding
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF1F1F1),
+                                      borderRadius: BorderRadius.circular(24),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          "Personal Information",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            color: Color(0xFF030303),
+                                            fontSize: 16,
+                                            fontFamily: 'Open Sans',
+                                            fontWeight: FontWeight.w700,
+                                            height: 1.5,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        "Email:${data.email}",
-                                        style: const TextStyle(
-                                          color: Color(0xFF030303),
-                                          fontSize: 14,
-                                          fontFamily: 'Open Sans',
-                                          height:
-                                              1.43, // lineHeight can be set using height (20px / 14px ≈ 1.43)
+                                        const SizedBox(
+                                            height:
+                                                10), // Added space between title and content
+                                        Text(
+                                          "Email: ${data.email}",
+                                          textAlign: TextAlign.left,
+                                          style: const TextStyle(
+                                            color: Color(0xFF030303),
+                                            fontSize: 14,
+                                            fontFamily: 'Open Sans',
+                                            height: 1.43,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        "Phone:${data.phone}",
-                                        style: const TextStyle(
-                                          color: Color(0xFF030303),
-                                          fontSize: 14,
-                                          fontFamily: 'Open Sans',
-                                          height:
-                                              1.43, // lineHeight can be set using height (20px / 14px ≈ 1.43)
+                                        const SizedBox(
+                                            height:
+                                                5), // Added space between items
+                                        Text(
+                                          "Phone: ${data.phone}",
+                                          textAlign: TextAlign.left,
+                                          style: const TextStyle(
+                                            color: Color(0xFF030303),
+                                            fontSize: 14,
+                                            fontFamily: 'Open Sans',
+                                            height: 1.43,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(
-                                  height: 30.0,
-                                ),
-                                Container(
-                                  width: 343,
-                                  height: 248,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFF1F1F1),
-                                    borderRadius: BorderRadius.circular(24),
+                                  const SizedBox(height: 30.0),
+                                  Container(
+                                    width: double.infinity,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 16), // Added margin
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 30,
+                                        vertical: 20), // Increased padding
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFF1F1F1),
+                                      borderRadius: BorderRadius.circular(24),
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        restuarntimage(rest.id),
+                                        const Text(
+                                          "Restaurant Information",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            color: Color(0xFF030303),
+                                            fontSize: 16,
+                                            fontFamily: 'Open Sans',
+                                            fontWeight: FontWeight.w700,
+                                            height: 1.5,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
+                                        // Added space between title and content
+                                        Text(
+                                          "Restaurant Name: ${rest.name}",
+                                          textAlign: TextAlign.left,
+                                          style: const TextStyle(
+                                            color: Color(0xFF030303),
+                                            fontSize: 14,
+                                            fontFamily: 'Open Sans',
+                                            height: 1.43,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                            height:
+                                                5), // Added space between items
+                                        Text(
+                                          "Address: ${rest.location}",
+                                          textAlign: TextAlign.left,
+                                          style: const TextStyle(
+                                            color: Color(0xFF030303),
+                                            fontSize: 14,
+                                            fontFamily: 'Open Sans',
+                                            height: 1.43,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                            height:
+                                                5), // Added space between items
+                                        Text(
+                                          "Cuisine Type: ${rest.type}",
+                                          textAlign: TextAlign.left,
+                                          style: const TextStyle(
+                                            color: Color(0xFF030303),
+                                            fontSize: 14,
+                                            fontFamily: 'Open Sans',
+                                            height: 1.43,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  child: Column(
-                                    children: [
-                                      const Text(
-                                        "Restaurant Information",
-                                        style: TextStyle(
-                                          color: Color(0xFF030303),
-                                          fontSize: 16,
-                                          fontFamily: 'Open Sans',
-                                          fontWeight: FontWeight
-                                              .w700, // 700 corresponds to FontWeight.bold
-                                          height:
-                                              1.5, // lineHeight can be set using height
+
+                                  const SizedBox(height: 15.0),
+                                  // Additional widgets if needed...
+
+                                  SizedBox(
+                                    width: 350.0,
+                                    child: ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pushNamed('/update');
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8),
+                                          fixedSize: const Size(295, 56),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                          ),
+                                          backgroundColor:
+                                              const Color(0xFF4a75a5),
                                         ),
-                                      ),
-                                      Text(
-                                        "Restaurant Name:${rest.name}",
-                                        style: const TextStyle(
-                                          color: Color(0xFF030303),
-                                          fontSize: 14,
-                                          fontFamily: 'Open Sans',
-                                          height:
-                                              1.43, // lineHeight can be set using height (20px / 14px ≈ 1.43)
-                                        ),
-                                      ),
-                                      Text(
-                                        "Address:${rest.location}",
-                                        style: const TextStyle(
-                                          color: Color(0xFF030303),
-                                          fontSize: 14,
-                                          fontFamily: 'Open Sans',
-                                          height:
-                                              1.43, // lineHeight can be set using height (20px / 14px ≈ 1.43)
-                                        ),
-                                      ),
-                                      Text(
-                                        "Cusine Type:${rest.type}",
-                                        style: const TextStyle(
-                                          color: Color(0xFF030303),
-                                          fontSize: 14,
-                                          fontFamily: 'Open Sans',
-                                          height:
-                                              1.43, // lineHeight can be set using height (20px / 14px ≈ 1.43)
-                                        ),
-                                      ),
-                                    ],
+                                        child: DefaultTextStyle.merge(
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          child: const Text("Edit Profile"),
+                                        )),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 300.0,
-                                  child: ElevatedButton(
-                                      onPressed: () {
-                                        Navigator.of(context)
-                                            .pushNamed('/update');
-                                      },
+                                  const SizedBox(
+                                    height: 15.0,
+                                  ),
+                                  SizedBox(
+                                    width: 350.0,
+                                    child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 8),
-                                        fixedSize: const Size(295, 56),
+                                        fixedSize: const Size(325, 56),
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(24),
+                                              BorderRadius.circular(15),
                                         ),
-                                        backgroundColor:
-                                            const Color(0xFF4a75a5),
+                                        backgroundColor: const Color(
+                                            0xFF1578E6), // Background color
+                                        elevation: 0, // Remove shadow
                                       ),
-                                      child: DefaultTextStyle.merge(
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        child: const Text("Edit Profile"),
-                                      )),
-                                ),
-                                const SizedBox(
-                                  height: 15.0,
-                                ),
-                                SizedBox(
-                                  width: 300.0,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8),
-                                      fixedSize: const Size(295, 56),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(24),
+                                      onPressed: () async {
+                                        await storage.deleteAll();
+                                        widget.onLogout();
+                                      },
+                                      child: const Text(
+                                        "Log out",
+                                        style: TextStyle(color: Colors.white),
                                       ),
-                                      backgroundColor: const Color(
-                                          0xFF1578E6), // Background color
-                                      elevation: 0, // Remove shadow
                                     ),
-                                    onPressed: () async {
-                                      await storage.deleteAll();
-                                      widget.onLogout();
-                                    },
-                                    child: const Text(
-                                      "Log out",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                        } else {
-                          return const Text('Unexpected error occurred'); //
-                        }
-                      });
-
-                 
-                } else {
-                  return const Text(
-                      'Unexpected error occurred'); // Handle the case where there's no data
-                }
-              },
-            );
-          }
-        },
+                                  )
+                                ],
+                              ),
+                            );
+                          } else {
+                            return const Text('Unexpected error occurred'); //
+                          }
+                        });
+                  } else {
+                    return const Text(
+                        'Unexpected error occurred'); // Handle the case where there's no data
+                  }
+                },
+              );
+            }
+          },
+        ),
       ),
     );
   }

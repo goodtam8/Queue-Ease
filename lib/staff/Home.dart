@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/Personal.dart';
+import 'package:fyp_mobile/property/add_data.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
+import 'package:fyp_mobile/property/singleton/QueueService.dart';
 import 'package:fyp_mobile/property/singleton/RestuarantService.dart';
 import 'package:fyp_mobile/property/singleton/weather.dart';
 import 'package:fyp_mobile/property/timetable.dart';
@@ -16,7 +19,6 @@ import 'package:fyp_mobile/property/icon.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
-
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -25,9 +27,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late Future<String?> _tokenValue;
-  final Restuarantservice service=Restuarantservice();
+  final QueueService queueService = QueueService();
 
+  late Future<String?> _tokenValue;
+  final Restuarantservice service = Restuarantservice();
+  Uint8List? _image;
   String timeformatting(DateTime now) {
     late String day;
     late String month;
@@ -45,6 +49,68 @@ class _HomeState extends State<Home> {
     String formatted = now.year.toString() + month + day;
 
     return formatted;
+  }
+
+  Future<void> getImage(String id) async {
+    String url = await StoreData().getImageUrl(id);
+    if (url != "error") {
+      setState(() async {
+        _image = await fetchImageAsUint8List(url);
+      });
+    }
+  }
+
+  Future<Uint8List?> imagenewget(String id) async {
+    String url = await StoreData().getImageUrl(id);
+    if (url != "error") {
+      Uint8List? img = await fetchImageAsUint8List(url);
+      return img;
+    }
+    return null;
+  }
+
+  Widget avatar(String oid) {
+    return FutureBuilder(
+        future: imagenewget(oid),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // Show a loading indicator while waiting
+          } else if (snapshot.hasError) {
+            print('hello there, there is where the error occur');
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            Uint8List imgdata = snapshot.data;
+
+            return imgdata != null
+                ? CircleAvatar(
+                    radius: 64,
+                    backgroundImage: MemoryImage(imgdata),
+                  )
+                : const CircleAvatar(
+                    radius: 64,
+                    backgroundImage: AssetImage('assets/user.png'),
+                  );
+          } else {
+            return Text('Error: An unexpected error occured');
+          }
+        });
+  }
+
+  Future<Uint8List?> fetchImageAsUint8List(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Convert the response body to Uint8List
+        return response.bodyBytes;
+      } else {
+        print('Failed to load image: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching image: $e');
+      return null;
+    }
   }
 
   Widget custombutton() {
@@ -93,8 +159,8 @@ class _HomeState extends State<Home> {
     _tokenValue = storage.read(key: 'jwt');
     super.initState();
   }
-  final weather = Weather();
 
+  final weather = Weather();
 
   Future<personal> getuserinfo(String objectid) async {
     var response = await http.get(
@@ -103,8 +169,6 @@ class _HomeState extends State<Home> {
 
     return parsepersonal(response.body);
   }
-
-
 
   Future<void> _refresh() {
     setState(() {
@@ -177,9 +241,26 @@ class _HomeState extends State<Home> {
             return Text('Error: ${snapshot.error}');
           } else if (snapshot.hasData) {
             personal person = snapshot.data!;
-            return Text(
-              person.name,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+
+            return Row(
+              children: [
+                Stack(
+                  children: [avatar(oid)],
+                ),
+                const Padding(padding: EdgeInsets.all(8)),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    mornoraft(),
+                    Text(
+                      person.name,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    resttoken()
+                  ],
+                ),
+              ],
             );
           } else {
             return Text("an unexpected error occured");
@@ -272,15 +353,12 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.white,
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            mornoraft(),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Row(
               children: [
                 token(),
               ],
-            ),
-            Row(
-              children: [resttoken()],
             ),
             Row(
               children: [
@@ -294,6 +372,9 @@ class _HomeState extends State<Home> {
                 custombutton()
               ],
             ),
+            SizedBox(
+              height: 15.0,
+            ),
             Center(
               child: Container(
                 width: 343.0,
@@ -303,8 +384,8 @@ class _HomeState extends State<Home> {
                   borderRadius: BorderRadius.circular(24.0),
                 ),
                 child: const Padding(
-                  padding:
-                      EdgeInsets.all(16.0), // Optional padding for better layout
+                  padding: EdgeInsets.all(
+                      16.0), // Optional padding for better layout
                   child: Column(
                     crossAxisAlignment:
                         CrossAxisAlignment.start, // Aligns children to the left

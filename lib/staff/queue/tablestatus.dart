@@ -221,8 +221,7 @@ class _Tablestate extends State<Tablestatus> {
                 style: const TextStyle(
                   color: Color(0xFF919191), // Similar to '#919191'
                   fontSize: 14, // Font size in pixels
-                  fontFamily:
-                      'Source Sans Pro', 
+                  fontFamily: 'Source Sans Pro',
                   height: 1.14, // Line height (16px / 14px)
                 ),
               )
@@ -249,15 +248,17 @@ class _Tablestate extends State<Tablestatus> {
           (i + 3 < menulistcard.length) ? i + 3 : menulistcard.length;
       List<Widget> rowItems = menulistcard.sublist(i, endIndex);
 
-      // Create a row with the current batch of items
-      rows.add(Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        // Adjust alignment as needed
-        children: rowItems,
+      // Wrap each row in a Padding widget to add spacing between rows
+      rows.add(Padding(
+        padding: const EdgeInsets.only(bottom: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: rowItems,
+        ),
       ));
     }
 
-    // Return a column containing all the rows
+    // Return a column containing all the rows plus additional widgets if necessary
     return Column(
       children: [
         Column(
@@ -350,9 +351,7 @@ class _Tablestate extends State<Tablestatus> {
 
   Widget disablebutton() {
     return ElevatedButton(
-      onPressed: () {
-       
-      },
+      onPressed: () {},
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         shape: RoundedRectangleBorder(
@@ -367,8 +366,7 @@ class _Tablestate extends State<Tablestatus> {
         style: const TextStyle(
           color: Colors.white,
           fontSize: 16,
-          fontFamily:
-              'Source Sans Pro', 
+          fontFamily: 'Source Sans Pro',
           fontWeight: FontWeight.w600,
           height: 1.19, // Line height (19px / 16px)
         ),
@@ -379,7 +377,6 @@ class _Tablestate extends State<Tablestatus> {
   Widget ablebutton(String name) {
     return ElevatedButton(
       onPressed: () async {
-      
         createqueue(name);
       },
       style: ElevatedButton.styleFrom(
@@ -396,8 +393,7 @@ class _Tablestate extends State<Tablestatus> {
         style: const TextStyle(
           color: Colors.white,
           fontSize: 16,
-          fontFamily:
-              'Source Sans Pro', 
+          fontFamily: 'Source Sans Pro',
           fontWeight: FontWeight.w600,
           height: 1.19, // Line height (19px / 16px)
         ),

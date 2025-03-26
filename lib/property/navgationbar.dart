@@ -89,7 +89,7 @@ class _NavigationState extends State<Navigation> {
           });
         },
         items: [
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
           ),
@@ -102,7 +102,7 @@ class _NavigationState extends State<Navigation> {
             icon: Icon(userRole == "staff" ? Icons.list : Icons.restaurant),
             label: userRole == "staff" ? 'Table Status' : 'Restaurant',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.account_box),
             label: 'Profile',
           ),

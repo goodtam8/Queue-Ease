@@ -173,7 +173,7 @@ class _QueconditionState extends State<Quecondition> {
                 onPressed: () {
                   Navigator.of(context).pushNamed('/qrscan');
                 },
-                child: Text(
+                child: const Text(
                   "Scan the qr code ",
                   style: TextStyle(color: Colors.white),
                 ))
