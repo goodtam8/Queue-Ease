@@ -17,34 +17,29 @@ class _AnnouncementState extends State<Announcement> {
   TextEditingController title = TextEditingController();
   TextEditingController content = TextEditingController();
   Widget inputtext(TextEditingController control, String field) {
-    return TextFormField(
-      validator: (value) {
-        if (value!.isEmpty) {
-          return 'Please enter your $field'; // Validation error message
-        }
-        return null; // Return null if the input is valid
-      },
-      controller: control,
-      decoration: InputDecoration(
-        hintText: "Enter your $field", border: const OutlineInputBorder(),
-
-        filled: true,
-        fillColor: const Color(0xFFF1F1F1), // Background color
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8), // Padding
-        hintStyle: const TextStyle(
-          color: Color(0xFF94A3B8), // Hint text color
-          fontSize: 14, // Font size
-          fontFamily: 'Source Sans Pro', // Font family
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        validator: (value) {
+          if (value!.isEmpty) {
+            return 'Please enter your $field'; // Validation error message
+          }
+          return null; // Return null if the input is valid
+        },
+        controller: control,
+        decoration: InputDecoration(
+          hintText: "Enter your $field",
+          border: const OutlineInputBorder(),
         ),
+        style: const TextStyle(
+          fontSize: 14,
+          fontFamily: 'Source Sans Pro',
+          color: Colors.black, // Text color
+          height: 1.0, // Line height
+        ),
+        cursorColor: Colors.black,
+        maxLines: 8, // Cursor color
       ),
-      style: const TextStyle(
-        fontSize: 14,
-        fontFamily: 'Source Sans Pro',
-        color: Colors.black, // Text color
-        height: 1.0, // Line height
-      ),
-      cursorColor: Colors.black,
-      maxLines: 8, // Cursor color
     );
   }
 
@@ -77,6 +72,7 @@ class _AnnouncementState extends State<Announcement> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: const Topbar(),
       body: Form(
         key: _formKey,
@@ -102,9 +98,6 @@ class _AnnouncementState extends State<Announcement> {
               height: 8.0,
             ),
             inputtext(content, "Content"),
-            ElevatedButton(onPressed: (){
-              Navigator.pushNamed(context, '/list');
-            }, child: const Text("Notilist"))
           ],
         ),
       ),

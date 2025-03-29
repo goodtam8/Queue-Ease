@@ -170,15 +170,15 @@ class _LoginState extends State<Login> {
             decoration: InputDecoration(
               suffixIcon: isPassword ? TogglePassword() : null,
               hintText: "Enter your $field",
-              border: const OutlineInputBorder(),
               filled: true,
-              fillColor: const Color(0xFFF1F1F1), // Background color
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 8), // Padding
+              fillColor: const Color(0xFFF1F1F1),
+              border: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
               hintStyle: const TextStyle(
-                color: Color(0xFF94A3B8), // Hint text color
-                fontSize: 14, // Font size
-                fontFamily: 'Source Sans Pro', // Font family
+                color: Color(0xFF919191),
+                fontSize: 16,
+                fontFamily: 'Source Sans Pro',
+                height: 29 / 16, // lineHeight
               ),
             ),
             style: const TextStyle(

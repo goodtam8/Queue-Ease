@@ -5,6 +5,7 @@ import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/Personal.dart';
 import 'package:fyp_mobile/property/add_data.dart';
 import 'package:fyp_mobile/property/navgationbar.dart';
+import 'package:fyp_mobile/property/queue.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/singleton/QueueService.dart';
 import 'package:fyp_mobile/property/singleton/RestuarantService.dart';
@@ -229,6 +230,32 @@ class _HomeState extends State<Home> {
         });
   }
 
+  Widget queueget() {
+    return FutureBuilder<String?>(
+        future: _tokenValue,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/update');
+                },
+                child: const Text("Update"),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            print("hi there is the error occur");
+            print(snapshot.error);
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            Map<String, dynamic> decodedToken =
+                JwtDecoder.decode(snapshot.data as String);
+            String oid = decodedToken["_id"].toString();
+            return queuedet(oid);
+          }
+        });
+  }
+
   Widget staffinfo(String oid) {
     return FutureBuilder(
         future:
@@ -318,6 +345,68 @@ class _HomeState extends State<Home> {
         });
   }
 
+  Widget queuedet(String oid) {
+    return FutureBuilder<Restaurant>(
+        future: service.getrestaurant(oid),
+        builder: (BuildContext context, AsyncSnapshot<Restaurant> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // Show a loading indicator while waiting
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else if (snapshot.hasData) {
+            Restaurant table = snapshot.data!;
+
+            return detail(table.name);
+          } else {
+            return const Text('Unexpected error occurred');
+          }
+        });
+  }
+
+  Widget detail(String name) {
+    return FutureBuilder<Queueing>(
+      future: queueService.queuedetail(name),
+      builder: (BuildContext context, AsyncSnapshot<Queueing> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+              child:
+                  CircularProgressIndicator()); // Center the loading indicator
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else if (snapshot.hasData) {
+          Queueing queueing = snapshot.data!;
+
+          // Ensure currentPosition is within bounds
+          if (queueing.currentPosition < 0 ||
+              queueing.currentPosition >= queueing.queueArray.length) {
+            return const Text('Invalid current position');
+          }
+
+          return Column(
+            children: [
+              const Text(
+                "Queue Number",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
+                ),
+              ),
+              SizedBox(height: 8.0),
+
+              for (int i = queueing.currentPosition + 1;
+                  i < queueing.queueArray.length;
+                  i++)
+                Text(
+                    "Queue Number: ${i}"), // Generate a Text widget for each queue number
+            ],
+          );
+        } else {
+          return const Text('Unexpected error occurred');
+        }
+      },
+    );
+  }
+
   late int temperature;
   Widget restaurantget(String oid) {
     return FutureBuilder<Restaurant>(
@@ -372,7 +461,7 @@ class _HomeState extends State<Home> {
                 custombutton()
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 15.0,
             ),
             Center(
@@ -383,27 +472,13 @@ class _HomeState extends State<Home> {
                   color: Color(0xFFF1F1F1),
                   borderRadius: BorderRadius.circular(24.0),
                 ),
-                child: const Padding(
+                child: Padding(
                   padding: EdgeInsets.all(
                       16.0), // Optional padding for better layout
                   child: Column(
                     crossAxisAlignment:
                         CrossAxisAlignment.start, // Aligns children to the left
-                    children: [
-                      Text(
-                        "Queue Number",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                      SizedBox(height: 8.0), // Adds space between the texts
-                      Text(
-                        "It is hardcode. Queue Number: 100",
-                        textAlign: TextAlign
-                            .start, // Ensures text is aligned to the start
-                      ),
-                    ],
+                    children: [queueget()],
                   ),
                 ),
               ),
@@ -419,19 +494,31 @@ class _HomeState extends State<Home> {
                   color: const Color(0xFFF1F1F1),
                   borderRadius: BorderRadius.circular(24.0),
                 ),
-                child: Column(
-                  children: [
-                    const Text(
-                      "Today's Weather",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    weatherforecast(),
-                    const SizedBox(height: 10.0),
-                    weatherwarning(),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                  ],
+                child: Padding(
+                  padding: EdgeInsets.all(16.0), // Optional
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Today's Weather",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: weatherforecast(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: weatherwarning(),
+                      ),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
