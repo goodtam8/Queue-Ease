@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -38,12 +39,14 @@ class _LoginState extends State<Login> {
       await storage.write(key: 'jwt', value: response.body);
       await storage.write(key: 'role', value: "staff");
 
-      String? token = await storage.read(key: 'jwt');
-      print("$token");
-      return (response.statusCode);
+      return response.statusCode;
     } catch (e) {
       print(e);
-      return e.toString();
+      // Differentiate connection errors from other exceptions
+      if (e is SocketException) {
+        return 'SERVER_UNAVAILABLE';
+      }
+      return 'ERROR: ${e.toString()}';
     }
   }
 
@@ -98,7 +101,7 @@ class _LoginState extends State<Login> {
               fontSize: 14,
               fontFamily: 'Source Sans Pro',
               color: Colors.white,
-              height: 1.43, // line height equivalent
+              height: 1.43,
             ),
           ),
           onPressed: () async {
@@ -108,7 +111,35 @@ class _LoginState extends State<Login> {
             } else {
               response = await login();
             }
-            if (response == 401) {
+
+            if (response == 'SERVER_UNAVAILABLE') {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                content: Container(
+                  padding: const EdgeInsets.all(16),
+                  height: 90,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Colors.red,
+                  ),
+                  child: const Row(children: [
+                    SizedBox(width: 48.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                              "Cannot connect to server. Please try again later.")
+                        ],
+                      ),
+                    ),
+                  ]),
+                ),
+              ));
+            } else if (response == 401) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   behavior: SnackBarBehavior.floating,
                   backgroundColor: Colors.transparent,
@@ -121,9 +152,7 @@ class _LoginState extends State<Login> {
                       color: Colors.red,
                     ),
                     child: const Row(children: [
-                      SizedBox(
-                        width: 48.0,
-                      ),
+                      SizedBox(width: 48.0),
                       Expanded(
                         child: Column(
                           children: [
@@ -134,7 +163,33 @@ class _LoginState extends State<Login> {
                       ),
                     ]),
                   )));
-            } else {
+            } else if (response is String && response.startsWith('ERROR:')) {
+              // Handle other errors
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                content: Container(
+                  padding: const EdgeInsets.all(16),
+                  height: 90,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Colors.red,
+                  ),
+                  child: Row(children: [
+                    const SizedBox(width: 48.0),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Text("An error occurred. Please try again.")
+                        ],
+                      ),
+                    ),
+                  ]),
+                ),
+              ));
+            } else if (response == 200) {
+              // Only redirect on successful authentication
               widget.onLogin();
             }
           },
@@ -144,7 +199,7 @@ class _LoginState extends State<Login> {
               fontSize: 14,
               fontFamily: 'Source Sans Pro',
               color: Colors.white,
-              height: 1.43, // line height equivalent
+              height: 1.43,
             ),
           )),
     );
