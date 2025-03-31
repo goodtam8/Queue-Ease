@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:fyp_mobile/login.dart';
+import 'package:fyp_mobile/property/customer_count.dart';
 import 'package:fyp_mobile/property/payment_data.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/singleton/RestuarantService.dart';
@@ -20,22 +21,142 @@ class Analytics extends StatefulWidget {
 class _AnalyticsState extends State<Analytics> {
   late Future<List<Map<String, dynamic>>> _paymentDataFuture;
   final Restuarantservice service = Restuarantservice();
+  Future<List<DailyCustomerCount>> fetchDailyCustomerCounts() async {
+    final response = await http.get(
+        Uri.parse("http://10.0.2.2:3000/api/record/daily-customer-counts"),
+        headers: {'Content-Type': 'application/json'});
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+      return data.map((item) => DailyCustomerCount.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load daily customer counts');
+    }
+  }
+
+  Widget buildBarChart(List<DailyCustomerCount> data) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SizedBox(
+        width: 350,
+        height: 250,
+        child: BarChart(
+          BarChartData(
+            alignment: BarChartAlignment.spaceAround,
+            maxY: data.isEmpty
+                ? 10
+                : (data
+                        .map((e) => e.count.toDouble())
+                        .reduce((a, b) => a > b ? a : b) *
+                    1.2),
+            barGroups: data.asMap().entries.map((entry) {
+              int index = entry.key;
+              DailyCustomerCount dataPoint = entry.value;
+              return BarChartGroupData(
+                x: index,
+                barRods: [
+                  BarChartRodData(
+                    toY: dataPoint.count.toDouble(),
+                    color: Colors.blue,
+                    width: 16,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ],
+              );
+            }).toList(),
+            titlesData: FlTitlesData(
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  getTitlesWidget: (value, meta) {
+                    final index = value.toInt();
+                    if (index >= 0 && index < data.length) {
+                      final date = data[index].date;
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          '${date.month}/${date.day}',
+                          style: TextStyle(fontSize: 10.0),
+                        ),
+                      );
+                    }
+                    return const Text('');
+                  },
+                ),
+              ),
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 35, // Provide more space for labels
+                  interval: 1, // Force interval between labels to be 1
+                  getTitlesWidget: (value, meta) {
+                    // Only show labels for integer values
+                    if (value == value.roundToDouble()) {
+                      return Text(
+                        value.toInt().toString(),
+                        style: TextStyle(fontSize: 10.0),
+                      );
+                    }
+                    return const Text('');
+                  },
+                ),
+              ),
+              topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              rightTitles:
+                  AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget dailyCustomerCountChart() {
+    return FutureBuilder<List<DailyCustomerCount>>(
+      future: fetchDailyCustomerCounts(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No customer data available'));
+        } else {
+          return buildBarChart(snapshot.data!);
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Topbar(),
-      body: Center(
-          child: Column(
-        children: [
-          Text("The last 7 days of Transaction Record"),
-          linechart(),
-          SizedBox(
-            height: 10.0,
-          ),
-          resttoken()
-        ],
-      )),
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        child: Center(
+            child: Column(
+          children: [
+            Text("The last 7 days of Transaction Record"),
+            linechart(),
+            SizedBox(
+              height: 10.0,
+            ),
+            resttoken(),
+            SizedBox(
+              height: 50,
+            ),
+            const Text(
+              "Daily Customer Count",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            dailyCustomerCountChart(),
+          ],
+        )),
+      ),
       backgroundColor: Colors.white,
     );
   }
@@ -194,7 +315,7 @@ class _AnalyticsState extends State<Analytics> {
           style: TextStyle(
               fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10.0,
         ),
         SizedBox(

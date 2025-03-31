@@ -57,6 +57,7 @@ dependencies:
   dash_chat_2: ^0.0.21
   mockito: ^5.4.4
   fl_chart: ^0.69.2
+  flutter_flow_chart: ^3.2.3
 
 dev_dependencies:
   flutter_test:

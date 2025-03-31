@@ -122,8 +122,7 @@ class _EditstaffprofileState extends State<Editstaffprofile> {
                     } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     } else if (snapshot.hasData) {
-                      personal data =
-                          snapshot.data!; 
+                      personal data = snapshot.data!;
                       staff_id.text = data.sid.toString();
                       password.text = data.pw.toString();
                       email.text = data.email.toString();
@@ -185,33 +184,8 @@ class _EditstaffprofileState extends State<Editstaffprofile> {
                                       ),
                                       inputtextfield(
                                           phone_num, 'Phone Number', false),
-                                      const Text(
-                                        'Gender',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
                                       const SizedBox(
-                                        height: 15.0,
-                                      ),
-                                      DropdownButton<String>(
-                                        isExpanded:
-                                            true, // Make the dropdown take the full width
-                                        value: currentOption,
-                                        hint: Text('Select party size'),
-                                        items: gender.map((String size) {
-                                          return DropdownMenuItem<String>(
-                                            value: size,
-                                            child: Text(size),
-                                          );
-                                        }).toList(),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            currentOption =
-                                                newValue!; // Update the selected size
-                                          });
-                                        },
-                                        underline:
-                                            SizedBox(), // Hide the underline
+                                        height: 50,
                                       ),
                                       Styled_button(
                                           onPressed: () async {
