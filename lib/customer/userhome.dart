@@ -120,51 +120,97 @@ class _Homestate extends State<Userhome> {
     int count = 0;
     DateTime now = DateTime.now().toUtc();
     for (var queue in data) {
-      if (count == 2) {
-        break;
-      }
-      count++;
-      queuecard.add(Container(
-        width: 400,
-        height: 100,
-        decoration: BoxDecoration(
-          color: const Color(0xFFF1F1F1),
-          borderRadius: BorderRadius.circular(24),
-        ),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Text("$now"),
-                  SizedBox(
-                    width: 10.0,
-                  ),
-                  buttonrest(),
-                ],
-              ),
+      //just print the item
+      for (var item in queue.queueArray) {
+        if (item.customerId == oid && item.checkInTime == null) {
+          queuecard.add(Container(
+            width: 400,
+            height: 100,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF1F1F1),
+              borderRadius: BorderRadius.circular(24),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Text(
-                    "hi ${queue.restaurantName}",
-                    style: const TextStyle(
-                      color: Color(0xFF030303),
-                      fontSize: 14,
-                      fontFamily: 'Source Sans Pro',
-                      fontWeight: FontWeight.w700,
-                      height:
-                          1.29, // This is equivalent to lineHeight of 18px with fontSize 14px
-                    ),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Text("$now"),
+                      const SizedBox(
+                        width: 10.0,
+                      ),
+                      buttonrest()
+                    ],
                   ),
-                ],
-              ),
-            )
-          ],
-        ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        "hi ${queue.restaurantName}",
+                        style: const TextStyle(
+                          color: Color(0xFF030303),
+                          fontSize: 14,
+                          fontFamily: 'Source Sans Pro',
+                          fontWeight: FontWeight.w700,
+                          height:
+                              1.29, // This is equivalent to lineHeight of 18px with fontSize 14px
+                        ),
+                      ),
+                      const Spacer(),
+                      ElevatedButton(
+                        onPressed: () async {
+                          // Make this async
+                          final result = await Navigator.pushNamed(
+                            context,
+                            '/qr2',
+                            arguments: {
+                              'restaurant': queue.restaurantName,
+                              'id': oid,
+                            },
+                          );
+
+                          if (result == true) {
+                            setState(() {
+                              // Refresh your data here
+                              // For example: fetch the latest queue data
+                            });
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1578E6),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8), // Horizontal padding
+
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(24), // Border radius
+                          ),
+                          elevation: 0, // No shadow
+                        ),
+                        child: const Text(
+                          "View",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontFamily: 'Source Sans Pro',
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )); // Your code here
+        }
+      }
+    }
+    if (queuecard.isEmpty) {
+      queuecard.add(const Center(
+        child: Text('You have not queued in a restaurant yet'),
       ));
     }
 

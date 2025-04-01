@@ -154,13 +154,12 @@ class _MyqueueState extends State<Myqueue> {
           )); // Your code here
         }
       }
-      if (queuecard.isEmpty) {
-        queuecard.add(const Center(
-          child: Text('You have not queued in a restaurant yet'),
-        ));
-      }
     }
-
+    if (queuecard.isEmpty) {
+      queuecard.add(const Center(
+        child: Text('You have not queued in a restaurant yet'),
+      ));
+    }
     return Column(
       children: queuecard,
     );
