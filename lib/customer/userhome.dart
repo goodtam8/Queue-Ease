@@ -122,7 +122,7 @@ class _Homestate extends State<Userhome> {
     for (var queue in data) {
       //just print the item
       for (var item in queue.queueArray) {
-        if (item.customerId == oid && item.checkInTime == null) {
+        if (item.customerId == oid && item.checkInTime == DateTime(1970)) {
           queuecard.add(Container(
             width: 400,
             height: 100,
@@ -543,6 +543,9 @@ class _Homestate extends State<Userhome> {
             Text(message['body'] ?? 'No Title'),
           ])));
     }
+    if (noticard.isEmpty) {
+      noticard.add(const Center(child: Text('No messages found')));
+    }
 
     return Row(children: noticard);
   }
@@ -556,7 +559,7 @@ class _Homestate extends State<Userhome> {
         color: Color(0xFF1578E6),
         borderRadius: BorderRadius.circular(24),
       ),
-      child: Center(
+      child: const Center(
           child: Text(
         "Restaurant",
         style: TextStyle(color: Colors.white),
@@ -571,7 +574,7 @@ class _Homestate extends State<Userhome> {
       appBar: Topbar(),
       body: RefreshIndicator(
         onRefresh: () async {
-          await Future.delayed(Duration(seconds: 1));
+          await Future.delayed(const Duration(seconds: 1));
           setState(() {
             _tokenValue =
                 storage.read(key: 'jwt'); // Ensure this triggers a rebuild
@@ -619,11 +622,11 @@ class _Homestate extends State<Userhome> {
               ),
               const SizedBox(height: 10.0),
               debugtoken2(),
-              SizedBox(
+              const SizedBox(
                 height: 10.0,
               ),
               fastlunch(),
-              SizedBox(
+              const SizedBox(
                 height: 10.0,
               ),
               Center(child: button("Ask your AI assistant"))

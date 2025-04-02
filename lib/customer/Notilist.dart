@@ -11,7 +11,7 @@ class Notilist extends StatefulWidget {
 }
 
 class _NotilistState extends State<Notilist> {
-List<String> _messages = [];
+  List<String> _messages = [];
 
   @override
   void initState() {
@@ -31,8 +31,13 @@ List<String> _messages = [];
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Messages'),
+        title: Text(
+          'Messages',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Color(0xFF1578E6),
       ),
+      backgroundColor: Colors.white,
       body: _messages.isEmpty
           ? Center(child: Text('No messages found.'))
           : ListView.builder(
@@ -48,4 +53,3 @@ List<String> _messages = [];
     );
   }
 }
-

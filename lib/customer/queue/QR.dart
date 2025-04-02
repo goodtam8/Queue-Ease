@@ -73,6 +73,35 @@ class _QrState extends State<Qr> {
         });
   }
 
+  // Added new homeButton widget
+  Widget homeButton() {
+    return ElevatedButton(
+      onPressed: () {
+        // Pop to return to the home screen
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        fixedSize: const Size(140, 40),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        backgroundColor: const Color(0xFF4CAF50), // Green color
+        elevation: 0,
+      ),
+      child: const Text(
+        "Back to Restuarnt List",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontFamily: 'Source Sans Pro',
+          fontWeight: FontWeight.w600,
+          height: 24 / 16,
+        ),
+      ),
+    );
+  }
+
   final QueueService queueService = QueueService();
 
   Widget queuecondition(String name) {
@@ -189,10 +218,16 @@ class _QrState extends State<Qr> {
       backgroundColor: Colors.white,
       appBar: Topbar(),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           PrettyQrView.data(data: qrdata!),
+          const SizedBox(height: 16), // Add spacing
           order(restName, id),
+          const SizedBox(height: 12), // Add spacing
           deletebutton(restName, id),
+          const SizedBox(height: 12), // Add spacing
+          homeButton(), // Added new home button
+          const SizedBox(height: 16), // Add spacing
           queuecondition(restName)
         ],
       ),

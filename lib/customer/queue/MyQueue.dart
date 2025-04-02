@@ -69,7 +69,7 @@ class _MyqueueState extends State<Myqueue> {
     for (var queue in data) {
       //just print the item
       for (var item in queue.queueArray) {
-        if (item.customerId == oid && item.checkInTime == null) {
+        if (item.customerId == oid && item.checkInTime == DateTime(1970)) {
           queuecard.add(Container(
             width: 400,
             height: 100,
