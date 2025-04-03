@@ -265,8 +265,8 @@ class _Tablestate extends State<Tablestatus> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: rows,
         ),
+        //need to fix bug
         buttondecide(data[0].belong),
-        Custom(data[0].belong)
       ],
     );
   }
@@ -341,12 +341,44 @@ class _Tablestate extends State<Tablestatus> {
             return Center(child: Text('Error: ${tableSnapshot.error}'));
           } else {
             if (tableSnapshot.data == true || full == false) {
-              return disablebutton();
+              return Column(
+                children: [disablebutton(), Custom(name)],
+              );
             } else {
-              return ablebutton(name);
+              return Column(
+                children: [
+                  ablebutton(name),
+                  disableCustom(),
+                ],
+              );
             }
           }
         });
+  }
+
+  Widget disableCustom() {
+    return ElevatedButton(
+      onPressed: () {},
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        backgroundColor: const Color(0xFF4A75A5)
+            .withOpacity(0.5), // Background color with opacity
+        elevation: 0, // No shadow
+      ),
+      child: const Text(
+        "Queue Condition",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 16,
+          fontFamily: 'Source Sans Pro',
+          fontWeight: FontWeight.w600,
+          height: 1.19, // Line height (19px / 16px)
+        ),
+      ),
+    );
   }
 
   Widget disablebutton() {
@@ -361,9 +393,9 @@ class _Tablestate extends State<Tablestatus> {
             .withOpacity(0.5), // Background color with opacity
         elevation: 0, // No shadow
       ),
-      child: Text(
+      child: const Text(
         "Create a queue",
-        style: const TextStyle(
+        style: TextStyle(
           color: Colors.white,
           fontSize: 16,
           fontFamily: 'Source Sans Pro',

@@ -372,9 +372,14 @@ class _HomeState extends State<Home> {
               child:
                   CircularProgressIndicator()); // Center the loading indicator
         } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
+          return Text('There is no queue current now');
         } else if (snapshot.hasData) {
           Queueing queueing = snapshot.data!;
+
+          // Check if queueArray is null
+          if (queueing.queueArray == null) {
+            return const Text('There is no queue current now');
+          }
 
           // Ensure currentPosition is within bounds
           if (queueing.currentPosition < 0 ||
@@ -391,7 +396,7 @@ class _HomeState extends State<Home> {
                   fontSize: 20.0,
                 ),
               ),
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
 
               for (int i = queueing.currentPosition + 1;
                   i < queueing.queueArray.length;
@@ -452,7 +457,7 @@ class _HomeState extends State<Home> {
             Row(
               children: [
                 const Text(
-                  "Currenent Queue",
+                  "Current Queue",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
                 ),
                 const SizedBox(
