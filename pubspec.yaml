@@ -58,6 +58,9 @@ dependencies:
   mockito: ^5.4.4
   fl_chart: ^0.69.2
   flutter_flow_chart: ^3.2.3
+  screenshot: ^3.0.0
+  share_plus: ^10.1.4
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:

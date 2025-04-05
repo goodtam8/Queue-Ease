@@ -1,5 +1,5 @@
 import 'dart:convert';
-// class diagram 
+// class diagram
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/property/order.dart';
 import 'package:fyp_mobile/property/topbar.dart';
@@ -15,7 +15,7 @@ class Previousorder extends StatefulWidget {
 class _PreviousorderState extends State<Previousorder> {
   Future<List<Order>> getorder(String rid) async {
     var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/receipt/${rid}/all'),
+        Uri.parse('http://10.0.2.2:3000/api/receipt/$rid/all'),
         headers: {'Content-Type': 'application/json'});
     final data = jsonDecode(response.body);
 
@@ -31,7 +31,7 @@ class _PreviousorderState extends State<Previousorder> {
           child: Container(
             margin: const EdgeInsets.only(top: 16, left: 16),
             width: 343,
-            height: 132,
+            height: 170,
             decoration: BoxDecoration(
               color: const Color(0xFFF1F1F1),
               borderRadius: BorderRadius.circular(24),
@@ -49,6 +49,17 @@ class _PreviousorderState extends State<Previousorder> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    for (int i = 0; i < restaurant.orderDetail.length; i++)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16),
+                        child: Text(
+                          restaurant.orderDetail[i].title,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      )
                   ],
                 ),
               ],

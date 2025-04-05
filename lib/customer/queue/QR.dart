@@ -90,7 +90,7 @@ class _QrState extends State<Qr> {
         elevation: 0,
       ),
       child: const Text(
-        "Back to Restuarnt List",
+        "Back to Restuarnt ",
         style: TextStyle(
           color: Colors.white,
           fontSize: 16,

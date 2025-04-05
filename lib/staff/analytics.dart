@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -10,6 +12,9 @@ import 'package:fyp_mobile/property/singleton/RestuarantService.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 
 class Analytics extends StatefulWidget {
   const Analytics({super.key});
@@ -20,6 +25,7 @@ class Analytics extends StatefulWidget {
 
 class _AnalyticsState extends State<Analytics> {
   late Future<List<Map<String, dynamic>>> _paymentDataFuture;
+  final ScreenshotController screenshotController = ScreenshotController();
   final Restuarantservice service = Restuarantservice();
   Future<List<DailyCustomerCount>> fetchDailyCustomerCounts() async {
     final response = await http.get(
@@ -137,7 +143,13 @@ class _AnalyticsState extends State<Analytics> {
         child: Center(
             child: Column(
           children: [
-            Text("The last 7 days of Transaction Record"),
+            Text(
+              "The last 7 days of Transaction Record",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             linechart(),
             SizedBox(
               height: 10.0,
@@ -424,7 +436,7 @@ class _AnalyticsState extends State<Analytics> {
                 spots: latestData.map((data) {
                   return FlSpot(
                     data['date'].millisecondsSinceEpoch.toDouble(),
-                    data['amount'].toDouble() / 100,
+                    data['amount'].toDouble(),
                   );
                 }).toList(),
                 isCurved: false,
