@@ -420,7 +420,7 @@ class _AnalyticsState extends State<Analytics> {
     });
 
     // Take the latest 5 entries
-    final latestData = filteredData.take(5).toList();
+    final latestData = filteredData.take(10).toList();
 
     print(latestData);
 
