@@ -27,14 +27,16 @@ class StripeService {
         String amo = mess['price'];
         amount += int.parse(amo);
       }
+      var restid = name;
+      //modify
       var rid = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/queue/$id/search/$name'),
+        Uri.parse('http://10.0.2.2:3000/api/queue/$id/search/$restid/pay'),
         headers: {'Content-Type': 'application/json'},
       );
       final message = jsonDecode(rid.body);
 
       Map<String, dynamic> data = {
-        "restaurantname": name,
+        "restaurantname": restid,
         "customerid": id,
         "orderdetail": cart,
         "amount": amount,
@@ -52,7 +54,7 @@ class StripeService {
           paymentSheetParameters: SetupPaymentSheetParameters(
               paymentIntentClientSecret: result,
               merchantDisplayName: "Hussain mustafa"));
-      await _processPayment(context, amount, name, id,message);
+      await _processPayment(context, amount, name, id, message);
     } catch (e) {
       print("hi there");
 
@@ -60,8 +62,8 @@ class StripeService {
     }
   }
 
-  Future<void> _processPayment(
-      BuildContext context, int amount, String name, String id,String rid) async {
+  Future<void> _processPayment(BuildContext context, int amount, String name,
+      String id, String rid) async {
     try {
       // trigger the post request for storing payment detail in mongo db
 
@@ -76,7 +78,7 @@ class StripeService {
           'amount': amount.toString(),
           'id': id,
           'restaurant': name,
-          'rid':rid
+          'rid': rid
           // Add more arguments as needed
         },
         // Pass the amount as an argument

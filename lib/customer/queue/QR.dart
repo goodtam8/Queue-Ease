@@ -42,7 +42,7 @@ class _QrState extends State<Qr> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => Order(
-                      restaurant: detail.name,
+                      restaurant: detail.id,
                       id: id,
                     ),
                   ),
@@ -209,7 +209,7 @@ class _QrState extends State<Qr> {
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)?.settings.arguments as Map;
 
-    final rest = args['restaurant'];
+    final rest = args['restaurant'];// change from here now is the name 
     final id = args['id'];
     qrdata = id;
     final restName = rest.name; // Extract the name from Restaurant object
