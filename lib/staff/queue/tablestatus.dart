@@ -476,10 +476,16 @@ class _Tablestate extends State<Tablestatus> {
   Widget Custom(String name) {
     return ElevatedButton(
       onPressed: () {
-        Navigator.of(context).pushNamed(
-          '/condition',
-          arguments: name,
-        );
+        Navigator.of(context)
+            .pushNamed('/condition', arguments: name)
+            .then((result) {
+          if (result == true) {
+            // Refresh state after queue closure
+            setState(() {
+              counter++; // Trigger UI update
+            });
+          }
+        });
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8),
