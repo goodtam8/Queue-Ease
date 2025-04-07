@@ -382,9 +382,11 @@ class _HomeState extends State<Home> {
           }
 
           // Ensure currentPosition is within bounds
-          if (queueing.currentPosition < 0 ||
+          if (queueing.currentPosition != 0 ||
               queueing.currentPosition >= queueing.queueArray.length) {
-            return const Text('Invalid current position');
+            return Text('Queue Number ${queueing.currentPosition}');
+          } else if (queueing.currentPosition == 0) {
+            return const Text('The queue have not start calling yet');
           }
 
           return Column(
