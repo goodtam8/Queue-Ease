@@ -82,7 +82,7 @@ class _QrState extends State<Qr> {
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        fixedSize: const Size(140, 40),
+        fixedSize: const Size(160, 40),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(24),
         ),
@@ -90,13 +90,12 @@ class _QrState extends State<Qr> {
         elevation: 0,
       ),
       child: const Text(
-        "Back to Restuarnt ",
+        "Back to Restuarant ",
         style: TextStyle(
           color: Colors.white,
           fontSize: 16,
           fontFamily: 'Source Sans Pro',
           fontWeight: FontWeight.w600,
-          height: 24 / 16,
         ),
       ),
     );
@@ -149,6 +148,7 @@ class _QrState extends State<Qr> {
     return ElevatedButton(
       onPressed: () async {
         await delete(name, id);
+        Navigator.of(context).popUntil((route) => route.isFirst);
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 8),

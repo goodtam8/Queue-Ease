@@ -30,12 +30,14 @@ class QueueItem {
   final dynamic numberOfPeople; // Can be int or String
   final int queueNumber;
   final DateTime checkInTime;
+  final dynamic children;
 
   const QueueItem({
     required this.customerId,
     required this.numberOfPeople,
     required this.queueNumber,
     required this.checkInTime,
+    required this.children,
   });
 
   factory QueueItem.fromJson(Map<String, dynamic> json) {
@@ -51,6 +53,7 @@ class QueueItem {
       numberOfPeople: json['numberOfPeople'], // This can be int or String
       queueNumber: json['queueNumber'] as int? ?? 0,
       checkInTime: checkInTime,
+      children: json['children'] ?? '', // Default to 0 if null
     );
   }
 }

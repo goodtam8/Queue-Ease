@@ -33,33 +33,54 @@ class _JoinState extends State<Join> {
     '3+',
   ];
   Future<dynamic> join(String restname, String objectid) async {
-    Map<String, dynamic> record = {
-      'customerId': objectid,
-      'numberOfPeople': _selectedSize,
-      'status': "waiting",
-      'name': restname
-    };
-
     try {
-      var order = await http.post(Uri.parse('http://10.0.2.2:3000/api/record'),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(record));
+      // First check if customer exists in the queue
+      final checkResponse = await http.get(
+        Uri.parse('http://10.0.2.2:3000/api/queue/$restname/check/$objectid'),
+      );
+
+      final checkData = jsonDecode(checkResponse.body);
+
+      if (checkResponse.statusCode == 200) {
+        if (checkData['exists'] == true) {
+          print(checkData['message']);
+          return checkData['message']; // Customer already exists
+        }
+      } else if (checkResponse.statusCode == 404) {
+        return checkData['message']; // Queue not found
+      }
+
+      // Proceed with joining queue if customer doesn't exist
+      Map<String, dynamic> record = {
+        'customerId': objectid,
+        'numberOfPeople': _selectedSize,
+        'status': "waiting",
+        'name': restname,
+        'children': _childrenSize,
+      };
+
+      var order = await http.post(
+        Uri.parse('http://10.0.2.2:3000/api/record'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(record),
+      );
 
       final rid = jsonDecode(order.body);
-      print(rid);
       Map<String, dynamic> data = {
         'customerId': objectid,
         'numberOfPeople': _selectedSize,
-        'rid': rid
+        'rid': rid,
+        'children': _childrenSize,
       };
+
       var response = await http.put(
-          Uri.parse('http://10.0.2.2:3000/api/queue/$restname/add'),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode(data));
+        Uri.parse('http://10.0.2.2:3000/api/queue/$restname/add'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(data),
+      );
 
       final message = jsonDecode(response.body);
-
-      return (message['message']);
+      return message['message'];
     } catch (e) {
       print(e);
       return e.toString();

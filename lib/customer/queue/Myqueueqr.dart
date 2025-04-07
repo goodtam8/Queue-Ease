@@ -85,6 +85,21 @@ class _Qr2State extends State<Qr2> {
     }
   }
 
+  int convertchildrentoint(String peopleString) {
+    switch (peopleString) {
+      case '0':
+        return 0; // or any other logic to represent this range
+      case '1':
+        return 1; // or any other logic to represent this range
+      case '2':
+        return 2; // or any other logic to represent this range
+      case '3+':
+        return 3; // can represent 7 or any logic you want for this case
+      default:
+        return 0; // Return 0 or handle the case when the string doesn't match any known case
+    }
+  }
+
   Widget queuecondition(String name, String id) {
     return FutureBuilder(
         future: queueService.queuedetail(name),
@@ -106,10 +121,12 @@ class _Qr2State extends State<Qr2> {
             Queueing data = snapshot.data!; // You now have your 'personal' data
             int position = data.currentPosition;
             String numberOfPeople = "";
+            String numofChildren = "";
             bool found = false; // Flag to track if a match is found
             for (int i = 0; i < data.queueArray.length; i++) {
               if (data.queueArray[i].customerId == id) {
                 numberOfPeople = data.queueArray[i].numberOfPeople;
+                numofChildren = data.queueArray[i].children;
                 found = true; // Set the flag to true if a match is found
                 break; // Exit the loop as we found the match
               }
@@ -120,8 +137,8 @@ class _Qr2State extends State<Qr2> {
               throw Exception(
                   "Queue Array has error: No matching customerId found.");
             }
-
             int peoplesize = convertPeopleStringToInt(numberOfPeople);
+            int child = convertchildrentoint(numofChildren);
 
             return Positioned(
               //modify
@@ -135,7 +152,7 @@ class _Qr2State extends State<Qr2> {
                 child: SizedBox(
                   child: Column(
                     children: [
-                      restuarantdet(data.currentPosition, name, 0,
+                      restuarantdet(data.currentPosition, name, child,
                           data.queueArray.length - position, peoplesize),
                       Text("Current Queue Number:${data.currentPosition}"),
                       Text(
@@ -169,6 +186,7 @@ class _Qr2State extends State<Qr2> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             Restaurant detail = snapshot.data!;
+
             return RegressionBuilder(
                 queuenumber, detail.numOfTable, child, peopleinqueue, people);
           }
