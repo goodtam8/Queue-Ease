@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/customer/queue/Menu.dart';
+import 'package:fyp_mobile/property/DineRecord.dart';
 import 'package:fyp_mobile/property/queue.dart';
 import 'package:fyp_mobile/property/restaurant.dart';
 import 'package:fyp_mobile/property/singleton/QueueService.dart';
@@ -232,6 +233,71 @@ class _Qr2State extends State<Qr2> {
     );
   }
 
+  Widget disabledelete() {
+    return ElevatedButton(
+      onPressed: null, // Button is disabled when onPressed is null
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.symmetric(horizontal: 8),
+        backgroundColor: Color(
+            0xFFB0BEC5), // Use a grey color to indicate the disabled state
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        elevation: 0, // No shadow for a flat appearance
+      ),
+      child: const Text(
+        "Leave Queue",
+        style: TextStyle(
+          fontSize: 16,
+          fontFamily: 'Source Sans Pro',
+          fontWeight: FontWeight.w600,
+          color: Colors.white70, // Faded text color for disabled state
+          height: 1.5, // Line height equivalent
+        ),
+      ),
+    );
+  }
+
+  Widget twocondition(String name, String id) {
+    return FutureBuilder(
+        future: checkinornot(name, id),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/update');
+                },
+                child: const Text("Update"),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            print("hi there is the error occur");
+            print(snapshot.error);
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            DineRecord detail = snapshot.data!;
+            if (detail.status == "waiting") {
+              return deletebutton(name, id);
+            } else {
+              return disabledelete();
+            }
+          }
+        });
+  }
+
+  Future<dynamic> checkinornot(String name, String id) async {
+    var search = await http.get(
+      Uri.parse('http://10.0.2.2:3000/api/queue/$id/search/$name'),
+      headers: {'Content-Type': 'application/json'},
+    );
+    final rid = jsonDecode(search.body);
+    final response =
+        await http.get(Uri.parse('http://10.0.2.2:3000/api/record/$rid'));
+
+    return DineRecord.fromJson(json.decode(response.body));
+  }
+
   Widget deletebutton(String name, String id) {
     return ElevatedButton(
       onPressed: () async {
@@ -337,7 +403,7 @@ class _Qr2State extends State<Qr2> {
               ),
             ),
             order(rest, id),
-            deletebutton(rest, id)
+            twocondition(rest, id)
           ],
         ),
       ),

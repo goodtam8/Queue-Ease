@@ -37,7 +37,7 @@ class _SucessfulscanState extends State<Sucessfulscan> {
                     size: 65.0,
                   )),
             ),
-            const Text("You have Successful check in",
+            const Text("User have Successful check in",
                 style: TextStyle(
                   color: Color(0xFF4A75A5), // Color in Flutter format
                   fontSize: 24,

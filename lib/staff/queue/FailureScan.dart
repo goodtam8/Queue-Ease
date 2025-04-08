@@ -38,12 +38,11 @@ class _FailureScanState extends State<Failurescan> {
                   )),
             ),
             const Text(
-                "There is no queue number match with the qr code you scanned ",
+                "There is no queue number match with the qr code you scanned or There is some table are not available",
                 style: TextStyle(
                   color: Color(0xFF4A75A5), // Color in Flutter format
                   fontSize: 24,
-                  fontFamily:
-                      'Open Sans', 
+                  fontFamily: 'Open Sans',
                   height: 1.33,
                 )),
             const SizedBox(height: 50.0),

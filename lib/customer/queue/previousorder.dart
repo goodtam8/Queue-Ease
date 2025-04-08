@@ -1,111 +1,129 @@
 import 'dart:convert';
-// class diagram
 import 'package:flutter/material.dart';
 import 'package:fyp_mobile/property/order.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:http/http.dart' as http;
 
 class Previousorder extends StatefulWidget {
-  const Previousorder({super.key});
+  const Previousorder({Key? key}) : super(key: key);
 
   @override
   State<Previousorder> createState() => _PreviousorderState();
 }
 
 class _PreviousorderState extends State<Previousorder> {
-  Future<List<Order>> getorder(String rid) async {
-    var response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/api/receipt/$rid/all'),
-        headers: {'Content-Type': 'application/json'});
+// Fetch orders for a given receipt/rid
+  Future<List<Order>> fetchOrders(String rid) async {
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:3000/api/receipt/$rid/all'),
+      headers: {'Content-Type': 'application/json'},
+    );
     final data = jsonDecode(response.body);
-
     return listFromJson(data['result']);
   }
 
-  Widget ordercard(List<Order> data) {
-    List<Widget> restaurantCards = [];
+// A helper to re-trigger the FutureBuilder on pull-to-refresh
+  Future<void> _refreshOrders(String rid) async {
+    setState(() {});
+  }
 
-    for (var restaurant in data) {
-      restaurantCards.add(
-        GestureDetector(
-          child: Container(
-            margin: const EdgeInsets.only(top: 16, left: 16),
-            width: 343,
-            height: 170,
-            decoration: BoxDecoration(
-              color: const Color(0xFFF1F1F1),
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: Row(
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      restaurant.rid,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    for (int i = 0; i < restaurant.orderDetail.length; i++)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 16),
-                        child: Text(
-                          restaurant.orderDetail[i].title,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                      )
-                  ],
+// Build a card for each order
+  Widget buildOrderCard(Order order) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: InkWell(
+        onTap: () {
+// Optionally do something when the order is tapped
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+// Display the order ID or a title if available
+              Text(
+                "Order ID: ${order.rid}",
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 8),
+// Display all order details using the spread operator.
+              ...order.orderDetail.map(
+                (detail) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Text(
+                    detail.title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-      );
-    }
-
-    return Expanded(
-      child: Column(
-        children: restaurantCards,
       ),
     );
   }
 
-  Widget receiptbuilder(String rid) {
-    return FutureBuilder(
-        future: getorder(rid),
-        builder: (BuildContext context, AsyncSnapshot<List<Order>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator(); // Show a loading indicator while waiting
-          } else if (snapshot.hasError) {
-            print("yo again there is where the error occured");
-            return Text('Error: ${snapshot.error}');
-          } else if (snapshot.hasData) {
-            List<Order> data = snapshot.data!;
-            return ordercard(data);
-          } else {
-            return Text("an unexpected error occured");
-          }
-        });
+// Build the orders list using FutureBuilder and display appropriate
+// states for loading, error, or no data.
+  Widget buildOrdersList(String rid) {
+    return FutureBuilder<List<Order>>(
+      future: fetchOrders(rid),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Error: ${snapshot.error}"),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () => setState(() {}),
+                  child: const Text("Retry"),
+                ),
+              ],
+            ),
+          );
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text("No previous orders found."));
+        } else {
+          final orders = snapshot.data!;
+          return RefreshIndicator(
+            onRefresh: () => _refreshOrders(rid),
+            child: ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: orders.length,
+              itemBuilder: (context, index) {
+                return buildOrderCard(orders[index]);
+              },
+            ),
+          );
+        }
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)?.settings.arguments as Map;
-
-    final rest = args['restaurant'];
-    final id = args['rid'];
+    final args = ModalRoute.of(context)?.settings.arguments as Map?;
+// Ensure that the rid is provided. Adjust if you also need the restaurant info.
+    final String rid = args?['rid'] ?? '';
 
     return Scaffold(
       appBar: Topbar(),
-      body: Column(
-        children: [receiptbuilder(id)],
-      ),
+      body: rid.isNotEmpty
+          ? buildOrdersList(rid)
+          : const Center(child: Text("Invalid order information.")),
       backgroundColor: Colors.white,
     );
   }
