@@ -39,6 +39,31 @@ class _Homestate extends State<Userhome> {
     return loadedmessages;
   }
 
+  // Function to show an alert dialog and redirect to login
+  void _handleNetworkError(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Network Error"),
+          content: const Text("A network error occurred. Please try again."),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close the dialog
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                await prefs.clear(); // Clear user data
+                Navigator.of(context)
+                    .pushReplacementNamed('/login'); // Redirect to login
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget notilistfut() {
     return FutureBuilder(
         future: loadMessages(),
@@ -83,11 +108,22 @@ class _Homestate extends State<Userhome> {
   }
 
   Future<Customerper> getuserinfo(String objectid) async {
-    var response = await http.get(
+    try {
+      var response = await http.get(
         Uri.parse('http://10.0.2.2:3000/api/customer/$objectid'),
-        headers: {'Content-Type': 'application/json'});
+        headers: {'Content-Type': 'application/json'},
+      );
 
-    return parseCustomer(response.body);
+      if (response.statusCode == 200) {
+        return parseCustomer(response.body);
+      } else {
+        throw Exception('Failed to fetch user info');
+      }
+    } catch (e) {
+      print('Error fetching user info: $e');
+      _handleNetworkError(context); // Show error dialog
+      rethrow; // Optionally rethrow the error for further handling
+    }
   }
 
   Widget queueinfo(String id) {
@@ -245,25 +281,24 @@ class _Homestate extends State<Userhome> {
 
   Widget weatherforecast() {
     return FutureBuilder(
-        future: weather.getweatherinfo(),
-        builder:
-            (BuildContext context, AsyncSnapshot<WeatherForecast> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator(); // Show a loading indicator while waiting
-          } else if (snapshot.hasError) {
-            print('hi again there is where the error occure');
-            return Text('Error: ${snapshot.error}');
-          } else if (snapshot.hasData) {
-            WeatherForecast data = snapshot.data!;
-            String formattedtime = timeformatting(DateTime.now());
-            int indextobedisplayed = 0;
-            temperature = data.weatherForecast[0].forecastMaxtemp["value"];
-            return Text(
-                "$temperature\u00b0C ,${DateTime.now().hour}:${DateTime.now().minute}");
-          } else {
-            return Text("An unexpected error occured");
-          }
-        });
+      future: weather.getweatherinfo(),
+      builder: (BuildContext context, AsyncSnapshot<WeatherForecast> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          print('Error fetching weather info: ${snapshot.error}');
+          _handleNetworkError(context); // Show error dialog
+          return const Text('An error occurred while fetching weather data.');
+        } else if (snapshot.hasData) {
+          WeatherForecast data = snapshot.data!;
+          int temperature = data.weatherForecast[0].forecastMaxtemp["value"];
+          return Text(
+              "$temperature\u00b0C, ${DateTime.now().hour}:${DateTime.now().minute}");
+        } else {
+          return const Text("An unexpected error occurred.");
+        }
+      },
+    );
   }
 
   Widget weatherwarning() {
@@ -392,6 +427,8 @@ class _Homestate extends State<Userhome> {
         return null;
       }
     } catch (e) {
+      _handleNetworkError(context); // Show error dialog
+
       print('Error fetching image: $e');
       return null;
     }
@@ -547,7 +584,14 @@ class _Homestate extends State<Userhome> {
       noticard.add(const Center(child: Text('No messages found')));
     }
 
-    return Row(children: noticard);
+    return SizedBox(
+      height: 150, // Set appropriate height based on your card size
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: noticard.length,
+        itemBuilder: (context, index) => noticard[index],
+      ),
+    );
   }
 
   Widget buttonrest() {

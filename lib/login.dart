@@ -176,8 +176,8 @@ class _LoginState extends State<Login> {
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Colors.red,
                   ),
-                  child: Row(children: [
-                    const SizedBox(width: 48.0),
+                  child: const Row(children: [
+                    SizedBox(width: 48.0),
                     Expanded(
                       child: Column(
                         children: [
@@ -328,6 +328,9 @@ class _LoginState extends State<Login> {
       String? token = await storage.read(key: 'jwt');
       return (response.statusCode);
     } catch (e) {
+      if (e is SocketException) {
+        return 'SERVER_UNAVAILABLE';
+      }
       print(e);
       return e.toString();
     }

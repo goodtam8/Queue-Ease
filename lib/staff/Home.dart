@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:fyp_mobile/property/icon.dart';
 import 'package:fyp_mobile/property/topbar.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -59,6 +60,30 @@ class _HomeState extends State<Home> {
         _image = await fetchImageAsUint8List(url);
       });
     }
+  }
+
+  void _handleNetworkError(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Network Error"),
+          content: const Text("A network error occurred. Please try again."),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close the dialog
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                await prefs.clear(); // Clear user data
+                Navigator.of(context)
+                    .pushReplacementNamed('/login'); // Redirect to login
+              },
+              child: const Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<Uint8List?> imagenewget(String id) async {
@@ -164,11 +189,22 @@ class _HomeState extends State<Home> {
   final weather = Weather();
 
   Future<personal> getuserinfo(String objectid) async {
-    var response = await http.get(
+    try {
+      var response = await http.get(
         Uri.parse('http://10.0.2.2:3000/api/staff/$objectid'),
-        headers: {'Content-Type': 'application/json'});
+        headers: {'Content-Type': 'application/json'},
+      );
 
-    return parsepersonal(response.body);
+      if (response.statusCode == 200) {
+        return parsepersonal(response.body);
+      } else {
+        throw Exception('Failed to fetch user info');
+      }
+    } catch (e) {
+      print('Network error occurred: $e');
+      _handleNetworkError(context); // Show alert dialog and handle redirection
+      rethrow; // Optionally rethrow the error for further handling
+    }
   }
 
   Future<void> _refresh() {
