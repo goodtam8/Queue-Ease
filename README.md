@@ -1,16 +1,47 @@
-# fyp_mobile
+# Queue-Ease
 
-A new Flutter project.
+Queue-Ease is a mobile application designed to streamline queue management and appointment scheduling for businesses and customers. Built with Flutter, this project aims to provide a smooth and efficient experience for all users.
+
+## Features
+
+- **Join and manage queues** easily from your mobile device
+- **Real-time notifications** and queue position tracking
+- **Appointment scheduling** and reminders
+- **User roles** for customers, staff, and administrators
+
+## Technologies Used
+
+- **Flutter**: Cross-platform mobile framework
+- **Dart**: Programming language for Flutter apps
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+To run this project locally:
 
-A few resources to get you started if this is your first Flutter project:
+1. **Clone the repository:**
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+git clone https://github.com/goodtam8/Queue-Ease.git
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+2. **Navigate to the project directory:**
+cd Queue-Ease
+
+3. **Install dependencies:**
+flutter pub get
+
+text
+4. **Run the app:**
+flutter run
+
+
+
+## Contributing
+
+Contributions are welcome! Please open issues or submit pull requests to help improve Queue-Ease.
+
+## License
+
+This project is licensed under the MIT License.
+
+---
+
+For more information on Flutter development, check the [Flutter documentation](https://flutter.dev/docs).
