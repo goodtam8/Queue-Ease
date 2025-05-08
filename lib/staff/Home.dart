@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/Personal.dart';
 import 'package:fyp_mobile/property/add_data.dart';
@@ -62,29 +63,34 @@ class _HomeState extends State<Home> {
     }
   }
 
-  void _handleNetworkError(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Network Error"),
-          content: const Text("A network error occurred. Please try again."),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop(); // Close the dialog
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                await prefs.clear(); // Clear user data
-                Navigator.of(context)
-                    .pushReplacementNamed('/login'); // Redirect to login
-              },
-              child: const Text("OK"),
-            ),
-          ],
-        );
-      },
-    );
-  }
+void _handleNetworkError(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Network Error"),
+        content: const Text("A network error occurred. Please try again."),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              Navigator.of(context).pop(); // Close the dialog
+              
+              // Clear both storage mechanisms
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.clear(); // Clear SharedPreferences
+              
+              const storage = FlutterSecureStorage();
+              await storage.deleteAll(); // Clear FlutterSecureStorage
+              
+              Navigator.of(context).pushReplacementNamed('/login');
+            },
+            child: const Text("OK"),
+          ),
+        ],
+      );
+    },
+  );
+}
 
   Future<Uint8List?> imagenewget(String id) async {
     String url = await StoreData().getImageUrl(id);
@@ -202,7 +208,7 @@ class _HomeState extends State<Home> {
       }
     } catch (e) {
       print('Network error occurred: $e');
-      _handleNetworkError(context); // Show alert dialog and handle redirection
+      _handleNetworkError(context);
       rethrow; // Optionally rethrow the error for further handling
     }
   }

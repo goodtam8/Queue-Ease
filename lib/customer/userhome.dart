@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fyp_mobile/customer/Notification.dart';
 import 'package:fyp_mobile/login.dart';
 import 'package:fyp_mobile/property/add_data.dart';
@@ -39,7 +40,6 @@ class _Homestate extends State<Userhome> {
     return loadedmessages;
   }
 
-  // Function to show an alert dialog and redirect to login
   void _handleNetworkError(BuildContext context) {
     showDialog(
       context: context,
@@ -51,10 +51,15 @@ class _Homestate extends State<Userhome> {
             TextButton(
               onPressed: () async {
                 Navigator.of(context).pop(); // Close the dialog
+
+                // Clear both storage mechanisms
                 SharedPreferences prefs = await SharedPreferences.getInstance();
-                await prefs.clear(); // Clear user data
-                Navigator.of(context)
-                    .pushReplacementNamed('/login'); // Redirect to login
+                await prefs.clear(); // Clear SharedPreferences
+
+                const storage = FlutterSecureStorage();
+                await storage.deleteAll(); // Clear FlutterSecureStorage
+
+                Navigator.of(context).pushReplacementNamed('/login');
               },
               child: const Text("OK"),
             ),
@@ -121,7 +126,7 @@ class _Homestate extends State<Userhome> {
       }
     } catch (e) {
       print('Error fetching user info: $e');
-      _handleNetworkError(context); // Show error dialog
+      _handleNetworkError(context);
       rethrow; // Optionally rethrow the error for further handling
     }
   }
@@ -287,7 +292,6 @@ class _Homestate extends State<Userhome> {
           return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           print('Error fetching weather info: ${snapshot.error}');
-          _handleNetworkError(context); // Show error dialog
           return const Text('An error occurred while fetching weather data.');
         } else if (snapshot.hasData) {
           WeatherForecast data = snapshot.data!;
@@ -427,8 +431,6 @@ class _Homestate extends State<Userhome> {
         return null;
       }
     } catch (e) {
-      _handleNetworkError(context); // Show error dialog
-
       print('Error fetching image: $e');
       return null;
     }
