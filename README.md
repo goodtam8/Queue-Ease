@@ -42,6 +42,11 @@ Contributions are welcome! Please open issues or submit pull requests to help im
 
 This project is licensed under the MIT License.
 
+## Video Demo
+
+Please check this [Poster](https://fyp.comp.hkbu.edu.hk/poster/2024/poster.php?id=693) to know how it works.
+
+
 ---
 
 For more information on Flutter development, check the [Flutter documentation](https://flutter.dev/docs).
